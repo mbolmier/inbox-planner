@@ -1,9 +1,10 @@
-"""Deterministic planner: earliest deadline first, within the energy of each day.
+"""Deterministic planner: earliest deadline first, spread over the days.
 
-Tasks are taken by due date (then priority). Each one is placed in the earliest
-free slots before its deadline, in blocks no longer than the day's energy
-allows, never over an appointment, never beyond the day's work capacity.
-Times are computed in UTC and only shown in local time.
+Tasks are taken by due date (then priority). Their work is spread out: each
+block goes to the day before the deadline that can take the longest block, then
+to the day with the most work capacity left, then to the earliest day. Blocks are never
+longer than the day's energy allows, never over an appointment, never beyond
+the day's work capacity. Times are computed in UTC and only shown in local time.
 """
 
 from collections.abc import Mapping, Sequence
@@ -12,7 +13,7 @@ from datetime import UTC, date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 from inbox_planner.planning.calendar import Event
-from inbox_planner.planning.energy import PROFILES, Energy
+from inbox_planner.planning.energy import PROFILES, Energy, EnergyProfile
 from inbox_planner.schemas import ExtractedItem, ItemKind, Priority
 
 PRIORITY_RANK = {Priority.HIGH: 0, Priority.MEDIUM: 1, Priority.LOW: 2}
@@ -120,6 +121,25 @@ def _block_length(remaining: int, limit: int, min_block: int) -> int:
     return length
 
 
+def _best_fit(
+    slots: Sequence[Interval],
+    remaining: int,
+    room: int,
+    profile: EnergyProfile,
+    due: datetime,
+    settings: PlannerSettings,
+) -> tuple[int, int] | None:
+    """Slot of a day that takes the longest block (the earliest on a tie), so that a
+    task is not cut into pieces when one free slot can hold it: (slot index, length)."""
+    best: tuple[int, int] | None = None
+    for i, (start, end) in enumerate(slots):
+        limit = min(profile.max_block_minutes, room, _minutes(min(end, due) - start))
+        length = _block_length(remaining, limit, settings.min_block_minutes)
+        if length > 0 and (best is None or length > best[1]):
+            best = (i, length)
+    return best
+
+
 def find_conflicts(events: Sequence[Event]) -> list[tuple[Event, Event]]:
     """Pairs of appointments that overlap: the student has to choose."""
     ordered = sorted(events, key=lambda e: e.start)
@@ -192,31 +212,32 @@ def plan_week(
             at_risk.append(Shortfall(task, task.minutes, "échéance déjà passée"))
             continue
         remaining = task.minutes
-        for day in days:
-            profile = PROFILES[energy[day]]
-            slots = free[day]
-            i = 0
-            while remaining > 0 and i < len(slots):
-                start, end = slots[i]
-                limit = min(
-                    profile.max_block_minutes,
-                    profile.capacity_minutes - used[day],
-                    _minutes(min(end, due) - start),
-                )
-                length = _block_length(remaining, limit, settings.min_block_minutes)
-                if length <= 0:
-                    i += 1
+        while remaining > 0:
+            # The next block goes to the day that can take the longest block (so a task
+            # is not cut into pieces for nothing), then to the day with the most
+            # capacity left, then to the earliest day. The work is spread over the days
+            # before the deadline instead of piling up at the start of the week.
+            best: tuple[tuple[int, int], date, int, int] | None = None
+            for day in days:
+                profile = PROFILES[energy[day]]
+                room = profile.capacity_minutes - used[day]
+                if room <= 0:
                     continue
-                block_end = start + timedelta(minutes=length)
-                blocks.append(WorkBlock(task.id, task.title, start, block_end))
-                remaining -= length
-                used[day] += length
-                if block_end + gap < end:
-                    slots[i] = (block_end + gap, end)
-                else:
-                    slots.pop(i)
-            if remaining <= 0:
+                fit = _best_fit(free[day], remaining, room, profile, due, settings)
+                if fit is not None and (best is None or (fit[1], room) > best[0]):
+                    best = ((fit[1], room), day, *fit)
+            if best is None:
                 break
+            _, day, i, length = best
+            start, end = free[day][i]
+            block_end = start + timedelta(minutes=length)
+            blocks.append(WorkBlock(task.id, task.title, start, block_end))
+            remaining -= length
+            used[day] += length
+            if block_end + gap < end:
+                free[day][i] = (block_end + gap, end)
+            else:
+                free[day].pop(i)
         if remaining > 0:
             if task.due_at >= horizon_end:
                 later.append(Shortfall(task, remaining, "échéance après la période planifiée"))

@@ -6,7 +6,7 @@ La boîte mail de démo (`src/inbox_planner/demo_data/mailbox.toml`) raconte un 
 |---|---|---|
 | Écoles | **Réel** | Université Lumière Lyon 2, IUT Lumière, BUT Science des données ; Oregon State University (Corvallis, Oregon). |
 | Codes et intitulés des cours OSU | **Réel, vérifié** | Vérifiés dans le catalogue public d'OSU (catalog.oregonstate.edu) le 25/11/2026. |
-| Étudiante (Camille Roux), amie (Inès Garnier), profs, conseillers, tuteurs | Inventé | Toute ressemblance avec une personne réelle serait fortuite. |
+| Étudiante (Camille Roux), amie (Margaux Delorme), profs, conseillers, tuteurs | Inventé | Toute ressemblance avec une personne réelle serait fortuite. |
 | Adresses mail | Inventé | Uniquement des domaines `.example`, réservés par la RFC 2606 : ils ne pointent vers aucun serveur. Vérifié automatiquement par `tests/test_demo_privacy.py`. |
 | Bâtiments et salles | Inventé | Aucun bâtiment réel du campus d'OSU. |
 | Lieux hors campus | **Réel** | Corvallis (ville) et Tamolitch Blue Pool (sentier de randonnée public sur la McKenzie River, mail m39). Seuls les noms sont utilisés ; la sortie, les horaires et les participantes sont inventés. |

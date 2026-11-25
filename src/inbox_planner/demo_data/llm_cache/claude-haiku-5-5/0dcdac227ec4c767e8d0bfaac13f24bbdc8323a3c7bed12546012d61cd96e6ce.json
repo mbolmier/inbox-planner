@@ -2,18 +2,18 @@
   "tag": "extraction/m39",
   "requested_model": "claude-haiku-5-5",
   "model": "claude-haiku-5-5",
-  "recorded_at": "2026-11-25T13:38:57+00:00",
+  "recorded_at": "2026-11-25T14:15:07+00:00",
   "recorded_with": "claude-code",
   "usage": {
-    "input_tokens": 3524,
-    "output_tokens": 1238
+    "input_tokens": 3523,
+    "output_tokens": 1115
   },
-  "duration_ms": 5879,
+  "duration_ms": 5315,
   "data": {
     "items": [
       {
         "kind": "appointment",
-        "title": "Randonnée à Blue Pool avec Inès (Tamolitch Blue Pool Trailhead, ~7 km aller-retour)",
+        "title": "Randonnée à Blue Pool avec Margaux (départ en voiture, retour à Corvallis vers 16 h)",
         "local_datetime": "2026-10-31T07:30",
         "timezone": "America/Los_Angeles",
         "duration_minutes": 510,
@@ -27,7 +27,7 @@
       },
       {
         "kind": "appointment",
-        "title": "Séance projet chez Inès : analyse du projet ST 411 et HW 4 de CS 434",
+        "title": "Séance de travail chez Margaux : analyse du projet ST 411 et HW 4 de CS 434",
         "local_datetime": "2026-11-01T14:00",
         "timezone": "America/Los_Angeles",
         "duration_minutes": 180,

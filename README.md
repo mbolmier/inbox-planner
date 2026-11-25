@@ -27,7 +27,7 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 | **Connecteurs mail, lecture seule** | **Demo** (boîte fictive, par défaut). **Gmail** (API officielle, OAuth, lecture seule par défaut). **IMAP** (`EXAMINE` + `BODY.PEEK`, rien n'est modifié ni marqué comme lu). Tous passent par le même parseur. |
 | **Agent de tri** | Le mail est-il utile, et de quel type : rendez-vous, échéance, démarche, info ou bruit ? |
 | **Agent d'extraction** | Il renvoie du JSON validé par un schéma : titre, date et heure locales avec fuseau, durée, lieu, lien de visio avec ID et code, priorité, récurrence. |
-| **Planification** | Un algorithme déterministe (échéance la plus proche d'abord) place le travail dans les créneaux libres, selon l'énergie du jour : Off, Crevé, Normal, En forme. |
+| **Planification** | Un algorithme déterministe (échéance la plus proche d'abord) répartit le travail à l'avance sur les jours qui précèdent chaque échéance, selon l'énergie du jour : Off, Crevé, Normal, En forme. |
 | **Agent de rédaction** | Il propose une réponse (confirmer, décliner, poser une question). Elle est relue, modifiée si besoin, puis enregistrée comme brouillon. **Jamais envoyée.** |
 | **Lieux cliquables** | Un rendez-vous physique ouvre Google Maps, un rendez-vous en ligne ouvre Teams, Zoom ou Meet (lien déballé des Safe Links d'Outlook). |
 | **Vue web** | Aujourd'hui, la semaine (FullCalendar), les échéances triées par urgence, en thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
@@ -53,7 +53,7 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 |---|---|---|---|---|---|
 | Haiku 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,023 $ |
 | Sonnet 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,368 $ |
-| Opus 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,770 $ |
+| Opus 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,771 $ |
 
 **Chaîne par défaut : Haiku → Haiku**, avec 100 % de précision et de rappel pour **0,034 $** les 40 mails. Rapport complet : [docs/evaluation.md](docs/evaluation.md). La CI le régénère à chaque PR et échoue s'il n'est plus à jour.
 
@@ -124,7 +124,7 @@ flowchart LR
 
 ## Les choix que je défends
 
-Les 64 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
+Les 65 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
 
 - **Le LLM lit, le code calcule** ([D25](docs/decisions.md#d25-le-llm-lit-le-code-calcule)). Le modèle renvoie une heure *locale* et un nom de fuseau ; `zoneinfo` calcule le décalage. Un LLM peut se tromper sur un changement d'heure, `zoneinfo` jamais. Exemple visible dans la démo : pour l'entretien du 3 novembre (mail m21), la justification écrite par le modèle dit « 17 h 30 à Paris, soit 9 h 30 à Los Angeles », ce qui est faux. L'heure affichée, calculée par `zoneinfo`, est la bonne : 8 h 30.
 - **La planification est un algorithme, pas un LLM** ([D36](docs/decisions.md#d36-la-planification-est-un-algorithme-pas-un-llm)). Elle a des contraintes dures (aucun chevauchement, capacité du jour, échéances) et doit être déterministe, testable et explicable. 300 semaines aléatoires vérifient 8 règles à chaque commit (tests par propriétés avec `hypothesis`).
@@ -145,7 +145,7 @@ Les 64 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), 
 - **Le jeu d'évaluation est petit et trop facile** pour départager les modèles en extraction. Les annotations sont de moi, avec un assistant IA pour la première rédaction.
 - **Outlook universitaire (Microsoft Graph) n'est pas branché :** les universités exigent en général l'accord de leur DSI pour une application tierce ([D55](docs/decisions.md#d55-microsoft-graph-outlook-de-lyon-2-et-dosu--pas-fait-et-pourquoi)). L'export vers Apple Rappels n'est pas fait non plus.
 - **Une séance déplacée ou annulée ne retire pas la séance récurrente d'origine.** Le conflit est signalé, pas résolu.
-- **EDF place le travail au plus tôt**, donc la semaine est chargée au début.
+- **Le travail est étalé, donc la marge est plus courte** : une tâche peut tomber la veille de son échéance quand les jours d'avant sont plus chargés ([D64](docs/decisions.md)).
 - **Le client API Anthropic n'est jamais exécuté ici.** Il est vérifié contre la signature du SDK et testé avec un faux SDK.
 - **Les longues newsletters coûtent cher au tri** (environ 6 000 tokens par mail sur une vraie boîte). Tronquer serait une piste, à mesurer d'abord.
 

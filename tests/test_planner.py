@@ -112,6 +112,27 @@ def test_earliest_deadline_is_worked_on_first():
     assert first.task_id == "soon"
 
 
+def test_work_is_spread_over_the_days_before_the_deadline():
+    tasks = [task(f"t{n}", at(3, 18), 60) for n in range(3)]
+
+    plan = plan_week(tasks, [], NOW, OREGON)
+
+    days = {b.task_id: b.start.astimezone(OREGON).date() for b in plan.blocks}
+    assert days == {"t0": MONDAY, "t1": at(1, 0).date(), "t2": at(2, 0).date()}
+
+
+def test_a_day_in_good_shape_takes_more_of_the_work():
+    tuesday = at(1, 0).date()
+    energy = all_days(Energy.NORMAL) | {tuesday: Energy.ENERGIZED}
+
+    plan = plan_week([task(f"t{n}", at(1, 20), 60) for n in range(4)], [], NOW, OREGON, energy)
+
+    worked = {MONDAY: 0, tuesday: 0}
+    for block in plan.blocks:
+        worked[block.start.astimezone(OREGON).date()] += block.minutes
+    assert worked == {MONDAY: 60, tuesday: 180}
+
+
 def test_same_deadline_goes_by_priority():
     tasks = [task("low", at(1, 18), 30, Priority.LOW), task("high", at(1, 18), 30, Priority.HIGH)]
 

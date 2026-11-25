@@ -2,18 +2,18 @@
   "tag": "extraction/m39",
   "requested_model": "claude-sonnet-5-5",
   "model": "claude-sonnet-5-5",
-  "recorded_at": "2026-11-25T13:39:02+00:00",
+  "recorded_at": "2026-11-25T14:15:12+00:00",
   "recorded_with": "claude-code",
   "usage": {
-    "input_tokens": 3501,
-    "output_tokens": 601
+    "input_tokens": 3502,
+    "output_tokens": 539
   },
-  "duration_ms": 4183,
+  "duration_ms": 4983,
   "data": {
     "items": [
       {
         "kind": "appointment",
-        "title": "Randonnée à Blue Pool avec Inès",
+        "title": "Randonnée à Blue Pool avec Margaux",
         "local_datetime": "2026-10-31T07:30",
         "timezone": "America/Los_Angeles",
         "duration_minutes": 510,
@@ -27,13 +27,13 @@
       },
       {
         "kind": "appointment",
-        "title": "Séance de travail chez Inès : projet ST 411 et HW 4 de CS 434",
+        "title": "Séance de travail projet ST 411 et HW 4 CS 434 chez Margaux",
         "local_datetime": "2026-11-01T14:00",
         "timezone": "America/Los_Angeles",
         "duration_minutes": 180,
         "weekly_on": [],
         "repeat_until": null,
-        "location": "Chez Inès",
+        "location": "Chez Margaux",
         "video_url": null,
         "meeting_id": null,
         "passcode": null,

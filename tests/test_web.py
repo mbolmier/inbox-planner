@@ -60,7 +60,7 @@ def test_changing_the_energy_requires_htmx_then_replans_and_is_remembered(client
 
     assert response.status_code == 200
     assert 'aria-pressed="true">Crevé</button>' in response.text
-    assert "Prévu aujourd'hui : <b>2 h</b>" in response.text
+    assert "Prévu aujourd'hui : <b>1 h</b>" in response.text  # only what is due today
     assert 'aria-pressed="true">Crevé</button>' in client.get("/").text
 
 

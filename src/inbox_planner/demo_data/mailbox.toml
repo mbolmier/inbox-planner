@@ -771,7 +771,7 @@ Need to cancel? https://bookings.oregonstate.example/manage/5521
 [[message]]
 id = "m39"
 mailbox = "personal"
-from = "Inès Garnier <ines.garnier@perso.example>"
+from = "Margaux Delorme <margaux.delorme@perso.example>"
 to = "Camille Roux <camille.roux@perso.example>"
 date = 2026-10-25T19:40:00-07:00
 subject = "Blue Pool samedi + séance projet dimanche"
@@ -787,7 +787,7 @@ Et dimanche 1er novembre, on se pose chez moi de 14 h à 17 h pour avancer l'ana
 projet ST 411 et finir le HW 4 de CS 434.
 
 À samedi !
-Inès
+Margaux
 '''
 
 [[message]]

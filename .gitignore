@@ -1,0 +1,42 @@
+# --- Secrets and local configuration: never committed ---
+.env
+.env.*
+!.env.example
+secrets/
+*.token.json
+token*.json
+credentials*.json
+client_secret*.json
+
+# --- Assistant files: kept out of the repository by design ---
+CLAUDE.md
+.claude/
+
+# --- Real mail exports and local data: only fictional data/demo/ is versioned ---
+*.eml
+!data/demo/**/*.eml
+*.mbox
+*.pst
+*.db
+*.sqlite
+*.sqlite3
+data/local/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+build/
+*.egg-info/
+
+# --- Tool caches ---
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- OS and editors ---
+.DS_Store
+.idea/
+.vscode/

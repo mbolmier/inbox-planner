@@ -13,6 +13,7 @@ Security choices:
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Annotated, Protocol
+from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, Form, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
@@ -76,6 +77,16 @@ def time_left(due: datetime, now: datetime) -> str:
     return f"dans {seconds // 3600} h {seconds % 3600 // 60:02d}"
 
 
+def countdown(due: datetime, now: datetime, zone: ZoneInfo) -> tuple[str, str]:
+    """Days left as in a paper planner, counted in calendar days of the local zone:
+    (label, urgency). A deadline at 00:30 tomorrow is "demain", not "dans 16 h"."""
+    if due < now:
+        return "passée", "late"
+    days = (due.astimezone(zone).date() - now.astimezone(zone).date()).days
+    label = "auj." if days == 0 else "demain" if days == 1 else f"J-{days}"
+    return label, "now" if days <= 1 else "soon" if days <= 3 else "later"
+
+
 class DraftSink(Protocol):
     """Where an approved draft goes: local storage (demo) or the mailbox's drafts."""
 
@@ -105,6 +116,7 @@ def create_app(
         kind_fr=KIND_FR,
         home_zone=HOME_ZONE,
         time_left=lambda due: time_left(due, data.now),
+        countdown=lambda due: countdown(due, data.now, data.zone),
         demo=data.demo,
         intents=list(INSTRUCTIONS),
         draft_target=getattr(sink, "label", "cet ordinateur"),
@@ -147,7 +159,7 @@ def create_app(
         soon = [
             row
             for row in deadline_rows(data, plan)
-            if data.now <= row.task.due_at <= data.now + timedelta(days=3)
+            if data.now <= row.task.due_at < data.now + timedelta(days=len(data.days))
         ]
         return context(request, "today") | {
             "day": today,
@@ -176,6 +188,28 @@ def create_app(
             "worked": worked,
             "plan": plan,
         }
+
+    def days_context(request: Request) -> dict:
+        energy = energy_by_day()
+        plan = data.plan(energy)
+        worked = dict.fromkeys(data.days, 0)
+        for block in plan.blocks:
+            worked[block.start.astimezone(data.zone).date()] += block.minutes
+        rows = [
+            {
+                "day": day,
+                "energy": energy[day],
+                "worked": worked[day],
+                "capacity": PROFILES[energy[day]].capacity_minutes,
+                "entries": agenda(data, plan, day),
+            }
+            for day in data.days
+        ]
+        return context(request, "days") | {"rows": rows, "today": data.days[0], "plan": plan}
+
+    @app.get("/jours", response_class=HTMLResponse)
+    def days(request: Request):
+        return templates.TemplateResponse(request, "days.html", days_context(request))
 
     @app.get("/semaine", response_class=HTMLResponse)
     def week(request: Request):
@@ -240,6 +274,8 @@ def create_app(
         if day not in data.days:
             raise HTTPException(status_code=404, detail="jour hors de la période planifiée")
         store.set_energy(day, energy)
+        if view == "days":
+            return templates.TemplateResponse(request, "_days.html", days_context(request))
         if view == "week":
             response = templates.TemplateResponse(
                 request, "_week_energy.html", week_context(request)

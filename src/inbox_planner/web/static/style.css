@@ -197,3 +197,27 @@ table.deadlines { width: 100%; border-collapse: collapse; font-size: .92rem; }
 
 /* Theme switch */
 .theme-toggle { border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: .85rem; cursor: pointer; }
+
+/* Countdown badges, as in a paper planner: auj., demain, J-3 */
+.jn { display: inline-block; min-width: 3.4em; text-align: center; font-family: var(--mono); font-size: .78rem; font-weight: 700;
+  padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); white-space: nowrap; vertical-align: 1px; }
+.jn.u-now { background: var(--echeance); color: var(--on-status); }
+.jn.u-soon { background: var(--demarche-soft); color: var(--demarche); }
+.jn.u-late { background: var(--late); color: var(--on-status); }
+.entry .for { margin-left: 6px; font-size: .82rem; color: var(--muted); white-space: nowrap; }
+.soon .jn { margin-right: 4px; }
+
+/* Day by day */
+.days { display: flex; flex-direction: column; gap: 12px; }
+.day-row { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 18px; padding: 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.day-row.is-today { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.day-head { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.day-head h2 { margin: 0; font-size: 1.05rem; }
+.day-head select { font: inherit; font-size: .9rem; padding: 4px 6px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--surface-2); color: var(--ink); }
+.load { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.meter { height: 6px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--ok); }
+.meter.full i { background: var(--risk); }
+@media (max-width: 860px) { .day-row { grid-template-columns: 1fr; } }

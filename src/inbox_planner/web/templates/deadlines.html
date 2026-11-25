@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import jn %}
 {% block title %}Échéances{% endblock %}
 {% block content %}
   <section class="card">
@@ -17,7 +18,7 @@
             <tr class="cat-{{ row.category }}">
               <td><span class="tag">{{ kind_fr[row.category] }}</span> {{ row.task.title }}</td>
               <td class="mono nowrap">{{ row.due|day }} {{ row.due|hhmm }}<br><small class="muted">Paris {{ row.task.due_at.astimezone(home_zone)|hhmm }}</small></td>
-              <td class="nowrap">{{ time_left(row.task.due_at) }}</td>
+              <td class="nowrap">{{ jn(row.due) }}<br><small class="muted">{{ time_left(row.task.due_at) }}</small></td>
               <td class="mono nowrap">{{ row.planned_minutes|hours }} / {{ row.task.minutes|hours }}</td>
               <td><span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span></td>
               <td>{{ {"high": "haute", "medium": "moyenne", "low": "basse"}[row.task.priority.value] }}</td>

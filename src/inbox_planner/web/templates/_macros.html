@@ -10,6 +10,11 @@
   </span>
 {%- endmacro %}
 
+{% macro jn(due) -%}
+  {%- set label, urgency = countdown(due) -%}
+  <span class="jn u-{{ urgency }}" title="Échéance : {{ due|day }} à {{ due|hhmm }}">{{ label }}</span>
+{%- endmacro %}
+
 {% macro entry_row(entry) -%}
   <li class="entry cat-{{ entry.category }} kind-{{ entry.kind }}">
     <time class="when mono">
@@ -18,6 +23,8 @@
     <div class="what">
       <span class="tag">{{ kind_fr[entry.category] }}</span>
       <span class="title">{{ entry.title }}</span>
+      {% if entry.kind == "work" and entry.due %}<span class="for">échéance {{ jn(entry.due) }}</span>{% endif %}
+      {% if entry.kind == "deadline" %}<span class="for">{{ jn(entry.due) }}</span>{% endif %}
       {% if entry.place %}{{ place_link(entry.place) }}{% endif %}
     </div>
     {% if entry.message_id %}<a class="src" href="/mails/{{ entry.message_id }}" title="Voir le mail d'origine">mail ↗</a>{% endif %}

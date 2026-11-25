@@ -1,0 +1,38 @@
+{% from "_macros.html" import entry_row %}
+<section id="days" class="days">
+  <div class="row-between">
+    <h1>Jour par jour</h1>
+    <span class="eyebrow">Le travail est réparti à l'avance, selon l'énergie de chaque jour</span>
+  </div>
+  {% for row in rows %}
+    {% set pct = [100, (100 * row.worked / row.capacity)|round|int]|min if row.capacity else 0 %}
+    <article class="day-row{% if row.day == today %} is-today{% endif %}">
+      <header class="day-head">
+        <h2>{{ row.day|day(true) }}</h2>
+        {% if row.day == today %}<span class="pill">Aujourd'hui</span>{% endif %}
+        <select name="energy" aria-label="Énergie du {{ row.day|day }}"
+                hx-post="/energie/{{ row.day.isoformat() }}" hx-trigger="change"
+                hx-vals='{"view": "days"}' hx-target="#days" hx-swap="outerHTML">
+          {% for choice in energies %}
+            <option value="{{ choice.value }}" {% if choice == row.energy %}selected{% endif %}>{{ profiles[choice].label_fr }}</option>
+          {% endfor %}
+        </select>
+        <div class="load" title="Travail prévu / capacité du jour">
+          <span class="mono small">{{ row.worked|hours }} / {{ row.capacity|hours }}</span>
+          <div class="meter{% if pct >= 90 %} full{% endif %}"><i style="width: {{ pct }}%"></i></div>
+        </div>
+      </header>
+      <ol class="agenda">
+        {% for entry in row.entries %}{{ entry_row(entry) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
+      </ol>
+    </article>
+  {% endfor %}
+  {% if plan.at_risk %}
+    <div class="notice risk" role="status">
+      <b>À risque</b> :
+      {% for shortfall in plan.at_risk %}
+        {{ shortfall.task.title }} (il manque {{ shortfall.missing_minutes|hours }}){{ "," if not loop.last }}
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>

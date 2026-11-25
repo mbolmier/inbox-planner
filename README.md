@@ -30,7 +30,7 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 | **Planification** | Un algorithme déterministe (échéance la plus proche d'abord) répartit le travail à l'avance sur les jours qui précèdent chaque échéance, selon l'énergie du jour : Off, Crevé, Normal, En forme. |
 | **Agent de rédaction** | Il propose une réponse (confirmer, décliner, poser une question). Elle est relue, modifiée si besoin, puis enregistrée comme brouillon. **Jamais envoyée.** |
 | **Lieux cliquables** | Un rendez-vous physique ouvre Google Maps, un rendez-vous en ligne ouvre Teams, Zoom ou Meet (lien déballé des Safe Links d'Outlook). |
-| **Vue web** | Aujourd'hui, la semaine (FullCalendar), les échéances triées par urgence, en thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
+| **Vue web** | Aujourd'hui avec les prochaines échéances en compte à rebours (auj., demain, J-3), le jour par jour avec la charge de chaque jour, la semaine (FullCalendar), les échéances triées par urgence, en thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
 | **Export** | Un fichier `.ics` pour Apple Calendar et Google Agenda : fuseaux conservés, cours récurrents, rappel la veille des échéances. |
 
 | Aujourd'hui | Semaine |
@@ -124,7 +124,7 @@ flowchart LR
 
 ## Les choix que je défends
 
-Les 65 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
+Les 66 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
 
 - **Le LLM lit, le code calcule** ([D25](docs/decisions.md#d25-le-llm-lit-le-code-calcule)). Le modèle renvoie une heure *locale* et un nom de fuseau ; `zoneinfo` calcule le décalage. Un LLM peut se tromper sur un changement d'heure, `zoneinfo` jamais. Exemple visible dans la démo : pour l'entretien du 3 novembre (mail m21), la justification écrite par le modèle dit « 17 h 30 à Paris, soit 9 h 30 à Los Angeles », ce qui est faux. L'heure affichée, calculée par `zoneinfo`, est la bonne : 8 h 30.
 - **La planification est un algorithme, pas un LLM** ([D36](docs/decisions.md#d36-la-planification-est-un-algorithme-pas-un-llm)). Elle a des contraintes dures (aucun chevauchement, capacité du jour, échéances) et doit être déterministe, testable et explicable. 300 semaines aléatoires vérifient 8 règles à chaque commit (tests par propriétés avec `hypothesis`).

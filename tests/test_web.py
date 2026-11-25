@@ -1,12 +1,14 @@
 """Web pages, run on the perfect fake model (no recordings needed)."""
 
 from dataclasses import replace
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import pytest
 from fakes import FakeLLM, oracle
 from fastapi.testclient import TestClient
 
-from inbox_planner.web.app import create_app
+from inbox_planner.web.app import countdown, create_app
 from inbox_planner.web.state import AppData
 from inbox_planner.web.store import LocalStore
 
@@ -20,7 +22,8 @@ def client() -> TestClient:
 
 
 @pytest.mark.parametrize(
-    "path", ["/", "/semaine", "/echeances", "/mails/m02", "/api/calendrier", "/export.ics"]
+    "path",
+    ["/", "/jours", "/semaine", "/echeances", "/mails/m02", "/api/calendrier", "/export.ics"],
 )
 def test_every_page_answers_with_security_headers(client, path):
     response = client.get(path)
@@ -159,3 +162,42 @@ def test_mail_page_shows_the_meeting_link_short(client):
 
     assert 'class="mail-link" href="https://teams.microsoft.com/' in html
     assert ">eur03.safelinks" not in html  # the long wrapper is never the visible text
+
+
+def test_countdown_counts_calendar_days_in_local_time():
+    oregon = ZoneInfo("America/Los_Angeles")
+    now = datetime(2026, 10, 26, 8, 0, tzinfo=oregon)
+
+    assert countdown(now.replace(hour=23, minute=59), now, oregon) == ("auj.", "now")
+    assert countdown(now + timedelta(hours=16, minutes=30), now, oregon) == ("demain", "now")
+    assert countdown(now + timedelta(days=3), now, oregon) == ("J-3", "soon")
+    assert countdown(now + timedelta(days=5), now, oregon) == ("J-5", "later")
+    assert countdown(now - timedelta(minutes=1), now, oregon) == ("passée", "late")
+
+
+def test_today_lists_the_next_deadlines_with_a_countdown(client):
+    html = client.get("/").text
+
+    assert "Prochaines échéances" in html
+    assert '<span class="jn u-now" title="Échéance : Lundi 26/10 à 23:59">auj.</span>' in html
+
+
+def test_day_by_day_shows_every_day_its_load_and_when_the_work_is_due(client):
+    html = client.get("/jours").text
+
+    assert html.count('<article class="day-row') == 7
+    assert html.count('<article class="day-row is-today">') == 1
+    assert 'aria-label="Énergie du Samedi 31/10"' in html
+    assert 'échéance <span class="jn' in html  # each work block says when its deadline is
+    assert "Randonnée à Blue Pool" in html
+
+
+def test_an_energy_change_in_the_day_by_day_view_replans_the_days(client):
+    response = client.post(
+        "/energie/2026-10-31", data={"energy": "off", "view": "days"}, headers=HTMX
+    )
+
+    assert response.status_code == 200
+    assert response.text.lstrip().startswith('<section id="days"')
+    assert '<option value="off" selected>Off</option>' in response.text
+    assert "0 h / 0 h" in response.text

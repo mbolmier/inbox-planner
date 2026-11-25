@@ -25,6 +25,7 @@
     </div>
     <nav class="wrap tabs{% if page == "week" %} wide{% endif %}" aria-label="Sections">
       <a href="/" {% if page == "today" %}aria-current="page"{% endif %}>Aujourd'hui</a>
+      <a href="/jours" {% if page == "days" %}aria-current="page"{% endif %}>Jour par jour</a>
       <a href="/semaine" {% if page == "week" %}aria-current="page"{% endif %}>Semaine</a>
       <a href="/echeances" {% if page == "deadlines" %}aria-current="page"{% endif %}>Échéances</a>
       <span class="grow"></span>

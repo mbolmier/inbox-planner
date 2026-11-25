@@ -1,4 +1,4 @@
-{% from "_macros.html" import entry_row %}
+{% from "_macros.html" import entry_row, jn %}
 <section id="day-plan" class="today">
   <div class="card">
     <div class="row-between">
@@ -33,18 +33,19 @@
   </div>
 
   <aside class="card">
-    <h2>Échéances des 3 prochains jours</h2>
+    <h2>Prochaines échéances</h2>
     <ul class="soon">
       {% for row in soon %}
         <li class="cat-{{ row.category }}">
-          <span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span>
+          {{ jn(row.due) }}
           <a href="/mails/{{ row.task.message_id }}">{{ row.task.title }}</a>
-          <small class="mono">{{ row.due|day }} {{ row.due|hhmm }} · {{ time_left(row.task.due_at) }}</small>
+          <small class="mono">{{ row.due|day }} {{ row.due|hhmm }} ·
+            {% if row.status == "planifiée" %}travail prévu{% else %}<span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span>{% endif %}</small>
         </li>
       {% else %}
-        <li class="muted">Aucune.</li>
+        <li class="muted">Aucune cette semaine.</li>
       {% endfor %}
     </ul>
-    <p class="muted small"><a href="/echeances">Toutes les échéances →</a></p>
+    <p class="muted small"><a href="/jours">Jour par jour →</a> · <a href="/echeances">Toutes les échéances →</a></p>
   </aside>
 </section>

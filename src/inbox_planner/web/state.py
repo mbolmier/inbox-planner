@@ -34,6 +34,7 @@ class AgendaEntry:
     end: datetime
     place: Place | None = None
     message_id: str | None = None
+    due: datetime | None = None  # local time of the deadline, for work and deadlines
 
 
 @dataclass(frozen=True)
@@ -174,6 +175,7 @@ def agenda(data: AppData, plan: Plan, day: date) -> list[AgendaEntry]:
                     block.start.astimezone(local),
                     block.end.astimezone(local),
                     message_id=tasks[block.task_id].message_id,
+                    due=tasks[block.task_id].due_at.astimezone(local),
                 )
             )
     for task in data.tasks:
@@ -187,6 +189,7 @@ def agenda(data: AppData, plan: Plan, day: date) -> list[AgendaEntry]:
                     due,
                     due,
                     message_id=task.message_id,
+                    due=due,
                 )
             )
     return sorted(entries, key=lambda e: (e.start, e.kind != "deadline", e.title))

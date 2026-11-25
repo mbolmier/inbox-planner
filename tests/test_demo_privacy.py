@@ -42,10 +42,10 @@ def disallowed_link_hosts(text: str) -> list[str]:
 
 
 def test_guard_catches_real_addresses_and_links():
-    sample = "Write to jane@oregonstate.edu or see https://www.univ-lyon2.fr/scolarite"
+    sample = "Write to someone@example.com or see https://www.example.org/scolarite"
 
-    assert real_looking_addresses(sample) == ["jane@oregonstate.edu"]
-    assert disallowed_link_hosts(sample) == ["www.univ-lyon2.fr"]
+    assert real_looking_addresses(sample) == ["someone@example.com"]
+    assert disallowed_link_hosts(sample) == ["www.example.org"]
 
 
 def test_demo_addresses_use_reserved_example_domains():

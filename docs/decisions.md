@@ -109,3 +109,28 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** `mailbox.toml` vit dans `src/inbox_planner/demo_data/` et se lit avec `importlib.resources`. Vérifié : il est bien présent dans le wheel construit.
 - **Alternatives :** un dossier `data/` à la racine du dépôt.
 - **Pourquoi :** la démo doit marcher partout où le paquet est installé (Docker, `pip install`), pas seulement depuis le dossier du projet.
+
+### D20. Un seul schéma pour l'extraction et pour les annotations
+- **Décision :** le modèle Pydantic `ExtractedItem` décrit ce que l'agent d'extraction doit produire (étape 3). Les annotations à la main utilisent exactement le même modèle.
+- **Alternatives :** un format d'annotation à part, converti au moment d'évaluer.
+- **Pourquoi :** l'évaluation compare deux objets de même forme, sans traduction qui pourrait introduire des erreurs. Le schéma valide aussi la cohérence : un rendez-vous doit avoir une heure de début, une échéance une date limite, une récurrence une date de fin.
+
+### D21. Un guide d'annotation écrit avant d'annoter
+- **Décision :** `docs/guide-annotation.md` fixe les règles (catégorie = raison principale du mail, échéance sans heure = 23 h 59 chez l'expéditeur, liens Safe Links déballés…).
+- **Alternatives :** annoter « au feeling ».
+- **Pourquoi :** sans règles écrites, deux annotateurs (ou le même, deux jours plus tard) ne seraient pas d'accord, et la précision mesurée dépendrait de l'humeur. Les règles rendent aussi chaque étiquette défendable.
+
+### D22. Récurrence hebdomadaire dans le schéma
+- **Décision :** un rendez-vous peut porter `weekly_on` (jours) et `repeat_until` (dernier jour). Un mail « cours lundi, mercredi et vendredi » donne tout l'emploi du temps.
+- **Alternatives :** importer l'emploi du temps à part, un élément par séance.
+- **Pourquoi :** c'est ce que faisait l'outil d'origine : tirer l'emploi du temps des mails. Le calendrier de la démo est ainsi rempli. Limite assumée : les exceptions (séance déplacée, jour férié) ne retirent pas encore la séance d'origine.
+
+### D23. Des tests qui vérifient les annotations elles-mêmes
+- **Décision :** `tests/test_labels.py` vérifie que chaque décalage UTC est le vrai décalage de Paris ou de l'Oregon à cette date, que chaque cours commence le bon jour de la semaine, que chaque événement est postérieur à son mail et que les liens de visio sont déballés.
+- **Alternatives :** faire confiance à la relecture.
+- **Pourquoi :** une erreur dans la vérité terrain fausse tous les chiffres de l'évaluation, sans que personne ne le voie. Le test sur les décalages a été vérifié : il rejette `-07:00` le 5 novembre.
+
+### D24. 40 mails, des pièges volontaires
+- **Décision :** répartition 14 rendez-vous, 7 échéances, 6 démarches, 6 infos, 7 bruits, sur trois boîtes. Pièges : semaine à 8 h d'écart, échéances qui tombent après le changement d'heure, dates relatives, lien Safe Links, mail HTML seul, report de séance, dates dans des promotions, hameçonnage.
+- **Alternatives :** des mails « faciles ».
+- **Pourquoi :** des mails faciles donneraient des chiffres flatteurs qui ne disent rien. Les pièges viennent des vrais problèmes rencontrés pendant l'échange.

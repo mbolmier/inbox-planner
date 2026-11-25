@@ -13,3 +13,14 @@ La boîte mail de démo (`src/inbox_planner/demo_data/mailbox.toml`) raconte un 
 | Liens de visio (Zoom, Teams, Meet) | Inventé | Format réel pour tester l'extraction, mais identifiants, codes et mots de passe inventés : aucune réunion n'existe. |
 | Entreprises, commerces, newsletters | Inventé | Noms et domaines fictifs. |
 | Démarches (I-20, ENT, alternance…) | Générique | Noms courants de démarches réelles, contenu inventé. |
+
+## Cours OSU utilisés
+
+| Code | Intitulé | Statut |
+|---|---|---|
+| ST 411 | Methods of Data Analysis | À vérifier dans le catalogue |
+| ST 421 | Introduction to Mathematical Statistics | À vérifier dans le catalogue |
+| CS 340 | Introduction to Databases | À vérifier dans le catalogue |
+| CS 434 | Machine Learning and Data Mining | À vérifier dans le catalogue |
+
+Les horaires, salles, bâtiments (Alder Hall, Hemlock Hall, Larchmont Hall, Fernwood Center, Cypress Auditorium, Juniper Student Center) et enseignants de ces cours sont inventés.

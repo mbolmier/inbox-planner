@@ -2,19 +2,26 @@
 
 Every e-mail address must use a reserved ``.example`` domain (RFC 2606), and
 every link must point to an ``.example`` domain or to a video-call provider
-(with a made-up meeting id). The rule is checked on every commit by the CI.
+(with a made-up meeting id), possibly wrapped by Outlook Safe Links. The rule is
+checked on every commit by the CI.
 """
 
 import re
 from urllib.parse import urlsplit
 
 from inbox_planner.connectors.demo import DEFAULT_MAILBOX
+from inbox_planner.evaluation.labels import DEFAULT_LABELS
 
 EMAIL_ADDRESS = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 URL = re.compile(r"https?://[^\s<>\"')]+")
-VIDEO_CALL_HOSTS = ("zoom.us", "teams.microsoft.com", "meet.google.com")
+VIDEO_CALL_HOSTS = (
+    "zoom.us",
+    "teams.microsoft.com",
+    "meet.google.com",
+    "safelinks.protection.outlook.com",
+)
 
-DEMO_FILES = [DEFAULT_MAILBOX]
+DEMO_FILES = [DEFAULT_MAILBOX, DEFAULT_LABELS]
 
 
 def real_looking_addresses(text: str) -> list[str]:

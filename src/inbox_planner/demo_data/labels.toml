@@ -1,0 +1,402 @@
+# Hand-made labels for the 40 demo e-mails: the ground truth of the evaluation.
+# Rules followed: docs/guide-annotation.md. Drafted by the assistant, reviewed by a human.
+#
+# One [[label]] per message. Each [[label.items]] is one thing to put in the
+# calendar (appointment) or in the to-do list (deadline).
+
+[[label]]
+message = "m01"
+category = "noise"
+note = "Promotion : la fin de l'offre n'est pas une échéance."
+
+[[label]]
+message = "m02"
+category = "appointment"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Exchange student check-in with the international advisor"
+  starts_at = 2026-10-29T14:00:00-07:00
+  duration_minutes = 20
+  video_url = "https://zoom.us/j/93184402716?pwd=Rk9xT2dQZ1hWb0JmS3Nlbw"
+  meeting_id = "931 8440 2716"
+  passcode = "482913"
+  priority = "medium"
+
+[[label]]
+message = "m03"
+category = "procedure"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Déposer le dossier d'alternance 2027 sur l'ENT"
+  due_at = 2026-11-06T12:00:00+01:00
+  priority = "high"
+
+[[label]]
+message = "m04"
+category = "appointment"
+note = "Les permanences (office hours) libres ne sont pas des rendez-vous."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 411 lecture"
+  starts_at = 2026-09-23T10:00:00-07:00
+  duration_minutes = 50
+  weekly_on = ["MO", "WE", "FR"]
+  repeat_until = 2026-12-04
+  location = "Alder Hall 120"
+  priority = "medium"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 411 lab"
+  starts_at = 2026-10-01T14:00:00-07:00
+  duration_minutes = 110
+  weekly_on = ["TH"]
+  repeat_until = 2026-12-04
+  location = "Hemlock Hall 211"
+  priority = "medium"
+
+[[label]]
+message = "m05"
+category = "appointment"
+note = "« tomorrow (Wednesday) » : le mail est du mardi 22 septembre."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "CS 434 lecture"
+  starts_at = 2026-09-23T14:00:00-07:00
+  duration_minutes = 80
+  weekly_on = ["MO", "WE"]
+  repeat_until = 2026-12-02
+  location = "Alder Hall 230"
+  priority = "medium"
+
+[[label]]
+message = "m06"
+category = "appointment"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 421 lecture"
+  starts_at = 2026-09-24T12:00:00-07:00
+  duration_minutes = 80
+  weekly_on = ["TU", "TH"]
+  repeat_until = 2026-12-03
+  location = "Larchmont Hall 104"
+  priority = "medium"
+
+[[label]]
+message = "m07"
+category = "appointment"
+note = "Mail HTML seul. Les permanences Zoom libres ne sont pas un rendez-vous."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "CS 340 lecture"
+  starts_at = 2026-09-24T16:00:00-07:00
+  duration_minutes = 80
+  weekly_on = ["TU", "TH"]
+  repeat_until = 2026-12-03
+  location = "Fernwood Center 108"
+  priority = "medium"
+
+[[label]]
+message = "m08"
+category = "deadline"
+note = "Le 1er novembre, l'Oregon repasse à l'heure d'hiver à 2 h : 23 h 59 est en -08:00."
+
+  [[label.items]]
+  kind = "deadline"
+  title = "CS 434 HW 4: Logistic Regression"
+  due_at = 2026-11-01T23:59:00-08:00
+  priority = "medium"
+
+[[label]]
+message = "m09"
+category = "deadline"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "ST 411 group project proposal"
+  due_at = 2026-10-30T17:00:00-07:00
+  priority = "high"
+
+[[label]]
+message = "m10"
+category = "appointment"
+note = "Après le 1er novembre : -08:00. La salle change pour l'examen."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 421 Midterm 2"
+  starts_at = 2026-11-05T12:00:00-08:00
+  duration_minutes = 80
+  location = "Cypress Auditorium"
+  priority = "high"
+
+[[label]]
+message = "m11"
+category = "info"
+
+[[label]]
+message = "m12"
+category = "deadline"
+note = "Dates relatives : le mail est du vendredi 23 octobre."
+
+  [[label.items]]
+  kind = "deadline"
+  title = "CS 340 project Step 3 draft"
+  due_at = 2026-10-26T23:59:00-07:00
+  priority = "high"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "CS 340 peer reviews of Step 3"
+  due_at = 2026-10-28T23:59:00-07:00
+  priority = "medium"
+
+[[label]]
+message = "m13"
+category = "appointment"
+note = "Report : seul le nouveau créneau compte."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 411 lab (moved)"
+  starts_at = 2026-10-30T13:00:00-07:00
+  duration_minutes = 110
+  location = "Hemlock Hall 211"
+  priority = "medium"
+
+[[label]]
+message = "m14"
+category = "info"
+note = "Événement facultatif annoncé à tous : une information, pas un rendez-vous."
+
+[[label]]
+message = "m15"
+category = "procedure"
+note = "Pas d'heure : 23 h 59 dans le fuseau de l'expéditeur."
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Confirm U.S. address in the student portal"
+  due_at = 2026-11-13T23:59:00-08:00
+  priority = "high"
+
+[[label]]
+message = "m16"
+category = "procedure"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Resubmit the health insurance waiver with a coverage certificate"
+  due_at = 2026-10-30T17:00:00-07:00
+  priority = "high"
+
+[[label]]
+message = "m17"
+category = "deadline"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "ST 421 Problem Set 5"
+  due_at = 2026-11-03T12:00:00-08:00
+  priority = "medium"
+
+[[label]]
+message = "m18"
+category = "appointment"
+note = "Lien Teams emballé par Outlook Safe Links : on attend le lien Teams d'origine."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Point de suivi de mobilité avec le tuteur"
+  starts_at = 2026-11-05T17:00:00+01:00
+  duration_minutes = 30
+  video_url = "https://teams.microsoft.com/l/meetup-join/19%3ameeting_ZGVtby1vbmx5LW5vdC1hLXJlYWwtbWVldGluZw%40thread.v2/0?context=%7b%22Tid%22%3a%2200000000-0000-0000-0000-000000000000%22%2c%22Oid%22%3a%2211111111-1111-1111-1111-111111111111%22%7d"
+  meeting_id = "348 712 905 166"
+  passcode = "Xq7Rt2"
+  priority = "medium"
+
+[[label]]
+message = "m19"
+category = "info"
+
+[[label]]
+message = "m20"
+category = "procedure"
+note = "Mail envoyé à l'heure d'été (+02:00), échéance après le 25 octobre (+01:00)."
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Renvoyer le contrat d'études modifié et signé"
+  due_at = 2026-10-31T23:59:00+01:00
+  priority = "high"
+
+[[label]]
+message = "m21"
+category = "appointment"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Entretien alternance Data Analyst (Traboule Data)"
+  starts_at = 2026-11-03T17:30:00+01:00
+  duration_minutes = 45
+  video_url = "https://meet.google.com/xpr-qwmn-fkd"
+  priority = "high"
+
+[[label]]
+message = "m22"
+category = "deadline"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Test technique Gerland Analytics"
+  due_at = 2026-11-08T20:00:00+01:00
+  duration_minutes = 180
+  priority = "high"
+
+[[label]]
+message = "m23"
+category = "noise"
+
+[[label]]
+message = "m24"
+category = "noise"
+note = "Promotion : la fin des ventes flash n'est pas une échéance."
+
+[[label]]
+message = "m25"
+category = "appointment"
+note = "Durée = de 13:05 à Portland (-08:00) à 15:40 le lendemain à Lyon (+01:00) : 17 h 35."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Vol Portland (PDX) → Lyon (LYS)"
+  starts_at = 2026-12-18T13:05:00-08:00
+  duration_minutes = 1055
+  location = "Portland International Airport (PDX)"
+  priority = "medium"
+
+[[label]]
+message = "m26"
+category = "appointment"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Dental cleaning"
+  starts_at = 2026-11-04T09:30:00-08:00
+  location = "Willow Creek Dental, 418 SW Quillback Way, Corvallis, OR 97333"
+  priority = "medium"
+
+[[label]]
+message = "m27"
+category = "noise"
+
+[[label]]
+message = "m28"
+category = "info"
+note = "Coupure d'eau : rien à faire, ce n'est pas un rendez-vous."
+
+[[label]]
+message = "m29"
+category = "procedure"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Upload proof of renter's insurance"
+  due_at = 2026-10-31T17:00:00-07:00
+  priority = "high"
+
+[[label]]
+message = "m30"
+category = "info"
+
+[[label]]
+message = "m31"
+category = "noise"
+note = "Newsletter : l'exposition n'est pas un rendez-vous."
+
+[[label]]
+message = "m32"
+category = "deadline"
+note = "Pas d'heure : 23 h 59, heure de Paris."
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Rapport de mobilité intermédiaire"
+  due_at = 2026-11-20T23:59:00+01:00
+  priority = "medium"
+
+[[label]]
+message = "m33"
+category = "appointment"
+note = "Dimanche 1er novembre au soir : l'Oregon est déjà à l'heure d'hiver (-08:00)."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 421 study group for Midterm 2"
+  starts_at = 2026-11-01T19:00:00-08:00
+  duration_minutes = 120
+  video_url = "https://meet.google.com/hvt-zkbw-rqa"
+  priority = "low"
+
+[[label]]
+message = "m34"
+category = "noise"
+
+[[label]]
+message = "m35"
+category = "noise"
+note = "Hameçonnage : domaine « 0regonstate » avec un zéro, urgence artificielle."
+
+[[label]]
+message = "m36"
+category = "info"
+
+[[label]]
+message = "m37"
+category = "deadline"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "CS 434 Quiz 5 (timed, 30 minutes)"
+  due_at = 2026-10-30T23:59:00-07:00
+  duration_minutes = 30
+  priority = "medium"
+
+[[label]]
+message = "m38"
+category = "appointment"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Office hours with Priya Raman"
+  starts_at = 2026-10-27T15:00:00-07:00
+  duration_minutes = 15
+  location = "Alder Hall 318"
+  priority = "medium"
+
+[[label]]
+message = "m39"
+category = "appointment"
+note = "19 h à Paris le 1er novembre = 10 h en Oregon (écart de 9 h ce jour-là)."
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Appel avec la famille"
+  starts_at = 2026-11-01T19:00:00+01:00
+  priority = "low"
+
+[[label]]
+message = "m40"
+category = "procedure"
+
+  [[label.items]]
+  kind = "deadline"
+  title = "Submit the Exchange Departure Form"
+  due_at = 2026-12-04T23:59:00-08:00
+  priority = "medium"

@@ -1,0 +1,807 @@
+# Fictional mailbox used by the demo and the evaluation (40 messages).
+# What is real and what is invented: see docs/donnees-demo.md.
+#
+# Persona: Camille Roux (fictional), BUT Science des données student at
+# Université Lumière Lyon 2, on exchange at Oregon State University.
+# Mailboxes: "lyon2" (university Outlook), "osu" (exchange Outlook), "personal".
+#
+# Every date carries its UTC offset.
+#   Paris:  +02:00 until 25 Oct 2026, then +01:00.
+#   Oregon: -07:00 until 1 Nov 2026, then -08:00.
+# Demo clock: Monday 26 Oct 2026, 08:00 in Oregon. Every message is older.
+
+[[message]]
+id = "m01"
+mailbox = "personal"
+from = "Cycles Rhône-Alpes <promo@cycles-ra.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-24T18:30:00+02:00
+subject = "Dernier jour : -20 % sur tous les antivols"
+html = '''
+<html><body>
+<h1>Dernier jour !</h1>
+<p>Jusqu'à dimanche minuit, profitez de <b>-20 %</b> sur tous les antivols.</p>
+<p><a href="https://cycles-ra.example/promo/antivols">Voir les offres</a></p>
+<p style="font-size:10px">Vous recevez ce mail car vous êtes inscrit·e à notre newsletter.
+<a href="https://cycles-ra.example/desinscription">Se désinscrire</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m02"
+mailbox = "osu"
+from = "Dana Whitfield <dana.whitfield@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-21T10:04:00-07:00
+subject = "Exchange student check-in - Thursday, October 29"
+text = '''
+Hi Camille,
+
+As part of the exchange program, I meet every incoming student once during the term.
+Could you join me on Thursday, October 29 at 2:00 PM (Pacific Time)? It takes about 20 minutes.
+
+Join Zoom Meeting
+https://zoom.us/j/93184402716?pwd=Rk9xT2dQZ1hWb0JmS3Nlbw
+
+Meeting ID: 931 8440 2716
+Passcode: 482913
+
+Please have your I-20 and your current address in Corvallis at hand.
+
+Best,
+Dana Whitfield
+International Student Advisor
+'''
+
+[[message]]
+id = "m03"
+mailbox = "lyon2"
+from = "Scolarité IUT Lumière <scolarite.iut@univ-lyon2.example>"
+to = "Camille Roux <camille.roux@etu.univ-lyon2.example>"
+date = 2026-10-26T08:15:00+01:00
+subject = "Alternance 2027 : dossier à déposer avant le 6 novembre"
+text = '''
+Bonjour,
+
+Les étudiantes et étudiants de BUT Science des données qui commencent une alternance
+en janvier 2027 doivent déposer leur dossier sur l'ENT avant le vendredi 6 novembre 2026
+à 12 h (heure de Paris) :
+- la fiche de renseignements entreprise ;
+- l'attestation de responsabilité civile ;
+- le projet de calendrier d'alternance.
+
+Les étudiants en mobilité à l'étranger déposent les mêmes pièces, sans déplacement.
+
+Cordialement,
+Le service de scolarité
+'''
+
+[[message]]
+id = "m04"
+mailbox = "osu"
+from = "Priya Raman <priya.raman@oregonstate.example>"
+to = "ST 411 students <st411-fall2026@lists.oregonstate.example>"
+date = 2026-09-21T09:12:00-07:00
+subject = "Welcome to ST 411 - Methods of Data Analysis (Fall 2026)"
+text = '''
+Hello everyone,
+
+Welcome to ST 411! A few practical points before we start:
+
+- Lectures: Monday, Wednesday and Friday, 10:00-10:50 AM, Alder Hall 120.
+  Our first lecture is this Wednesday, September 23.
+- Labs: Thursdays, 2:00-3:50 PM, Hemlock Hall 211, starting in week 2 (October 1).
+- Office hours: Tuesdays 3:00-4:00 PM in Alder Hall 318, or by appointment.
+- Last day of class: Friday, December 4. The final exam schedule will be announced later.
+
+All materials, homework and grades are on Canvas. We will use R and RStudio all term.
+
+See you Wednesday,
+Dr. Priya Raman
+'''
+
+[[message]]
+id = "m05"
+mailbox = "osu"
+from = "Kwame Asante-Byrne <kwame.asante-byrne@oregonstate.example>"
+to = "CS 434 students <cs434-fall2026@lists.oregonstate.example>"
+date = 2026-09-22T16:40:00-07:00
+subject = "CS 434 Machine Learning and Data Mining - first week"
+text = '''
+Hi all,
+
+CS 434 meets Mondays and Wednesdays from 2:00 to 3:20 PM in Alder Hall 230, starting
+tomorrow (Wednesday). The course runs until Wednesday, December 2.
+
+Homework is submitted on Canvas and is usually due on Sunday at 11:59 PM. You can use
+Python with NumPy and scikit-learn; please do not use AutoML tools.
+
+Kwame Asante-Byrne
+'''
+
+[[message]]
+id = "m06"
+mailbox = "osu"
+from = "Tomasz Lindqvist <tomasz.lindqvist@oregonstate.example>"
+to = "ST 421 students <st421-fall2026@lists.oregonstate.example>"
+date = 2026-09-22T08:05:00-07:00
+subject = "ST 421 - Introduction to Mathematical Statistics: schedule"
+text = '''
+Dear students,
+
+ST 421 meets on Tuesdays and Thursdays, 12:00-1:20 PM, in Larchmont Hall 104. Our first
+class is Thursday, September 24, and the last one is Thursday, December 3.
+
+Two midterms are planned (weeks 4 and 7) and a final exam during finals week. Exact dates
+and rooms will be confirmed by e-mail.
+
+Best regards,
+T. Lindqvist
+'''
+
+[[message]]
+id = "m07"
+mailbox = "osu"
+from = "Canvas Notifications <notifications@canvas.oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-09-23T11:30:00-07:00
+subject = "CS 340 - Introduction to Databases: Welcome to CS 340!"
+html = '''
+<html><body>
+<p><b>Elena Ortiz-Brandt</b> posted a new announcement in <b>CS 340 - Introduction to Databases</b>:</p>
+<div>
+<p>Welcome to CS 340! We meet <b>Tuesdays and Thursdays, 4:00&ndash;5:20 PM</b>, in
+<b>Fernwood Center 108</b>. First class: Thursday, September 24. Last class: Thursday, December 3.</p>
+<p>Weekly office hours on Zoom, Fridays 1:00&ndash;2:00 PM:
+<a href="https://zoom.us/j/96650312874?pwd=TmV2ZXJBUmVhbE1lZXRpbmc">join here</a>.
+Drop in any time, no appointment needed.</p>
+</div>
+<p><a href="https://canvas.oregonstate.example/courses/1849/announcements/9921">View announcement</a> |
+<a href="https://canvas.oregonstate.example/profile/communication">Update your notification settings</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m08"
+mailbox = "osu"
+from = "Canvas Notifications <notifications@canvas.oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-19T09:00:00-07:00
+subject = "Assignment Created - HW 4: Logistic Regression, CS 434 - Machine Learning and Data Mining"
+text = '''
+A new assignment has been created for your course, CS 434 - Machine Learning and Data Mining
+
+HW 4: Logistic Regression
+
+due: Nov 1 at 11:59pm
+
+Click here to view the assignment:
+https://canvas.oregonstate.example/courses/1852/assignments/40311
+
+You received this email because you are participating in one or more classes using Canvas.
+To change or turn off email notifications, visit:
+https://canvas.oregonstate.example/profile/communication
+'''
+
+[[message]]
+id = "m09"
+mailbox = "osu"
+from = "Priya Raman <priya.raman@oregonstate.example>"
+to = "ST 411 students <st411-fall2026@lists.oregonstate.example>"
+date = 2026-10-20T13:22:00-07:00
+subject = "ST 411 project: proposal due Friday Oct 30"
+text = '''
+Hi everyone,
+
+Reminder that your group project proposal (1-2 pages, PDF) is due on Canvas on Friday,
+October 30 by 5:00 PM. Groups of three; one submission per group.
+
+The proposal should describe your data set, your research question and the methods you
+plan to use. I will return feedback within a week.
+
+Priya Raman
+'''
+
+[[message]]
+id = "m10"
+mailbox = "osu"
+from = "Tomasz Lindqvist <tomasz.lindqvist@oregonstate.example>"
+to = "ST 421 students <st421-fall2026@lists.oregonstate.example>"
+date = 2026-10-22T15:10:00-07:00
+subject = "ST 421 Midterm 2 - Thursday, November 5, different room"
+text = '''
+Dear students,
+
+Midterm 2 will take place on Thursday, November 5, during our usual class time
+(12:00-1:20 PM). Please note the room change: the exam is in Cypress Auditorium,
+not in Larchmont Hall.
+
+It covers chapters 5 to 7. You may bring a calculator and one page of handwritten
+notes (both sides).
+
+Best regards,
+T. Lindqvist
+'''
+
+[[message]]
+id = "m11"
+mailbox = "osu"
+from = "Canvas Notifications <notifications@canvas.oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-23T18:02:00-07:00
+subject = "Grades posted - Quiz 3, CS 340 - Introduction to Databases"
+html = '''
+<html><body>
+<p>Your instructor has posted grades for <b>Quiz 3</b> in <b>CS 340 - Introduction to Databases</b>.</p>
+<p>Score: 18 out of 20</p>
+<p><a href="https://canvas.oregonstate.example/courses/1849/grades">View grades</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m12"
+mailbox = "osu"
+from = "Elena Ortiz-Brandt <elena.ortiz-brandt@oregonstate.example>"
+to = "CS 340 students <cs340-fall2026@lists.oregonstate.example>"
+date = 2026-10-23T10:15:00-07:00
+subject = "CS 340 project - Step 3 draft and peer reviews"
+text = '''
+Hi everyone,
+
+Quick reminder about the project schedule:
+- your Step 3 draft (normalized schema + DDL) is due this Monday at 11:59 PM;
+- peer reviews of two other groups are due on Wednesday at 11:59 PM.
+
+Both are submitted on Canvas. Late drafts cannot be peer reviewed, so please be on time.
+
+Elena
+'''
+
+[[message]]
+id = "m13"
+mailbox = "osu"
+from = "Noor Haddad-Wells <noor.haddadwells@oregonstate.example>"
+to = "ST 411 students <st411-fall2026@lists.oregonstate.example>"
+date = 2026-10-24T11:00:00-07:00
+subject = "ST 411 lab moved to Friday this week"
+text = '''
+Hi ST 411 folks,
+
+Because of the Career Fair on Thursday, this week's lab is moved from Thursday,
+October 29 to Friday, October 30, 1:00-2:50 PM. Same room as usual (Hemlock Hall 211).
+
+Next week we are back to the normal Thursday slot.
+
+Noor (ST 411 TA)
+'''
+
+[[message]]
+id = "m14"
+mailbox = "osu"
+from = "Career Development Center <careers@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-19T07:30:00-07:00
+subject = "Next week: Fall Career & Internship Fair"
+html = '''
+<html><body>
+<h2>Fall Career &amp; Internship Fair</h2>
+<p>Thursday, October 29, 11:00 AM&ndash;3:00 PM, Juniper Student Center Ballroom.</p>
+<p>More than 120 employers, open to all majors. Registration is optional.</p>
+<p><a href="https://careers.oregonstate.example/fair">See the list of employers</a></p>
+<p><small>You are receiving this newsletter because you are a student at Oregon State University.</small></p>
+</body></html>
+'''
+
+[[message]]
+id = "m15"
+mailbox = "osu"
+from = "International Student Services <iss@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-14T09:30:00-07:00
+subject = "Action required: confirm your U.S. address by November 13"
+text = '''
+Dear exchange student,
+
+Federal regulations require us to keep your U.S. address up to date in your immigration
+record. Please log in to the student portal and confirm or update your local address
+before Friday, November 13.
+
+1. Go to https://portal.oregonstate.example/iss/address
+2. Check your street address, city and ZIP code.
+3. Click "Confirm".
+
+If your address is not confirmed in time, your record may be flagged, which can affect
+your status.
+
+International Student Services
+'''
+
+[[message]]
+id = "m16"
+mailbox = "osu"
+from = "Student Health Insurance <shs-insurance@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-16T14:45:00-07:00
+subject = "Insurance waiver declined - resubmit by October 30"
+text = '''
+Hello Camille,
+
+Your request to waive the student health insurance plan was declined because the
+document you uploaded does not show the coverage end date.
+
+Please upload an updated certificate of coverage (in English) that shows your policy
+start and end dates by 5:00 PM Pacific on Friday, October 30. Otherwise the student plan
+will be added to your account for the fall term.
+
+Upload page: https://health.oregonstate.example/waiver
+
+Student Health Insurance Office
+'''
+
+[[message]]
+id = "m17"
+mailbox = "osu"
+from = "Canvas Notifications <notifications@canvas.oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-22T16:00:00-07:00
+subject = "Assignment Created - Problem Set 5, ST 421 - Introduction to Mathematical Statistics"
+text = '''
+A new assignment has been created for your course, ST 421 - Introduction to Mathematical Statistics
+
+Problem Set 5
+
+due: Nov 3 at 12pm
+
+Click here to view the assignment:
+https://canvas.oregonstate.example/courses/1860/assignments/40377
+
+You received this email because you are participating in one or more classes using Canvas.
+To change or turn off email notifications, visit:
+https://canvas.oregonstate.example/profile/communication
+'''
+
+[[message]]
+id = "m18"
+mailbox = "lyon2"
+from = "Julien Ferrand <julien.ferrand@univ-lyon2.example>"
+to = "Camille Roux <camille.roux@etu.univ-lyon2.example>"
+date = 2026-10-22T11:30:00+02:00
+subject = "Point de suivi de mobilité - jeudi 5 novembre"
+text = '''
+Bonjour Camille,
+
+Comme pour chaque étudiant en mobilité, je te propose un point de suivi d'environ
+30 minutes le jeudi 5 novembre à 17 h (heure de Paris), sur Teams. On fera le bilan
+de tes cours à Oregon State et de ta recherche d'alternance.
+
+________________________________________________________________________________
+Réunion Microsoft Teams
+Rejoindre sur votre ordinateur, votre application mobile ou votre appareil de salle
+Rejoindre la réunion maintenant <https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fteams.microsoft.com%2Fl%2Fmeetup-join%2F19%253ameeting_ZGVtby1vbmx5LW5vdC1hLXJlYWwtbWVldGluZw%2540thread.v2%2F0%3Fcontext%3D%257b%2522Tid%2522%253a%252200000000-0000-0000-0000-000000000000%2522%252c%2522Oid%2522%253a%252211111111-1111-1111-1111-111111111111%2522%257d&data=05%7C02%7Cdemo%7C0%7C0&sdata=demo&reserved=0>
+ID de la réunion : 348 712 905 166
+Code secret : Xq7Rt2
+________________________________________________________________________________
+
+Bonne fin de semaine,
+Julien Ferrand
+Tuteur pédagogique, BUT Science des données
+'''
+html = '''
+<html><body>
+<p>Bonjour Camille,</p>
+<p>Comme pour chaque étudiant en mobilité, je te propose un point de suivi d'environ
+30 minutes le jeudi 5 novembre à 17 h (heure de Paris), sur Teams. On fera le bilan
+de tes cours à Oregon State et de ta recherche d'alternance.</p>
+<hr>
+<p><b>Réunion Microsoft Teams</b></p>
+<p><a href="https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fteams.microsoft.com%2Fl%2Fmeetup-join%2F19%253ameeting_ZGVtby1vbmx5LW5vdC1hLXJlYWwtbWVldGluZw%2540thread.v2%2F0%3Fcontext%3D%257b%2522Tid%2522%253a%252200000000-0000-0000-0000-000000000000%2522%252c%2522Oid%2522%253a%252211111111-1111-1111-1111-111111111111%2522%257d&amp;data=05%7C02%7Cdemo%7C0%7C0&amp;sdata=demo&amp;reserved=0">Rejoindre la réunion maintenant</a></p>
+<p>ID de la réunion : 348 712 905 166<br>Code secret : Xq7Rt2</p>
+<hr>
+<p>Bonne fin de semaine,<br>Julien Ferrand<br>Tuteur pédagogique, BUT Science des données</p>
+</body></html>
+'''
+
+[[message]]
+id = "m19"
+mailbox = "lyon2"
+from = "Scolarité IUT Lumière <scolarite.iut@univ-lyon2.example>"
+to = "Camille Roux <camille.roux@etu.univ-lyon2.example>"
+date = 2026-10-06T10:00:00+02:00
+subject = "Relevé de notes du semestre 4 disponible"
+text = '''
+Bonjour,
+
+Votre relevé de notes du semestre 4 est disponible dans votre espace ENT, rubrique
+« Scolarité ». Aucune démarche n'est nécessaire.
+
+Le service de scolarité
+'''
+
+[[message]]
+id = "m20"
+mailbox = "lyon2"
+from = "Relations internationales Lyon 2 <ri.mobilite@univ-lyon2.example>"
+to = "Camille Roux <camille.roux@etu.univ-lyon2.example>"
+date = 2026-10-15T16:20:00+02:00
+subject = "Mobilité : contrat d'études modifié à renvoyer avant le 31 octobre"
+text = '''
+Bonjour Camille,
+
+Vous avez changé deux cours depuis votre arrivée à Oregon State. Merci de nous renvoyer
+le contrat d'études modifié, signé par vous et par le coordinateur d'OSU, au plus tard
+le samedi 31 octobre.
+
+Le document se dépose sur la plateforme mobilité : https://mobilite.univ-lyon2.example/contrat
+
+Sans contrat à jour, les crédits obtenus à l'étranger ne pourront pas être validés.
+
+Bien cordialement,
+Le service des relations internationales
+'''
+
+[[message]]
+id = "m21"
+mailbox = "personal"
+from = "Sophie Marchetti <s.marchetti@traboule-data.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-23T14:05:00+02:00
+subject = "Entretien alternance Data Analyst - mardi 3 novembre"
+text = '''
+Bonjour Camille,
+
+Merci pour votre candidature au poste d'alternant·e Data Analyst chez Traboule Data.
+Nous serions ravis d'échanger avec vous en visio le mardi 3 novembre à 17 h 30
+(heure de Paris), pendant 45 minutes environ.
+
+Lien Google Meet : https://meet.google.com/xpr-qwmn-fkd
+
+Je sais que vous êtes actuellement aux États-Unis : n'hésitez pas à me dire si cet
+horaire ne vous convient pas.
+
+Bien à vous,
+Sophie Marchetti
+Responsable recrutement, Traboule Data
+'''
+
+[[message]]
+id = "m22"
+mailbox = "personal"
+from = "Gerland Analytics - Recrutement <recrutement@gerland-analytics.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-25T10:00:00+01:00
+subject = "Votre test technique - à rendre avant dimanche 8 novembre, 20 h"
+text = '''
+Bonjour Camille,
+
+Suite à notre premier échange, voici le test technique pour le poste d'alternance en
+data science : un jeu de données de ventes à nettoyer et à analyser, avec un court
+rapport (notebook Python ou R accepté).
+
+Prévoyez environ 3 heures. Le rendu est attendu au plus tard le dimanche 8 novembre
+à 20 h (heure de Paris), via le lien ci-dessous :
+https://recrutement.gerland-analytics.example/test/7f3c2a
+
+Bon courage !
+L'équipe recrutement de Gerland Analytics
+'''
+
+[[message]]
+id = "m23"
+mailbox = "personal"
+from = "Réseau Pro <notifications@reseaupro.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-22T07:12:00+02:00
+subject = "Camille, vous êtes apparue dans 12 recherches cette semaine"
+html = '''
+<html><body>
+<p>Découvrez qui s'intéresse à votre profil.</p>
+<p><a href="https://reseaupro.example/notifications">Voir les recherches</a></p>
+<p>Essayez Premium gratuitement pendant 1 mois.</p>
+</body></html>
+'''
+
+[[message]]
+id = "m24"
+mailbox = "personal"
+from = "Altitude Voyages <offres@voyages-altitude.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-20T19:00:00+02:00
+subject = "Ventes flash : Portland → Lyon dès 489 €, jusqu'au 27 octobre"
+html = '''
+<html><body>
+<h2>Ventes flash</h2>
+<p>Jusqu'au mardi 27 octobre seulement : Portland &rarr; Lyon dès 489 &euro; aller-retour.</p>
+<p><a href="https://voyages-altitude.example/ventes-flash">J'en profite</a></p>
+<p><small><a href="https://voyages-altitude.example/desinscription">Se désinscrire</a></small></p>
+</body></html>
+'''
+
+[[message]]
+id = "m25"
+mailbox = "personal"
+from = "Altitude Voyages <reservations@voyages-altitude.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-10T20:15:00+02:00
+subject = "Confirmation de réservation - PDX → LYS, 18 décembre"
+text = '''
+Bonjour Camille Roux,
+
+Votre réservation est confirmée. Référence de dossier : QZ7K4P
+
+Aller : vendredi 18 décembre 2026
+  Départ   13:05           Portland International Airport (PDX)
+  Arrivée  15:40 (+1 jour) Lyon Saint-Exupéry (LYS)
+  1 correspondance, durée totale 17 h 35
+
+Les horaires sont indiqués en heure locale de chaque aéroport.
+Enregistrement en ligne ouvert 24 h avant le départ : https://voyages-altitude.example/checkin
+
+Bon voyage !
+Altitude Voyages
+'''
+
+[[message]]
+id = "m26"
+mailbox = "personal"
+from = "Willow Creek Dental <reminders@willowcreekdental.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-23T08:00:00-07:00
+subject = "Appointment reminder: Wednesday, November 4 at 9:30 AM"
+text = '''
+Hi Camille,
+
+This is a reminder of your dental cleaning appointment:
+
+Wednesday, November 4, 2026 at 9:30 AM
+Willow Creek Dental, 418 SW Quillback Way, Corvallis, OR 97333
+
+Please arrive 10 minutes early and bring your insurance card. To cancel or reschedule,
+reply to this email at least 24 hours in advance.
+
+Willow Creek Dental
+'''
+
+[[message]]
+id = "m27"
+mailbox = "personal"
+from = "Cinéflux <hello@cineflux.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-16T17:00:00+02:00
+subject = "Nouveautés de la semaine : 5 séries à découvrir"
+html = '''
+<html><body>
+<h2>Cette semaine sur Cinéflux</h2>
+<ul><li>Une nouvelle saison de votre série préférée</li><li>Trois documentaires</li><li>Un film d'animation</li></ul>
+<p><a href="https://cineflux.example/nouveautes">Tout voir</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m28"
+mailbox = "personal"
+from = "Habitat Rentals <leasing@habitat-rentals.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-22T12:00:00-07:00
+subject = "Scheduled water shut-off - Tuesday, October 27, 9 AM to noon"
+text = '''
+Dear residents,
+
+The water will be shut off in Building B on Tuesday, October 27, from 9:00 AM to
+12:00 PM for plumbing maintenance. No action is needed on your part.
+
+We apologize for the inconvenience.
+
+Habitat Rentals - Leasing Office
+'''
+
+[[message]]
+id = "m29"
+mailbox = "personal"
+from = "Habitat Rentals <leasing@habitat-rentals.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-12T15:30:00-07:00
+subject = "Reminder: proof of renter's insurance needed by October 31"
+text = '''
+Hi Camille,
+
+Our records show we have not received proof of renter's insurance for your unit
+(Apt 3B). As required by your lease, please upload it to the resident portal by
+Saturday, October 31 at 5:00 PM.
+
+Resident portal: https://residents.habitat-rentals.example
+
+Thank you,
+Habitat Rentals - Leasing Office
+'''
+
+[[message]]
+id = "m30"
+mailbox = "lyon2"
+from = "Direction IUT Lumière <direction.iut@univ-lyon2.example>"
+to = "Étudiants IUT <etudiants.iut@univ-lyon2.example>"
+date = 2026-10-09T09:00:00+02:00
+subject = "Fermeture administrative pendant les vacances de fin d'année"
+text = '''
+Bonjour à toutes et à tous,
+
+L'IUT sera fermé du samedi 19 décembre 2026 au dimanche 3 janvier 2027 inclus.
+Les services administratifs ne répondront pas aux mails pendant cette période.
+
+La direction de l'IUT
+'''
+
+[[message]]
+id = "m31"
+mailbox = "lyon2"
+from = "Bibliothèque universitaire <bu-actus@univ-lyon2.example>"
+to = "Étudiants Lyon 2 <etudiants@univ-lyon2.example>"
+date = 2026-10-13T12:00:00+02:00
+subject = "Les actus de la BU - octobre"
+html = '''
+<html><body>
+<h2>Les actus de la BU</h2>
+<p>Nouveaux ouvrages en science des données et en statistique.</p>
+<p>Exposition « Lyon, ville de la soie » jusqu'au 30 novembre, hall de la bibliothèque.</p>
+<p><a href="https://bu.univ-lyon2.example/actus">Lire la suite</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m32"
+mailbox = "lyon2"
+from = "Relations internationales Lyon 2 <ri.mobilite@univ-lyon2.example>"
+to = "Étudiants en mobilité <mobilite-sortante@univ-lyon2.example>"
+date = 2026-10-19T09:45:00+02:00
+subject = "Rapport de mobilité intermédiaire - échéance le 20 novembre"
+text = '''
+Bonjour,
+
+Tous les étudiants en mobilité au semestre d'automne doivent rendre un rapport
+intermédiaire (deux pages : cours suivis, intégration, difficultés éventuelles) avant
+le vendredi 20 novembre, sur la plateforme mobilité :
+https://mobilite.univ-lyon2.example/rapport
+
+Ce rapport compte dans l'évaluation de votre semestre.
+
+Le service des relations internationales
+'''
+
+[[message]]
+id = "m33"
+mailbox = "osu"
+from = "Riley Tanaka <tanakar@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-25T20:10:00-07:00
+subject = "ST 421 study group for Midterm 2?"
+text = '''
+Hey Camille,
+
+A few of us are getting together online to prepare Midterm 2. Want to join?
+Sunday, November 1, 7-9 PM, on Google Meet:
+https://meet.google.com/hvt-zkbw-rqa
+
+Riley
+'''
+
+[[message]]
+id = "m34"
+mailbox = "osu"
+from = "Campus Recreation <rec-news@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-18T10:00:00-07:00
+subject = "This week at Campus Rec: new evening yoga classes"
+html = '''
+<html><body>
+<h2>This week at Campus Rec</h2>
+<p>New evening yoga classes on Tuesdays and Thursdays at 7 PM. Drop in, no registration needed.</p>
+<p><a href="https://rec.oregonstate.example/classes">See all classes</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m35"
+mailbox = "osu"
+from = "IT Service Desk <it-helpdesk@0regonstate-mail.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-24T03:14:00-07:00
+subject = "URGENT: Your mailbox is 98% full"
+text = '''
+Dear user,
+
+Your mailbox is 98% full and will be deactivated within 24 hours. Click below to verify
+your account and keep your messages:
+
+https://0regonstate-mail.example/verify
+
+IT Service Desk
+'''
+
+[[message]]
+id = "m36"
+mailbox = "osu"
+from = "Office of the Registrar <registrar@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-21T13:00:00-07:00
+subject = "No classes on Wednesday, November 11 (Veterans Day)"
+text = '''
+Dear students,
+
+University offices are closed and no classes are held on Wednesday, November 11, in
+observance of Veterans Day. Classes resume on Thursday, November 12.
+
+Office of the Registrar
+'''
+
+[[message]]
+id = "m37"
+mailbox = "osu"
+from = "Kwame Asante-Byrne <kwame.asante-byrne@oregonstate.example>"
+to = "CS 434 students <cs434-fall2026@lists.oregonstate.example>"
+date = 2026-10-26T06:30:00-07:00
+subject = "CS 434: HW 3 graded, Quiz 5 this week"
+text = '''
+Hi all,
+
+HW 3 grades are on Canvas; the class average was 84%.
+
+Quiz 5 (decision trees and ensembles) opens on Thursday morning and closes on Friday,
+October 30 at 11:59 PM. It is timed: you will have 30 minutes once you start.
+
+Kwame
+'''
+
+[[message]]
+id = "m38"
+mailbox = "osu"
+from = "OSU Bookings <noreply@bookings.oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-25T21:40:00-07:00
+subject = "Appointment confirmed: Office hours with Priya Raman"
+text = '''
+Your appointment is confirmed.
+
+Office hours with Priya Raman
+Tuesday, October 27, 2026
+3:00 PM - 3:15 PM (Pacific Time)
+Location: Alder Hall 318
+
+Need to cancel? https://bookings.oregonstate.example/manage/5521
+'''
+
+[[message]]
+id = "m39"
+mailbox = "personal"
+from = "Isabelle Roux <isabelle.roux@perso.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-24T22:30:00+02:00
+subject = "Appel dimanche ?"
+text = '''
+Coucou ma chérie,
+
+On t'appelle dimanche 1er novembre à 19 h, heure française, ça te va ?
+Papa sera là aussi. Dis-nous si c'est trop tôt pour toi avec le décalage.
+
+Bisous,
+Maman
+'''
+
+[[message]]
+id = "m40"
+mailbox = "osu"
+from = "International Student Services <iss@oregonstate.example>"
+to = "Fall exchange students <exchange-fall2026@lists.oregonstate.example>"
+date = 2026-10-20T10:00:00-07:00
+subject = "Exchange students: departure checklist for fall term"
+text = '''
+Dear fall exchange students,
+
+If you are leaving Oregon State at the end of fall term, please complete the following
+before you go:
+1. Submit the Exchange Departure Form by Friday, December 4:
+   https://portal.oregonstate.example/iss/departure
+2. Return your library books and your student ID card.
+3. Request your official transcript to be sent to your home university.
+
+Safe travels,
+International Student Services
+'''

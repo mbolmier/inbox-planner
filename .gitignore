@@ -12,9 +12,8 @@ client_secret*.json
 CLAUDE.md
 .claude/
 
-# --- Real mail exports and local data: only fictional data/demo/ is versioned ---
+# --- Real mail exports and local data: the demo mailbox is a TOML file, never .eml ---
 *.eml
-!data/demo/**/*.eml
 *.mbox
 *.pst
 *.db

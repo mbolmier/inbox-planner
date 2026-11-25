@@ -54,4 +54,4 @@ La priorité est un jugement : elle est rapportée dans l'évaluation, mais ce n
 
 ## 5. Qui a annoté
 
-Les annotations ont été rédigées avec l'assistant IA, puis relues et corrigées à la main par Martin, mail par mail, avec ce guide sous les yeux.
+Les annotations ont été rédigées avec un assistant IA, puis relues à la main par Martin le 25/11/2026, mail par mail, avec ce guide sous les yeux (page de relecture : chaque mail à côté de son annotation, et les désaccords avec le modèle signalés). Aucune correction n'a été jugée nécessaire.

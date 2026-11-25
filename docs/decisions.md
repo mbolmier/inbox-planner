@@ -7,7 +7,7 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 ## Étape 1 : socle
 
 ### D1. Écrire le `.gitignore` avant le premier commit
-- **Décision :** `.env`, jetons OAuth, bases SQLite, exports de mails réels (`.eml`, `.mbox`, `.pst`), `CLAUDE.md` et `.claude/` sont ignorés dès le départ. Les `.eml` ne sont autorisés que dans `data/demo/`.
+- **Décision :** `.env`, jetons OAuth, bases SQLite, exports de mails réels (`.eml`, `.mbox`, `.pst`), `CLAUDE.md` et `.claude/` sont ignorés dès le départ. Aucune exception pour les `.eml` : la boîte de démo est un fichier TOML (voir D16).
 - **Alternatives :** compléter le `.gitignore` au fil de l'eau.
 - **Pourquoi :** une donnée commitée reste dans l'historique git même si on la supprime ensuite. Il vaut mieux qu'un `git add .` distrait ne puisse rien embarquer de sensible.
 
@@ -70,3 +70,42 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** la couche LLM a trois implémentations interchangeables. **Claude Code** appelle `claude -p` (mode non interactif) avec l'abonnement existant ; il sert à produire et enregistrer les réponses en local. **Replay** relit ces réponses enregistrées ; il sert à la démo, aux tests et à la CI. **API Anthropic** suit la documentation officielle pour qui a une clé, mais il n'est pas exécuté dans ce projet, et le README le dit.
 - **Alternatives :** une clé API payante, un modèle local gratuit (Ollama).
 - **Pourquoi :** zéro euro dépensé, et la démo tourne sans aucun compte. Les tâches simples (tri) vont sur un petit modèle, les tâches plus dures (extraction) sur un plus gros. Le README compare les modèles dans un tableau coût/qualité, avec un coût estimé au tarif public de l'API à partir des tokens consommés.
+
+---
+
+## Étape 2 : boîte fictive et connecteur Demo
+
+### D13. Une branche et une pull request par étape
+- **Décision :** chaque étape vit sur sa branche (`step-2-demo-mailbox`…) et arrive sur `main` par une pull request.
+- **Alternatives :** tout commiter directement sur `main`.
+- **Pourquoi :** la CI valide la PR avant la fusion, donc `main` reste toujours vert. L'historique des PR montre aussi la démarche, étape par étape.
+
+### D14. Un modèle `Message` commun, avec une date obligatoirement munie de son fuseau
+- **Décision :** tous les connecteurs (Demo, Gmail, Outlook, IMAP) renvoient le même objet Pydantic `Message`. Son champ `sent_at` est de type `AwareDatetime` : une date sans fuseau est refusée.
+- **Alternatives :** un dictionnaire par fournisseur, des dates « naïves » converties plus tard.
+- **Pourquoi :** le reste du code ignore d'où vient le mail. Et une date sans fuseau est la première source de bugs d'agenda entre Paris et l'Oregon : on la refuse à l'entrée plutôt que de la corriger après.
+
+### D15. Une interface de connecteur en lecture seule
+- **Décision :** `MailConnector` est un `Protocol` avec une seule méthode, `fetch_messages`. Il n'existe aucune méthode d'envoi.
+- **Alternatives :** une classe de base abstraite, une interface lecture + envoi.
+- **Pourquoi :** la lecture seule est garantie par construction : on ne peut pas appeler ce qui n'existe pas. Avec un `Protocol`, n'importe quel objet qui a la bonne méthode convient, sans héritage, ce qui simplifie les tests. Les brouillons arriveront à l'étape 6 dans une méthode séparée.
+
+### D16. Boîte de démo en TOML, reconvertie en vrai mail puis reparsée
+- **Décision :** les mails fictifs sont écrits dans un fichier TOML lisible. Le connecteur Demo transforme chaque entrée en vrai mail MIME (le format brut que renvoient IMAP et Gmail), puis le passe au même parseur que les vrais connecteurs. Les mails HTML sont convertis en texte en gardant l'URL des liens (`Rejoindre la réunion <https://…>`), avec le `HTMLParser` de la bibliothèque standard.
+- **Alternatives :** des fichiers `.eml` écrits à la main, un JSON déjà « propre », BeautifulSoup pour le HTML.
+- **Pourquoi :** le TOML se relit facilement, et la démo teste quand même le vrai chemin (encodages, multipart, dates). TOML est dans la bibliothèque standard, gère les dates avec fuseau et les textes multilignes. Garder les URL est indispensable : dans une invitation Teams, le lien est souvent caché derrière un texte.
+
+### D17. Horloge de démo figée au lundi 26 octobre 2026, 8 h (Oregon)
+- **Décision :** la démo et l'évaluation utilisent un « maintenant » fixe, `DEMO_NOW`.
+- **Alternatives :** décaler toutes les dates pour qu'elles tombent « cette semaine ».
+- **Pourquoi :** les dates des mails sont la vérité de l'évaluation, elles ne peuvent pas bouger. Cette semaine-là, l'Europe est déjà à l'heure d'hiver (25 octobre) mais pas l'Oregon (1er novembre) : l'écart est de 8 h au lieu de 9, un piège voulu.
+
+### D18. Garde-fou de confidentialité testé en CI
+- **Décision :** un test échoue si une adresse du jeu de démo n'utilise pas un domaine `.example` (réservé par la RFC 2606), ou si un lien pointe ailleurs que vers un domaine `.example` ou un fournisseur de visio. Un test vérifie aussi que le garde-fou attrape bien une vraie adresse.
+- **Alternatives :** une relecture manuelle.
+- **Pourquoi :** la règle « aucune donnée réelle » est vérifiée à chaque commit, pas seulement promise. Un oubli dans un des 40 mails est attrapé automatiquement.
+
+### D19. Données de démo embarquées dans le paquet Python
+- **Décision :** `mailbox.toml` vit dans `src/inbox_planner/demo_data/` et se lit avec `importlib.resources`. Vérifié : il est bien présent dans le wheel construit.
+- **Alternatives :** un dossier `data/` à la racine du dépôt.
+- **Pourquoi :** la démo doit marcher partout où le paquet est installé (Docker, `pip install`), pas seulement depuis le dossier du projet.

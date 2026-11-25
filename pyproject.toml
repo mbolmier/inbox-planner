@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Read-only inbox to planner: LLM triage and extraction, deterministic energy-aware scheduling, privacy first."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pydantic>=2.14.4",
+]
 
 [project.scripts]
 inbox-planner = "inbox_planner:main"

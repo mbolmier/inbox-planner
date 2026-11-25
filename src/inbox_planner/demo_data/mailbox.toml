@@ -1,0 +1,76 @@
+# Fictional mailbox used by the demo and the evaluation.
+# What is real and what is invented: see docs/donnees-demo.md.
+#
+# Persona: Camille Roux (fictional), BUT Science des données student at
+# Université Lumière Lyon 2, on exchange at Oregon State University.
+# Mailboxes: "lyon2" (university Outlook), "osu" (exchange Outlook), "personal".
+#
+# Every date carries its UTC offset.
+#   Paris:  +02:00 until 25 Oct 2026, then +01:00.
+#   Oregon: -07:00 until 1 Nov 2026, then -08:00.
+
+[[message]]
+id = "m01"
+mailbox = "personal"
+from = "Cycles Rhône-Alpes <promo@cycles-ra.example>"
+to = "Camille Roux <camille.roux@perso.example>"
+date = 2026-10-24T18:30:00+02:00
+subject = "Dernier jour : -20 % sur tous les antivols"
+html = '''
+<html><body>
+<h1>Dernier jour !</h1>
+<p>Jusqu'à dimanche minuit, profitez de <b>-20 %</b> sur tous les antivols.</p>
+<p><a href="https://cycles-ra.example/promo/antivols">Voir les offres</a></p>
+<p style="font-size:10px">Vous recevez ce mail car vous êtes inscrit·e à notre newsletter.
+<a href="https://cycles-ra.example/desinscription">Se désinscrire</a></p>
+</body></html>
+'''
+
+[[message]]
+id = "m02"
+mailbox = "osu"
+from = "Dana Whitfield <dana.whitfield@oregonstate.example>"
+to = "Camille Roux <rouxc@oregonstate.example>"
+date = 2026-10-21T10:04:00-07:00
+subject = "Exchange student check-in - Thursday, October 29"
+text = '''
+Hi Camille,
+
+As part of the exchange program, I meet every incoming student once during the term.
+Could you join me on Thursday, October 29 at 2:00 PM (Pacific Time)? It takes about 20 minutes.
+
+Join Zoom Meeting
+https://zoom.us/j/93184402716?pwd=Rk9xT2dQZ1hWb0JmS3Nlbw
+
+Meeting ID: 931 8440 2716
+Passcode: 482913
+
+Please have your I-20 and your current address in Corvallis at hand.
+
+Best,
+Dana Whitfield
+International Student Advisor
+'''
+
+[[message]]
+id = "m03"
+mailbox = "lyon2"
+from = "Scolarité IUT Lumière <scolarite.iut@univ-lyon2.example>"
+to = "Camille Roux <camille.roux@etu.univ-lyon2.example>"
+date = 2026-10-26T08:15:00+01:00
+subject = "Alternance 2027 : dossier à déposer avant le 6 novembre"
+text = '''
+Bonjour,
+
+Les étudiantes et étudiants de BUT Science des données qui commencent une alternance
+en janvier 2027 doivent déposer leur dossier sur l'ENT avant le vendredi 6 novembre 2026
+à 12 h (heure de Paris) :
+- la fiche de renseignements entreprise ;
+- l'attestation de responsabilité civile ;
+- le projet de calendrier d'alternance.
+
+Les étudiants en mobilité à l'étranger déposent les mêmes pièces, sans déplacement.
+
+Cordialement,
+Le service de scolarité
+'''

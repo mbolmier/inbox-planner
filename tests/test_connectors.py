@@ -115,6 +115,16 @@ def test_gmail_messages_go_through_the_shared_parser():
     assert gmail.calls[0][1]["q"] == "in:inbox"
 
 
+def test_a_malformed_gmail_message_is_skipped_not_fatal():
+    broken = b"Subject: no date header\r\n\r\nbody"
+    connector = GmailConnector(FakeGmail({"ok": raw_mail(), "bad": broken}))
+
+    messages = connector.fetch_messages()
+
+    assert [m.id for m in messages] == ["ok"]
+    assert connector.skipped == 1
+
+
 def test_gmail_since_becomes_an_after_filter():
     gmail = FakeGmail({})
 

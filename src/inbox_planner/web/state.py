@@ -88,7 +88,7 @@ class AppData:
         """A real mailbox, analysed now (answers cached outside the repository)."""
         now = now or datetime.now(UTC)
         timezones = {connector.name: zone_name}
-        processed = process_mailbox(connector, llm, timezones, now=now)
+        processed = process_mailbox(connector, llm, timezones, now=None)  # as of arrival
         return cls(
             now=now,
             zone=ZoneInfo(zone_name),

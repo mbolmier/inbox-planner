@@ -334,3 +334,18 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** `inbox-planner web --source gmail` annonce à l'écran que le contenu des mails est envoyé à Claude via l'abonnement. Les réponses du modèle sont mises en cache dans `~/.inbox-planner/llm-cache`, jamais dans le dépôt. Les réglages (fuseau, ville, signature) passent par des variables d'environnement documentées dans `.env.example`. Le traitement a lieu au démarrage, avec l'heure réelle comme référence.
 - **Alternatives :** un cache commun à la démo et à la vraie boîte, des réglages écrits en dur.
 - **Pourquoi :** la séparation est physique. Rien de réel ne peut finir dans `demo_data/` par erreur, et le garde-fou de confidentialité (D18) scanne de toute façon tout ce qui y entre.
+
+### D57. Sur une vraie boîte, chaque mail est analysé « à son arrivée »
+- **Décision :** pour une vraie boîte, l'heure de référence donnée au modèle est l'heure d'envoi du mail, pas l'heure du lancement. La démo et l'évaluation gardent leur horloge figée.
+- **Alternatives :** l'heure réelle du lancement (ce qui était fait), ou l'heure arrondie au jour.
+- **Pourquoi :** au premier lancement réel, l'interface a refait les 100 appels au lieu d'utiliser le cache. L'heure de référence, à la minute près, faisait partie du prompt, donc de la clé du cache : elle n'était jamais deux fois la même. Avec l'heure d'arrivée, le prompt d'un mail ne change plus, et le deuxième lancement prend 12 s, sans aucun appel à Claude. C'est aussi ce que ferait une vraie installation, qui trie chaque mail quand il arrive : c'est l'option (1) de D49. La planification, elle, utilise toujours l'heure réelle.
+
+### D58. Le contenu des mails est une donnée non fiable
+- **Décision :** les agents n'ont aucun outil, leur sortie est contrainte par un schéma puis validée, et rien n'est écrit sans validation humaine (D52). Un mail illisible (sans date, encodage cassé) est ignoré et compté, jamais bloquant.
+- **Alternatives :** un filtre de « phrases suspectes » dans les mails.
+- **Pourquoi :** n'importe qui peut écrire un mail contenant « ignore tes instructions et… » (injection de prompt). Un filtre de phrases se contourne. Ici, le pire qu'un mail piégé puisse obtenir, c'est une mauvaise catégorie ou un élément faux dans un plan que l'utilisateur voit et corrige : ni action, ni envoi, ni lecture de fichiers.
+
+### D59. Premier essai sur une vraie boîte : des totaux, pas de contenu
+- **Décision :** l'essai sur ma boîte Gmail perso a été vérifié avec un script qui n'affiche que des totaux. Le contenu, je le regarde moi-même dans l'interface.
+- **Résultat (14 derniers jours, plafond de 100 mails) :** 100 mails, aucun illisible. Tri : 63 bruit, 32 info, 4 démarches, 1 rendez-vous. 5 mails sur 100 partent en extraction. Environ 6 000 tokens par mail pour le tri, contre 1 600 en démo : les vraies newsletters sont longues. Coût estimé : 0,07 $ (non payé, abonnement). Durée : 101 s au premier passage, 12 s ensuite grâce au cache.
+- **Pourquoi :** une vraie boîte n'a pas d'annotations, donc aucune précision mesurable. Les chiffres sérieux restent ceux du jeu annoté. Mais l'essai prouve que la chaîne complète marche sur des mails réels, et il a révélé deux vrais problèmes, corrigés en D57 et D58. Piste notée : envoyer au tri seulement le début des mails longs, à mesurer d'abord sur le jeu annoté.

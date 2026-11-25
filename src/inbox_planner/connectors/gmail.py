@@ -52,10 +52,15 @@ class GmailConnector:
     def fetch_messages(self, since: datetime | None = None) -> list[Message]:
         query = self.query + (f" after:{int(since.timestamp())}" if since else "")
         messages = []
+        self.skipped = 0  # malformed e-mails (no date, broken encoding): counted, never fatal
         for gmail_id in self._ids(query):
             item = self._messages.get(userId="me", id=gmail_id, format="raw").execute()
             raw = base64.urlsafe_b64decode(item["raw"].encode("ascii"))
-            message = parse_rfc822(raw, mailbox=self.mailbox, message_id=gmail_id)
+            try:
+                message = parse_rfc822(raw, mailbox=self.mailbox, message_id=gmail_id)
+            except ValueError:
+                self.skipped += 1
+                continue
             messages.append(message.model_copy(update={"thread_id": item.get("threadId")}))
         return sorted(messages, key=lambda m: m.sent_at)
 

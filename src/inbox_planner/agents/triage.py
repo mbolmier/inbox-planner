@@ -57,12 +57,16 @@ class TriageResult:
 
 class TriageAgent:
     def __init__(
-        self, llm: LLMClient, model: str, timezones: Mapping[str, str], now: datetime
+        self,
+        llm: LLMClient,
+        model: str,
+        timezones: Mapping[str, str],
+        now: datetime | None,
     ) -> None:
         self.llm = llm
         self.model = model
         self.timezones = timezones
-        self.now = now  # the reference time: real now in production, frozen in the demo
+        self.now = now  # reference time: frozen in the demo, None = each e-mail's arrival
 
     def run(self, message: Message) -> TriageResult:
         request = LLMRequest(

@@ -53,6 +53,7 @@ class ImapConnector:
 
     def fetch_messages(self, since: datetime | None = None) -> list[Message]:
         client = self._client_factory(self.host, self.port)
+        self.skipped = 0
         try:
             client.login(self._username, self._password)
             status, _ = client.select(self.folder, readonly=True)  # EXAMINE: read-only
@@ -67,7 +68,12 @@ class ImapConnector:
                 raw = next((p[1] for p in parts if isinstance(p, tuple)), None)
                 if status == "OK" and raw:
                     message_id = f"{self.folder}:{uid.decode()}"
-                    messages.append(parse_rfc822(raw, mailbox=self.mailbox, message_id=message_id))
+                    try:
+                        messages.append(
+                            parse_rfc822(raw, mailbox=self.mailbox, message_id=message_id)
+                        )
+                    except ValueError:  # malformed e-mail: skipped, never fatal
+                        self.skipped += 1
         finally:
             with contextlib.suppress(imaplib.IMAP4.error, OSError):
                 client.logout()

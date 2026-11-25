@@ -142,7 +142,7 @@ Les 64 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), 
 
 ## Limites
 
-- **Le jeu d'évaluation est petit et trop facile** pour départager les modèles en extraction. Les annotations ont été rédigées avec un assistant IA, puis relues à la main.
+- **Le jeu d'évaluation est petit et trop facile** pour départager les modèles en extraction. Les annotations sont de moi, avec un assistant IA pour la première rédaction.
 - **Outlook universitaire (Microsoft Graph) n'est pas branché :** les universités exigent en général l'accord de leur DSI pour une application tierce ([D55](docs/decisions.md#d55-microsoft-graph-outlook-de-lyon-2-et-dosu--pas-fait-et-pourquoi)). L'export vers Apple Rappels n'est pas fait non plus.
 - **Une séance déplacée ou annulée ne retire pas la séance récurrente d'origine.** Le conflit est signalé, pas résolu.
 - **EDF place le travail au plus tôt**, donc la semaine est chargée au début.

@@ -6,7 +6,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
 ![Licence MIT](https://img.shields.io/badge/licence-MIT-green)
 
-![Démo : l'énergie du jour change le plan, la semaine se recalcule, une réponse est proposée puis relue](docs/images/demo.gif)
+![Démo : l'énergie du jour change le plan, la semaine se recalcule, le détail d'une séance s'ouvre d'un clic, une réponse est proposée puis relue](docs/images/demo.gif)
 
 *Démo sur une boîte mail entièrement fictive. Aucun compte n'est nécessaire.*
 
@@ -33,9 +33,11 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 | **Vue web** | Aujourd'hui avec les prochaines échéances en compte à rebours (auj., demain, J-3), le jour par jour avec la charge de chaque jour, la semaine (FullCalendar, détail au clic), les échéances triées par urgence, l'administratif groupé par organisme. Chaque tâche se coche quand elle est faite. Thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
 | **Export** | Un fichier `.ics` pour Apple Calendar et Google Agenda : fuseaux conservés, cours récurrents, rappel la veille des échéances. |
 
-| Aujourd'hui | Semaine |
+| Aujourd'hui | Jour par jour |
 |---|---|
-| ![Vue du jour](docs/images/aujourdhui.jpg) | ![Vue de la semaine](docs/images/semaine.jpg) |
+| ![Vue du jour](docs/images/aujourdhui.jpg) | ![Jour par jour](docs/images/jours.jpg) |
+| **Semaine** | **Administratif** |
+| ![Vue de la semaine](docs/images/semaine.jpg) | ![Administratif](docs/images/administratif.jpg) |
 | **Échéances** | **Un mail et ce que l'IA en a tiré** |
 | ![Échéances](docs/images/echeances.jpg) | ![Mail](docs/images/mail.jpg) |
 

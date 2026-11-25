@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m07",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:41+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2621,
+    "output_tokens": 448
+  },
+  "duration_ms": 4724,
+  "data": {
+    "category": "appointment",
+    "reason": "It sets the recurring CS 340 class times (Tuesdays and Thursdays, 4:00–5:20 PM, Fernwood Center 108) that run through December 3, so the student must be in that room at those times."
+  }
+}

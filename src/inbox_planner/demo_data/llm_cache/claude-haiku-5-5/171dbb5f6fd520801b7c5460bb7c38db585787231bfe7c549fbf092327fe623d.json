@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m26",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:48:02+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2492,
+    "output_tokens": 271
+  },
+  "duration_ms": 2156,
+  "data": {
+    "category": "appointment",
+    "reason": "It is a dental cleaning booked for Wednesday, November 4, 2026 at 9:30 AM, so Camille must be in Corvallis at that time, which is still ahead of the reference time of October 26."
+  }
+}

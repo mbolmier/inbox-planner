@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m32",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:49:50+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3468,
+    "output_tokens": 702
+  },
+  "duration_ms": 3615,
+  "data": {
+    "items": [
+      {
+        "kind": "deadline",
+        "title": "Rapport de mobilité intermédiaire (2 pages) à rendre sur la plateforme mobilité: https://mobilite.univ-lyon2.example/rapport",
+        "local_datetime": "2026-11-20T23:59",
+        "timezone": "Europe/Paris",
+        "duration_minutes": null,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "high"
+      }
+    ]
+  }
+}

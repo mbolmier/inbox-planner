@@ -2,6 +2,7 @@
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -29,6 +30,8 @@ Rules:
 - A date inside a promotion or a newsletter does not make it a deadline: it is noise.
 - An optional event announced to a whole mailing list is info.
 - Urgent account warnings from look-alike domains are phishing: noise.
+- Judge time only against the reference time given above the e-mail, never \
+against any other date you may know.
 
 Give the category and one short sentence explaining why."""
 
@@ -53,16 +56,19 @@ class TriageResult:
 
 
 class TriageAgent:
-    def __init__(self, llm: LLMClient, model: str, timezones: Mapping[str, str]) -> None:
+    def __init__(
+        self, llm: LLMClient, model: str, timezones: Mapping[str, str], now: datetime
+    ) -> None:
         self.llm = llm
         self.model = model
         self.timezones = timezones
+        self.now = now  # the reference time: real now in production, frozen in the demo
 
     def run(self, message: Message) -> TriageResult:
         request = LLMRequest(
             model=self.model,
             system=SYSTEM_PROMPT,
-            prompt=render_message(message, self.timezones),
+            prompt=render_message(message, self.timezones, self.now),
             schema=TriageOutput,
             tag=f"triage/{message.id}",
         )

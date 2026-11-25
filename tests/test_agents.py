@@ -6,7 +6,7 @@ from fakes import FakeLLM
 from inbox_planner.agents.context import render_message
 from inbox_planner.agents.extraction import ExtractionAgent, ModelItem, to_extracted_item
 from inbox_planner.agents.triage import TriageAgent
-from inbox_planner.connectors.demo import DEMO_TIMEZONES, DemoConnector
+from inbox_planner.connectors.demo import DEMO_NOW, DEMO_TIMEZONES, DemoConnector
 from inbox_planner.llm.base import LLMError
 from inbox_planner.schemas import Category
 
@@ -36,8 +36,9 @@ def model_item(**overrides) -> ModelItem:
 
 
 def test_prompt_gives_the_sending_weekday_and_the_mailbox_time_zone():
-    prompt = render_message(MESSAGES["m12"], DEMO_TIMEZONES)
+    prompt = render_message(MESSAGES["m12"], DEMO_TIMEZONES, DEMO_NOW)
 
+    assert prompt.startswith("Reference time (now): Monday 2026-10-26 08:00 (America/Los_Angeles")
     assert "Sent: Friday 2026-10-23 10:15 (America/Los_Angeles, UTC-07:00)" in prompt
     assert "Mailbox: osu (default time zone: America/Los_Angeles)" in prompt
 
@@ -85,7 +86,9 @@ def test_impossible_items_are_rejected(bad):
 def test_extraction_agent_drops_invalid_items_and_counts_them():
     good = model_item().model_dump(mode="json")
     bad = model_item(timezone="Mars/Olympus").model_dump(mode="json")
-    agent = ExtractionAgent(FakeLLM(lambda r: {"items": [good, bad]}), "m", DEMO_TIMEZONES)
+    agent = ExtractionAgent(
+        FakeLLM(lambda r: {"items": [good, bad]}), "m", DEMO_TIMEZONES, DEMO_NOW
+    )
 
     result = agent.run(MESSAGES["m09"])
 
@@ -96,7 +99,7 @@ def test_extraction_agent_drops_invalid_items_and_counts_them():
 def test_triage_agent_returns_the_category_and_tags_the_request():
     llm = FakeLLM(lambda r: {"category": "noise", "reason": "promotion"})
 
-    result = TriageAgent(llm, "claude-haiku-5-5", DEMO_TIMEZONES).run(MESSAGES["m01"])
+    result = TriageAgent(llm, "claude-haiku-5-5", DEMO_TIMEZONES, DEMO_NOW).run(MESSAGES["m01"])
 
     assert result.category is Category.NOISE
     assert llm.calls[0].tag == "triage/m01"
@@ -107,4 +110,4 @@ def test_an_answer_outside_the_schema_is_an_llm_error():
     llm = FakeLLM(lambda r: {"category": "urgent"})
 
     with pytest.raises(LLMError):
-        TriageAgent(llm, "m", DEMO_TIMEZONES).run(MESSAGES["m01"])
+        TriageAgent(llm, "m", DEMO_TIMEZONES, DEMO_NOW).run(MESSAGES["m01"])

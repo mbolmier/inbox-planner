@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m20",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:19+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2539,
+    "output_tokens": 131
+  },
+  "duration_ms": 2043,
+  "data": {
+    "category": "procedure",
+    "reason": "The student must complete an administrative process, a modified study contract signed by both coordinators and uploaded to the mobility platform by Saturday 31 October, or the credits can't be validated."
+  }
+}

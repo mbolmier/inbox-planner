@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m17",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:50:35+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3438,
+    "output_tokens": 191
+  },
+  "duration_ms": 2080,
+  "data": {
+    "items": [
+      {
+        "kind": "deadline",
+        "title": "Problem Set 5 - ST 421 Introduction to Mathematical Statistics",
+        "local_datetime": "2026-11-03T12:00",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": null,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "medium"
+      }
+    ]
+  }
+}

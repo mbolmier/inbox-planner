@@ -1,0 +1,15 @@
+{
+  "tag": "extraction/m31",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:49:42+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3398,
+    "output_tokens": 107
+  },
+  "duration_ms": 1247,
+  "data": {
+    "items": []
+  }
+}

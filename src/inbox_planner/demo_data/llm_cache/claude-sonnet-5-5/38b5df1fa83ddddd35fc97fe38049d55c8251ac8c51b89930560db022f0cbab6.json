@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m40",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:23+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2452,
+    "output_tokens": 120
+  },
+  "duration_ms": 1316,
+  "data": {
+    "category": "procedure",
+    "reason": "Departure checklist requires completing an administrative process (departure form, returning ID/books, transcript request), even though the form has a Dec 4 date."
+  }
+}

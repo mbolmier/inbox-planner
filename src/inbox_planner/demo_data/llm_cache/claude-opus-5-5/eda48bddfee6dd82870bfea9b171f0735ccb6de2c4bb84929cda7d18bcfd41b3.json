@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m26",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:51:33+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3412,
+    "output_tokens": 330
+  },
+  "duration_ms": 5765,
+  "data": {
+    "items": [
+      {
+        "kind": "appointment",
+        "title": "Dental cleaning at Willow Creek Dental (arrive 10 min early, bring insurance card)",
+        "local_datetime": "2026-11-04T09:30",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": null,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": "Willow Creek Dental, 418 SW Quillback Way, Corvallis, OR 97333",
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "medium"
+      }
+    ]
+  }
+}

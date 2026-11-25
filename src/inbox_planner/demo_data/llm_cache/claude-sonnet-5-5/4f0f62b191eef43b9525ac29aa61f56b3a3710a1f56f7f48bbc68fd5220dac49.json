@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m34",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:21+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2395,
+    "output_tokens": 109
+  },
+  "duration_ms": 2545,
+  "data": {
+    "category": "noise",
+    "reason": "This is a Campus Rec promotional newsletter about optional drop-in yoga classes, so it needs no action."
+  }
+}

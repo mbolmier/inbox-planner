@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% from "_macros.html" import place_link %}
+{% block title %}{{ processed.message.subject }}{% endblock %}
+{% block content %}
+  {% set message = processed.message %}
+  <section class="mail">
+    <article class="card">
+      <p class="eyebrow">Boîte « {{ message.mailbox }} » · reçu le {{ sent|day }} à {{ sent|hhmm }}</p>
+      <h1>{{ message.subject }}</h1>
+      <dl class="headers">
+        <dt>De</dt><dd>{{ message.sender }}</dd>
+        <dt>À</dt><dd>{{ message.recipients|join(", ") }}</dd>
+      </dl>
+      {# Always plain, escaped text: no HTML from an e-mail is ever rendered. #}
+      <pre class="body">{{ message.body_text }}</pre>
+    </article>
+
+    <aside class="card">
+      <h2>Ce que l'IA en a tiré</h2>
+      {% if processed.triage %}
+        <p><span class="tag">Tri</span> <b>{{ category_fr[processed.triage.category] }}</b></p>
+        <p class="muted small">{{ processed.triage.reason }}</p>
+      {% else %}
+        <p class="muted">Pas de réponse exploitable du modèle pour ce mail.</p>
+      {% endif %}
+      {% if items %}
+        <ul class="items">
+          {% for item in items %}
+            {% set when = (item.starts_at or item.due_at).astimezone(zone) %}
+            <li>
+              <span class="tag">{{ "Rendez-vous" if item.kind.value == "appointment" else "Échéance" }}</span>
+              <b>{{ item.title }}</b><br>
+              <span class="mono small">{{ when|day }} {{ when|hhmm }} (Oregon) · {{ (item.starts_at or item.due_at).astimezone(home_zone)|hhmm }} à Paris</span>
+              {% if item.weekly_on %}<br><span class="small">Chaque {{ item.weekly_on|join(", ") }} jusqu'au {{ item.repeat_until.strftime("%d/%m") }}</span>{% endif %}
+              {% if item.duration_minutes %}<br><span class="small">Durée : {{ item.duration_minutes|hours }}</span>{% endif %}
+              {% set place = item_place(item, area) %}
+              {% if place %}<br>{{ place_link(place) }}{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% elif processed.extraction is none and processed.triage %}
+        <p class="muted small">Pas d'extraction : le tri n'a rien trouvé à planifier.</p>
+      {% endif %}
+      <p class="muted small">Aucune réponse n'est envoyée automatiquement.</p>
+    </aside>
+  </section>
+{% endblock %}

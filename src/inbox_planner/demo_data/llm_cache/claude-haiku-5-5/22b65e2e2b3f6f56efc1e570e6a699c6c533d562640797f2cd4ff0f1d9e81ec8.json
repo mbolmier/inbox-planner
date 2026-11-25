@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m37",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:50:11+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3415,
+    "output_tokens": 755
+  },
+  "duration_ms": 3952,
+  "data": {
+    "items": [
+      {
+        "kind": "deadline",
+        "title": "CS 434 Quiz 5 (decision trees and ensembles) closes; timed, 30 minutes once started",
+        "local_datetime": "2026-10-30T23:59",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": 30,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "high"
+      }
+    ]
+  }
+}

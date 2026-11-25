@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m04",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:14+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2592,
+    "output_tokens": 208
+  },
+  "duration_ms": 2525,
+  "data": {
+    "category": "info",
+    "reason": "This is a course welcome message from a month ago. It lists the recurring class schedule and office hours but gives no specific appointment or due date."
+  }
+}

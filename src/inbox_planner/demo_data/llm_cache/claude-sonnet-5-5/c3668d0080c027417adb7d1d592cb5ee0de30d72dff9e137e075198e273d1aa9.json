@@ -1,0 +1,15 @@
+{
+  "tag": "extraction/m31",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:50:20+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3371,
+    "output_tokens": 52
+  },
+  "duration_ms": 1021,
+  "data": {
+    "items": []
+  }
+}

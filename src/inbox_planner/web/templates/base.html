@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}inbox-planner{% endblock %} · inbox-planner</title>
+  <link rel="stylesheet" href="/static/style.css">
+  {# Pinned version + SRI hash: the browser refuses the file if the CDN serves anything else. #}
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"
+          integrity="sha256-1v3HXyBOa976mbab8ebUrGm4o2T3eSn0XBNHa0AA9xc="
+          crossorigin="anonymous" defer></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="brand" href="/">inbox<span>·</span>planner</a>
+      <span class="pill" title="Boîte mail fictive ; réponses des modèles enregistrées, aucun compte">Démo · données fictives</span>
+      <div class="clocks" aria-label="Heure en Oregon et à Paris">
+        <span><b>Corvallis</b> <time class="mono">{{ now|hhmm }}</time></span>
+        <span><b>Paris</b> <time class="mono">{{ paris|hhmm }}</time> <small>+{{ gap_hours }} h</small></span>
+      </div>
+    </div>
+    <nav class="wrap tabs" aria-label="Sections">
+      <a href="/" {% if page == "today" %}aria-current="page"{% endif %}>Aujourd'hui</a>
+      <a href="/semaine" {% if page == "week" %}aria-current="page"{% endif %}>Semaine</a>
+      <a href="/echeances" {% if page == "deadlines" %}aria-current="page"{% endif %}>Échéances</a>
+      <span class="grow"></span>
+      <a class="export" href="/export.ics" download>Exporter vers le calendrier (.ics)</a>
+    </nav>
+  </header>
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="wrap foot">
+    Données entièrement fictives · lecture seule : aucun mail n'est envoyé ni modifié.
+  </footer>
+</body>
+</html>

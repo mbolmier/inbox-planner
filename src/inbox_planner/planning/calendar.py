@@ -23,6 +23,9 @@ class Event:
     message_id: str | None = None
     location: str | None = None
     video_url: str | None = None
+    meeting_id: str | None = None
+    passcode: str | None = None
+    weekly: bool = False
 
 
 def occurrences(
@@ -74,6 +77,9 @@ def build_events(
                         message_id=message_id,
                         location=item.location,
                         video_url=item.video_url,
+                        meeting_id=item.meeting_id,
+                        passcode=item.passcode,
+                        weekly=bool(item.weekly_on),
                     )
                 )
     return sorted(events, key=lambda e: (e.start, e.title))

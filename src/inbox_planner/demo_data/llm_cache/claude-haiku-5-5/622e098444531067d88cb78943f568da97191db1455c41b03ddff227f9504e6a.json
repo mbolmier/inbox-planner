@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m09",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:55+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2463,
+    "output_tokens": 247
+  },
+  "duration_ms": 1875,
+  "data": {
+    "category": "deadline",
+    "reason": "The group project proposal (1-2 page PDF, one per group) must be submitted on Canvas by Friday, October 30 at 5:00 PM, which is still ahead of the Monday, October 26 reference time."
+  }
+}

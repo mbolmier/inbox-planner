@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m24",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:53+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2458,
+    "output_tokens": 208
+  },
+  "duration_ms": 1691,
+  "data": {
+    "category": "noise",
+    "reason": "This is a travel promotion; its \"until 27 October\" sale date does not make it a deadline, and it requires no action from the student."
+  }
+}

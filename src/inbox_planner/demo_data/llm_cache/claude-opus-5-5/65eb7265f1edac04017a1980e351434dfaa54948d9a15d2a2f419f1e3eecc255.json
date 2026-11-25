@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m18",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:51:26+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3782,
+    "output_tokens": 567
+  },
+  "duration_ms": 6118,
+  "data": {
+    "items": [
+      {
+        "kind": "appointment",
+        "title": "Point de suivi de mobilité avec Julien Ferrand",
+        "local_datetime": "2026-11-05T17:00",
+        "timezone": "Europe/Paris",
+        "duration_minutes": 30,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": "https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fteams.microsoft.com%2Fl%2Fmeetup-join%2F19%253ameeting_ZGVtby1vbmx5LW5vdC1hLXJlYWwtbWVldGluZw%2540thread.v2%2F0%3Fcontext%3D%257b%2522Tid%2522%253a%252200000000-0000-0000-0000-000000000000%2522%252c%2522Oid%2522%253a%252211111111-1111-1111-1111-111111111111%2522%257d&data=05%7C02%7Cdemo%7C0%7C0&sdata=demo&reserved=0",
+        "meeting_id": "348 712 905 166",
+        "passcode": "Xq7Rt2",
+        "priority": "medium"
+      }
+    ]
+  }
+}

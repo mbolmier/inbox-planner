@@ -1,0 +1,118 @@
+"""Web pages, run on the perfect fake model (no recordings needed)."""
+
+from dataclasses import replace
+
+import pytest
+from fakes import FakeLLM, oracle
+from fastapi.testclient import TestClient
+
+from inbox_planner.web.app import create_app
+from inbox_planner.web.state import DemoData
+from inbox_planner.web.store import EnergyStore
+
+DATA = DemoData.load(FakeLLM(oracle))
+HTMX = {"HX-Request": "true"}
+
+
+@pytest.fixture
+def client() -> TestClient:
+    return TestClient(create_app(DATA, EnergyStore("sqlite://")))
+
+
+@pytest.mark.parametrize(
+    "path", ["/", "/semaine", "/echeances", "/mails/m02", "/api/calendrier", "/export.ics"]
+)
+def test_every_page_answers_with_security_headers(client, path):
+    response = client.get(path)
+
+    assert response.status_code == 200
+    assert (
+        "script-src 'self' https://cdn.jsdelivr.net" in response.headers["content-security-policy"]
+    )
+    assert "frame-ancestors 'none'" in response.headers["content-security-policy"]
+    assert response.headers["referrer-policy"] == "no-referrer"
+    assert response.headers["x-content-type-options"] == "nosniff"
+
+
+def test_today_shows_both_clocks_the_day_and_a_map_link(client):
+    html = client.get("/").text
+
+    assert "Lundi 26 octobre" in html
+    assert '<b>Paris</b> <time class="mono">16:00</time> <small>+8 h</small>' in html
+    assert (
+        "https://www.google.com/maps/search/?api=1&amp;query=Alder+Hall+120%2C+Corvallis%2C+OR"
+        in html
+    )
+
+
+def test_cdn_scripts_are_pinned_with_an_integrity_hash(client):
+    for path in ("/", "/semaine"):
+        html = client.get(path).text
+        assert 'src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"' in html
+        assert html.count('integrity="sha256-') == html.count('src="https://cdn.jsdelivr.net')
+
+
+def test_changing_the_energy_requires_htmx_then_replans_and_is_remembered(client):
+    form = {"energy": "tired", "view": "today"}
+
+    assert client.post("/energie/2026-10-26", data=form).status_code == 403
+    response = client.post("/energie/2026-10-26", data=form, headers=HTMX)
+
+    assert response.status_code == 200
+    assert 'aria-pressed="true">Crevé</button>' in response.text
+    assert "Prévu aujourd'hui : <b>2 h</b>" in response.text
+    assert 'aria-pressed="true">Crevé</button>' in client.get("/").text
+
+
+def test_a_change_in_the_week_view_tells_the_calendar_to_reload(client):
+    response = client.post(
+        "/energie/2026-10-27", data={"energy": "off", "view": "week"}, headers=HTMX
+    )
+
+    assert response.headers["hx-trigger"] == "planChanged"
+    assert 'id="week-energy"' in response.text
+    assert 'aria-label="Énergie du Mardi 27/10"' in response.text  # screen readers hear the day
+
+
+def test_a_day_outside_the_planned_week_is_refused(client):
+    response = client.post("/energie/2027-01-01", data={"energy": "off"}, headers=HTMX)
+
+    assert response.status_code == 404
+
+
+def test_mail_text_is_shown_escaped_never_as_html():
+    original = DATA.processed["m11"]
+    trapped = replace(
+        original,
+        message=original.message.model_copy(
+            update={"body_text": '<script>alert("pwned")</script><img src=x onerror=1>'}
+        ),
+    )
+    data = replace(DATA, processed=DATA.processed | {"m11": trapped})
+    html = TestClient(create_app(data, EnergyStore("sqlite://"))).get("/mails/m11").text
+
+    assert "&lt;script&gt;alert(&#34;pwned&#34;)&lt;/script&gt;" in html
+    assert "<script>alert" not in html and "<img src=x" not in html
+
+
+def test_an_unknown_mail_is_a_404(client):
+    assert client.get("/mails/does-not-exist").status_code == 404
+
+
+def test_calendar_feed_gives_oregon_wall_clock_times_without_offset(client):
+    feed = client.get("/api/calendrier").json()
+
+    call = next(e for e in feed if e["title"] == "Appel avec la famille")
+    assert call["start"] == "2026-11-01T10:00:00"  # 19:00 in Paris that day
+    assert call["url"] == "/mails/m39"
+    assert all("+" not in e["start"] and not e["start"].endswith("Z") for e in feed)
+
+
+def test_ics_download_with_and_without_planned_work(client):
+    plain = client.get("/export.ics")
+    with_work = client.get("/export.ics?travail=true")
+
+    assert plain.headers["content-type"].startswith("text/calendar")
+    assert 'filename="inbox-planner.ics"' in plain.headers["content-disposition"]
+    assert plain.text.startswith("BEGIN:VCALENDAR")
+    assert "Travail :" not in plain.text and "Travail :" in with_work.text

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m31",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:17+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2430,
+    "output_tokens": 105
+  },
+  "duration_ms": 1510,
+  "data": {
+    "category": "noise",
+    "reason": "This is a library newsletter about new books and an exhibition. It has no required action or scheduled commitment."
+  }
+}

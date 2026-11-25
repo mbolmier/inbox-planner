@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m34",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:50+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2417,
+    "output_tokens": 184
+  },
+  "duration_ms": 2033,
+  "data": {
+    "category": "info",
+    "reason": "This is a newsletter announcement of optional drop-in yoga classes with no registration, so nothing needs to be scheduled or submitted."
+  }
+}

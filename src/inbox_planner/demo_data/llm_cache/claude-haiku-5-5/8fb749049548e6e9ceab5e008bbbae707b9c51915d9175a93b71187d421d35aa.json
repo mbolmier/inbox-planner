@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m33",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:48:07+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2423,
+    "output_tokens": 248
+  },
+  "duration_ms": 2420,
+  "data": {
+    "category": "appointment",
+    "reason": "Riley invites Camille to an online Google Meet study session on Sunday, November 1 from 7 to 9 PM, which is a planned call she would need to attend."
+  }
+}

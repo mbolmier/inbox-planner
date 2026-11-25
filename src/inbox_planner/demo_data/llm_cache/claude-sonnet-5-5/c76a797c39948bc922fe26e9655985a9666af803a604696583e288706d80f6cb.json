@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m32",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:21+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2497,
+    "output_tokens": 116
+  },
+  "duration_ms": 1205,
+  "data": {
+    "category": "deadline",
+    "reason": "A two-page interim mobility report must be submitted on the platform before Friday 20 November, and it counts toward the semester evaluation."
+  }
+}

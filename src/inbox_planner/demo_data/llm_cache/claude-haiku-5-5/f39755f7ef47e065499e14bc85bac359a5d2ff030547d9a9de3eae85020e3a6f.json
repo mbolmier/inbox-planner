@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m06",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:41+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2513,
+    "output_tokens": 406
+  },
+  "duration_ms": 3969,
+  "data": {
+    "category": "appointment",
+    "reason": "It sets a recurring class schedule (Tuesdays and Thursdays, 12:00-1:20 PM, Larchmont Hall 104) that runs through the reference date, so the student must be in a specific place at set times."
+  }
+}

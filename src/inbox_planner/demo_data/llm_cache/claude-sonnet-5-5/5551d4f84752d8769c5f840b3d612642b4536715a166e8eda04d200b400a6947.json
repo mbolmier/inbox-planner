@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m18",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:27+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2840,
+    "output_tokens": 122
+  },
+  "duration_ms": 1315,
+  "data": {
+    "category": "appointment",
+    "reason": "The tutor booked a 30-minute Teams follow-up call for Thursday 5 November at 17:00 Paris time, which is still upcoming."
+  }
+}

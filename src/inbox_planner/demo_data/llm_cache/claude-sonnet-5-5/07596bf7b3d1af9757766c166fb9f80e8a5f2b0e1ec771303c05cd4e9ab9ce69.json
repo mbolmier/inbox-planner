@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m10",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:28+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2472,
+    "output_tokens": 134
+  },
+  "duration_ms": 1349,
+  "data": {
+    "category": "appointment",
+    "reason": "Midterm 2 is an exam on Thursday, Nov 5 at 12:00-1:20 PM in Cypress Auditorium (room changed), so the student must be there at that time."
+  }
+}

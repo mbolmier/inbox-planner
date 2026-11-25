@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m18",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:58+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2855,
+    "output_tokens": 266
+  },
+  "duration_ms": 2089,
+  "data": {
+    "category": "appointment",
+    "reason": "Julien Ferrand has booked a 30-minute Teams follow-up call with Camille on Thursday 5 November at 17:00 Paris time, so she must be online then."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m40",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:49:53+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3420,
+    "output_tokens": 790
+  },
+  "duration_ms": 4752,
+  "data": {
+    "items": [
+      {
+        "kind": "deadline",
+        "title": "Submit Exchange Departure Form (https://portal.oregonstate.example/iss/departure)",
+        "local_datetime": "2026-12-04T23:59",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": null,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "high"
+      }
+    ]
+  }
+}

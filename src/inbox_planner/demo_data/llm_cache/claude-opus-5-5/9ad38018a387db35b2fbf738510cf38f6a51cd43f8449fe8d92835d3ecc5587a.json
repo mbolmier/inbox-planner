@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m04",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:48:44+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2589,
+    "output_tokens": 286
+  },
+  "duration_ms": 5224,
+  "data": {
+    "category": "appointment",
+    "reason": "It gives the ST 411 class schedule, with lectures Mon/Wed/Fri 10:00-10:50 AM in Alder Hall 120 and labs Thursdays 2:00-3:50 PM in Hemlock Hall 211, and these classes run until December 4, so they are still happening at the reference time."
+  }
+}

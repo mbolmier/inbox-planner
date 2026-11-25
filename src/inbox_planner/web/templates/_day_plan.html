@@ -1,0 +1,50 @@
+{% from "_macros.html" import entry_row %}
+<section id="day-plan" class="today">
+  <div class="card">
+    <div class="row-between">
+      <h1>{{ day|day(true) }}</h1>
+      <div class="energy">
+        <span class="eyebrow">Énergie du jour</span>
+        <div class="seg" role="group" aria-label="Énergie du jour">
+          {% for choice in energies %}
+            <button type="button"
+                    hx-post="/energie/{{ day.isoformat() }}"
+                    hx-vals='{"energy": "{{ choice.value }}", "view": "today"}'
+                    hx-target="#day-plan" hx-swap="outerHTML"
+                    aria-pressed="{{ 'true' if choice == energy else 'false' }}">{{ profiles[choice].label_fr }}</button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <p class="muted">
+      {% if profiles[energy].capacity_minutes %}
+        {{ profiles[energy].label_fr }} : jusqu'à {{ profiles[energy].capacity_minutes|hours }} de travail,
+        par blocs de {{ profiles[energy].max_block_minutes }} min au plus. Prévu aujourd'hui : <b>{{ worked|hours }}</b>.
+      {% else %}
+        Journée off : aucun travail n'est planifié, seuls les rendez-vous restent.
+      {% endif %}
+    </p>
+    {% if next_entry %}
+      <p class="next">Ensuite : <time class="mono">{{ next_entry.start|hhmm }}</time> · {{ next_entry.title }}</p>
+    {% endif %}
+    <ol class="agenda">
+      {% for entry in entries %}{{ entry_row(entry) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
+    </ol>
+  </div>
+
+  <aside class="card">
+    <h2>Échéances des 3 prochains jours</h2>
+    <ul class="soon">
+      {% for row in soon %}
+        <li class="cat-{{ row.category }}">
+          <span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span>
+          <a href="/mails/{{ row.task.message_id }}">{{ row.task.title }}</a>
+          <small class="mono">{{ row.due|day }} {{ row.due|hhmm }} · {{ time_left(row.task.due_at) }}</small>
+        </li>
+      {% else %}
+        <li class="muted">Aucune.</li>
+      {% endfor %}
+    </ul>
+    <p class="muted small"><a href="/echeances">Toutes les échéances →</a></p>
+  </aside>
+</section>

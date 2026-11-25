@@ -7,10 +7,12 @@ checked on every commit by the CI.
 """
 
 import re
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from inbox_planner.connectors.demo import DEFAULT_MAILBOX
 from inbox_planner.evaluation.labels import DEFAULT_LABELS
+from inbox_planner.llm.cache import DEMO_CACHE
 
 EMAIL_ADDRESS = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 URL = re.compile(r"https?://[^\s<>\"')]+")
@@ -21,7 +23,8 @@ VIDEO_CALL_HOSTS = (
     "safelinks.protection.outlook.com",
 )
 
-DEMO_FILES = [DEFAULT_MAILBOX, DEFAULT_LABELS]
+# The recorded model answers are checked too: a model could invent an address.
+DEMO_FILES = [DEFAULT_MAILBOX, DEFAULT_LABELS, *sorted(Path(str(DEMO_CACHE)).rglob("*.json"))]
 
 
 def real_looking_addresses(text: str) -> list[str]:

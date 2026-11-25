@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m30",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:17:57+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1593,
+    "output_tokens": 124
+  },
+  "duration_ms": 1845,
+  "data": {
+    "category": "info",
+    "reason": "The IUT announces a holiday closure from 19 December 2026 to 3 January 2027 to the whole student mailing list, with nothing to schedule or submit."
+  }
+}

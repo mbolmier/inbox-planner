@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m17",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:17+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1655,
+    "output_tokens": 330
+  },
+  "duration_ms": 3320,
+  "data": {
+    "category": "deadline",
+    "reason": "It announces Problem Set 5 for ST 421 due Nov 3 at 12pm, so it concerns work to hand in before a due time (that date has already passed as of 2026-11-25)."
+  }
+}

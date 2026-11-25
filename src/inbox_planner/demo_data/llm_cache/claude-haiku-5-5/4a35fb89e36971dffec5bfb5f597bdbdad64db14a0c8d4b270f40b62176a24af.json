@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m06",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:17:55+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1655,
+    "output_tokens": 410
+  },
+  "duration_ms": 3343,
+  "data": {
+    "category": "appointment",
+    "reason": "It gives the recurring Tuesday and Thursday class times and room (12:00-1:20 PM, Larchmont Hall 104) that the student must attend, with midterm and final dates still to be confirmed."
+  }
+}

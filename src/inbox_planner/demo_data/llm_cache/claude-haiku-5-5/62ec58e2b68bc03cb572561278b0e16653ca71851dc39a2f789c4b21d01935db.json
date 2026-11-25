@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m26",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:20+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1635,
+    "output_tokens": 275
+  },
+  "duration_ms": 3707,
+  "data": {
+    "category": "appointment",
+    "reason": "It is a reminder for a fixed dental cleaning at 9:30 AM on November 4, 2026, which is already past as of today (2026-11-25)."
+  }
+}

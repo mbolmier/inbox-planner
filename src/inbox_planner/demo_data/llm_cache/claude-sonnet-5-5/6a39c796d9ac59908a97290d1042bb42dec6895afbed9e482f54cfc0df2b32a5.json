@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m05",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:32+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1675,
+    "output_tokens": 135
+  },
+  "duration_ms": 1406,
+  "data": {
+    "category": "appointment",
+    "reason": "The course schedule sets recurring class meetings (Mon/Wed 2:00–3:20 PM in Alder Hall 230), and homework deadlines are only mentioned in general terms."
+  }
+}

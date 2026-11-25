@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m16",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:07+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1637,
+    "output_tokens": 306
+  },
+  "duration_ms": 4054,
+  "data": {
+    "category": "procedure",
+    "reason": "The student must re-upload a corrected insurance certificate to finish the waiver, but the October 30 deadline has already passed as of today (November 25), so they should check the insurance status with the office."
+  }
+}

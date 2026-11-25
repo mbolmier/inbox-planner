@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m01",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:21:03+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2374,
+    "output_tokens": 115
+  },
+  "duration_ms": 3198,
+  "data": {
+    "category": "noise",
+    "reason": "This is a newsletter ad for 20% off bike locks, and the \"last day\" date is only part of the promotion, not a real deadline."
+  }
+}

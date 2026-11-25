@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m03",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:19:01+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1719,
+    "output_tokens": 238
+  },
+  "duration_ms": 2624,
+  "data": {
+    "category": "procedure",
+    "reason": "The email asks for an administrative file (company information form, liability insurance certificate, work-study calendar) to be uploaded to the ENT. That is paperwork, not graded work, even though it has a due date of 6 November 2026 at 12:00."
+  }
+}

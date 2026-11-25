@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m08",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:45+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1678,
+    "output_tokens": 117
+  },
+  "duration_ms": 2145,
+  "data": {
+    "category": "deadline",
+    "reason": "New CS 434 assignment \"HW 4: Logistic Regression\" must be submitted by Nov 1 at 11:59pm."
+  }
+}

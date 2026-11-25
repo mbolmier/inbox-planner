@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m25",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:22:26+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3416,
+    "output_tokens": 395
+  },
+  "duration_ms": 4852,
+  "data": {
+    "items": [
+      {
+        "kind": "appointment",
+        "title": "Vol PDX → LYS (réf. QZ7K4P)",
+        "local_datetime": "2026-12-18T13:05",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": 1055,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": "Portland International Airport (PDX)",
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "medium"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m32",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:06+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1665,
+    "output_tokens": 302
+  },
+  "duration_ms": 2528,
+  "data": {
+    "category": "deadline",
+    "reason": "The mid-semester mobility report (two pages, counted in your semester evaluation) was due on Friday 20 November, which has already passed as of today (25 November), so check whether it was submitted."
+  }
+}

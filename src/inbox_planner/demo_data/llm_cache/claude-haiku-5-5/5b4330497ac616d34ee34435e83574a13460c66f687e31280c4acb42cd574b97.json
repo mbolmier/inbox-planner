@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m04",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:17:54+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1755,
+    "output_tokens": 363
+  },
+  "duration_ms": 2824,
+  "data": {
+    "category": "appointment",
+    "reason": "The welcome email sets recurring class, lab, and office-hour times the student must attend, and the course is still running until December 4."
+  }
+}

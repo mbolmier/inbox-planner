@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m02",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:13+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1688,
+    "output_tokens": 295
+  },
+  "duration_ms": 2301,
+  "data": {
+    "category": "appointment",
+    "reason": "It is a booked Zoom check-in with the international student advisor at a fixed time (Oct 29, 2:00 PM PT), though that slot has already passed as of today, Nov 25."
+  }
+}

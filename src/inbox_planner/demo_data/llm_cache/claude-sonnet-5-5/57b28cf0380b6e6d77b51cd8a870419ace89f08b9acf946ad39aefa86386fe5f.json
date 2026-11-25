@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m12",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:53+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1647,
+    "output_tokens": 126
+  },
+  "duration_ms": 1659,
+  "data": {
+    "category": "deadline",
+    "reason": "The Step 3 project draft is due Monday at 11:59 PM and the peer reviews are due Wednesday at 11:59 PM, both on Canvas."
+  }
+}

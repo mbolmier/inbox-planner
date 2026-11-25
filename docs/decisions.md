@@ -178,3 +178,18 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** un test fait répondre un faux modèle exactement selon les annotations, puis vérifie 100 % sur toutes les métriques, chaîne complète comprise.
 - **Alternatives :** tester seulement les fonctions une par une.
 - **Pourquoi :** si la conversion des fuseaux ou l'appariement perdait quelque chose en route, un modèle parfait n'aurait pas 100 %. Ce test prouve que les chiffres mesurent le modèle, pas un bug de la mesure.
+
+### D33. Chaîne par défaut : Haiku pour le tri ET pour l'extraction
+- **Décision :** `inbox-planner` utilise Haiku 5.5 pour les deux agents.
+- **Alternatives :** l'intuition de départ (petit modèle pour le tri, plus gros pour l'extraction), Sonnet ou Opus partout « par prudence ».
+- **Pourquoi :** c'est la mesure qui tranche. En extraction, Haiku, Sonnet et Opus retrouvent tous 29 éléments sur 29, dates et fuseaux exacts. En tri, Haiku fait 95 % contre 100 %, mais ses deux erreurs (bruit lu comme info) n'ont aucun effet sur la chaîne, puisque ni l'un ni l'autre ne part en extraction. Coût estimé pour 40 mails : 0,030 $ avec Haiku → Haiku, 0,267 $ avec Haiku → Sonnet. **Réserve :** avec 29 éléments, un 100 % reste compatible avec un vrai taux d'erreur proche de 10 % (règle de trois : 3/29). Le jeu est trop facile pour départager les modèles. Le choix sera revu si un jeu plus difficile montre un écart.
+
+### D34. Pas de retouche des prompts sur le jeu de test
+- **Décision :** les erreurs mesurées sont documentées, pas « corrigées » en ajustant les prompts ou les annotations sur ces 40 mails.
+- **Alternatives :** retoucher le prompt jusqu'à 100 % partout.
+- **Pourquoi :** ajuster les prompts sur le jeu qui sert à les noter, c'est du sur-apprentissage : les chiffres monteraient sans rien prouver. Or les erreurs viennent de ma spécification, pas des modèles. (1) m22 : « Prévoyez environ 3 heures » n'est pas compté comme durée, car le prompt ne dit pas qu'une estimation de travail compte pour une échéance. (2) m31 et m34 : le guide dit à la fois « newsletter = bruit » et « événement facultatif annoncé à tous = info », et Haiku applique la seconde règle. Pour corriger proprement, il faut clarifier le guide, puis valider le nouveau prompt sur un **jeu de développement séparé**.
+
+### D35. La CI rejoue l'évaluation et vérifie le rapport publié
+- **Décision :** à chaque PR, la CI relance `inbox-planner eval` en mode rejeu (aucun appel au modèle, aucun compte), puis vérifie par `git diff` que `docs/evaluation.md` est identique. Le garde-fou de confidentialité scanne aussi les 240 réponses enregistrées.
+- **Alternatives :** publier des chiffres calculés une fois à la main.
+- **Pourquoi :** un chiffre du README qui ne correspond plus au code est attrapé automatiquement, et n'importe qui peut refaire le calcul. Le rapport ne contient donc pas de date, sinon il changerait tous les jours.

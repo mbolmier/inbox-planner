@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m35",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:22+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1560,
+    "output_tokens": 179
+  },
+  "duration_ms": 3363,
+  "data": {
+    "category": "noise",
+    "reason": "This is phishing: the sender domain uses a look-alike spelling (\"0regonstate\" with a zero), and it pressures the reader with an urgent deactivation threat and a verification link."
+  }
+}

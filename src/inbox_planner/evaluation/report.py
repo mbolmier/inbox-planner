@@ -1,7 +1,6 @@
 """Markdown report of an evaluation run (written to docs/evaluation.md)."""
 
 from collections.abc import Sequence
-from datetime import date
 
 from inbox_planner.evaluation.labels import load_labels
 from inbox_planner.evaluation.metrics import ACTIONABLE, ExtractionScores, instant, match_items
@@ -34,6 +33,10 @@ def tokens(usage: Usage) -> str:
     return f"{usage.input_tokens:,} / {usage.output_tokens:,}".replace(",", " ")
 
 
+def seconds(value: float) -> str:
+    return f"{value:.1f} s".replace(".", ",")
+
+
 def short(model: str) -> str:
     return model.removeprefix("claude-")
 
@@ -48,8 +51,8 @@ def render_report(
     lines = [
         "# Évaluation",
         "",
-        f"*Générée par `inbox-planner eval` le {date.today():%d/%m/%Y}. "
-        "Ne pas modifier à la main.*",
+        "*Générée par `inbox-planner eval --output docs/evaluation.md` à partir des réponses "
+        "enregistrées. Ne pas modifier à la main : la CI vérifie que ce fichier est à jour.*",
         "",
         f"- **Jeu de test :** {len(labels)} mails fictifs annotés à la main "
         f"([guide d'annotation](guide-annotation.md)), {expected_items} éléments attendus.",
@@ -73,7 +76,7 @@ def render_report(
         lines.append(
             f"| {short(st.model)} | {pct(s.accuracy)} | {pct(s.useful_precision)} "
             f"| {pct(s.useful_recall)} | {s.failures} | {tokens(st.usage)} | {usd(st.cost_usd)} "
-            f"| {st.model_seconds / max(st.calls, 1):.1f} s |"
+            f"| {seconds(st.model_seconds / max(st.calls, 1))} |"
         )
 
     lines += [
@@ -96,7 +99,7 @@ def render_report(
             f"| {frac(s.meeting_details_exact, s.video_expected)} "
             f"| {frac(s.recurrence_exact, s.recurring_expected)} "
             f"| {frac(s.duration_exact, s.duration_expected)} | {usd(st.cost_usd)} "
-            f"| {st.model_seconds / max(st.calls, 1):.1f} s |"
+            f"| {seconds(st.model_seconds / max(st.calls, 1))} |"
         )
 
     triage, extraction, end_to_end = pipeline

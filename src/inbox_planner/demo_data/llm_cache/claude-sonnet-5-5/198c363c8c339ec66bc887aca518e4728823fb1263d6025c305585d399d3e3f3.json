@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m04",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:32+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1771,
+    "output_tokens": 145
+  },
+  "duration_ms": 1527,
+  "data": {
+    "category": "appointment",
+    "reason": "Welcome email setting the class schedule: lectures Mon/Wed/Fri 10:00 in Alder Hall 120, starting Sept 23, and Thursday labs from Oct 1, which the student must attend."
+  }
+}

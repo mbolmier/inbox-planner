@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m28",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:15+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1589,
+    "output_tokens": 204
+  },
+  "duration_ms": 1723,
+  "data": {
+    "category": "info",
+    "reason": "This is a building maintenance notice about a water shut-off that needs no action and has already passed (October 27, and today is November 25)."
+  }
+}

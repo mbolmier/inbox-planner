@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m10",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:18+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1639,
+    "output_tokens": 512
+  },
+  "duration_ms": 4199,
+  "data": {
+    "category": "appointment",
+    "reason": "It schedules the ST 421 Midterm 2 exam at a fixed time and room (Nov 5, 12:00-1:20 PM, Cypress Auditorium), though that date has already passed as of today."
+  }
+}

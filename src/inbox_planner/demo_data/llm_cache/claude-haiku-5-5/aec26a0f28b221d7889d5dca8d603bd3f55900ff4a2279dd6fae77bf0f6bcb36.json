@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m21",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:18:17+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1711,
+    "output_tokens": 341
+  },
+  "duration_ms": 2495,
+  "data": {
+    "category": "appointment",
+    "reason": "It schedules a 45-minute Google Meet job interview for Tuesday 3 November at 17:30 Paris time, which has already passed as of today (2026-11-25), so the student should check whether it happened or was rescheduled."
+  }
+}

@@ -12,7 +12,7 @@ from inbox_planner.llm.cache import CachedClient
 from inbox_planner.llm.claude_code import ClaudeCodeClient
 
 MODELS = ("claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5")
-DEFAULT_PIPELINE = ("claude-haiku-5-5", "claude-sonnet-5-5")
+DEFAULT_PIPELINE = ("claude-haiku-5-5", "claude-haiku-5-5")  # decision D33
 
 
 def _models(value: str) -> list[str]:
@@ -61,7 +61,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     except LLMUnavailable as error:
         print(
-            f"Claude Code is unavailable: {error}. Log in with `claude` then /login.",
+            f"Claude Code is unavailable: {error}\n"
+            "Answers recorded so far are kept; re-run the same command to continue.",
             file=sys.stderr,
         )
         return 2

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m23",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:49+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1570,
+    "output_tokens": 98
+  },
+  "duration_ms": 2272,
+  "data": {
+    "category": "noise",
+    "reason": "Social network notification with a Premium upsell, so it has no useful information for the student."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m36",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:18:48+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1571,
+    "output_tokens": 117
+  },
+  "duration_ms": 2378,
+  "data": {
+    "category": "info",
+    "reason": "The registrar announces a Veterans Day closure with no classes on Nov 11, so the student only needs to know it and has nothing to schedule."
+  }
+}

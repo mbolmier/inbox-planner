@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m33",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:19:00+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 1583,
+    "output_tokens": 311
+  },
+  "duration_ms": 3218,
+  "data": {
+    "category": "appointment",
+    "reason": "A classmate personally invited Camille to an online Midterm 2 study session on Google Meet on Sunday, Nov 1, 7-9 PM, so it is a timed online meeting."
+  }
+}

@@ -6,7 +6,7 @@
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
 ![Licence MIT](https://img.shields.io/badge/licence-MIT-green)
 
-![Démo : l'énergie du jour change le plan, la semaine se recalcule, le détail d'une séance s'ouvre d'un clic, une réponse est proposée puis relue](docs/images/demo.gif)
+![Démo : l'énergie du jour change le plan ; le jour par jour montre le travail réparti, et cocher une tâche le recalcule ; la semaine ouvre le détail d'une séance d'un clic ; une réponse est proposée puis relue](docs/images/demo.gif)
 
 *Démo sur une boîte mail entièrement fictive. Aucun compte n'est nécessaire.*
 

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m21",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:48:01+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2567,
+    "output_tokens": 368
+  },
+  "duration_ms": 2397,
+  "data": {
+    "category": "appointment",
+    "reason": "Sophie Marchetti has booked a 45-minute Google Meet job interview for Tuesday 3 November at 17:30 Paris time, which is 09:30 in Los Angeles, so Camille must be online then."
+  }
+}

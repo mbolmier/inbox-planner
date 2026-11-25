@@ -13,9 +13,9 @@
 
 | Modèle | Exactitude | Précision « utile » | Rappel « utile » | Échecs | Tokens entrée / sortie | Coût estimé (40 mails) | Temps / mail |
 |---|---|---|---|---|---|---|---|
-| haiku-5-5 | 95 % | 94 % | 100 % | 0 | 65 491 / 12 216 | 0,013 $ | 3,0 s |
-| sonnet-5-5 | 100 % | 100 % | 100 % | 0 | 66 131 / 5 541 | 0,188 $ | 2,3 s |
-| opus-5-5 | 100 % | 100 % | 100 % | 0 | 95 879 / 6 438 | 0,512 $ | 3,5 s |
+| haiku-5-5 | 95 % | 94 % | 100 % | 0 | 99 761 / 11 478 | 0,016 $ | 2,5 s |
+| sonnet-5-5 | 90 % | 100 % | 100 % | 0 | 98 894 / 5 151 | 0,249 $ | 1,8 s |
+| opus-5-5 | 98 % | 97 % | 100 % | 0 | 98 749 / 7 589 | 0,547 $ | 4,5 s |
 
 ## Extraction (sur les 40 mails)
 
@@ -23,9 +23,9 @@ Un élément est **retrouvé** s'il a le bon type et exactement le bon instant, 
 
 | Modèle | Précision | Rappel (dates exactes) | Mauvais fuseau | Liens visio | ID + code | Récurrences | Durées | Coût estimé | Temps / mail |
 |---|---|---|---|---|---|---|---|---|---|
-| haiku-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 14/15 | 0,023 $ | 2,7 s |
-| sonnet-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 14/15 | 0,348 $ | 1,8 s |
-| opus-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 15/15 | 0,729 $ | 3,8 s |
+| haiku-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 13/15 | 0,023 $ | 2,6 s |
+| sonnet-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 14/15 | 0,365 $ | 2,0 s |
+| opus-5-5 | 100 % | 100 % (29/29) | 0 | 4/4 | 4/4 | 5/5 | 14/15 | 0,763 $ | 5,4 s |
 
 ## Chaîne retenue : tri haiku-5-5 → extraction haiku-5-5
 
@@ -33,7 +33,7 @@ L'extraction ne tourne que sur les mails que le tri juge utiles à planifier (re
 
 - Précision : **100 %**, rappel : **100 %** (29/29 éléments retrouvés).
 - Mails envoyés à l'extraction : 27 sur 40.
-- Coût estimé pour les 40 mails : **0,030 $** (tri 0,013 $, extraction 0,017 $).
+- Coût estimé pour les 40 mails : **0,033 $** (tri 0,016 $, extraction 0,018 $).
 
 ### Tri par catégorie
 

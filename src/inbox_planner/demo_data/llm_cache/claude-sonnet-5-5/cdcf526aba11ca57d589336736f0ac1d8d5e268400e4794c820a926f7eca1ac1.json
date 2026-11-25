@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m36",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:26+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2385,
+    "output_tokens": 119
+  },
+  "duration_ms": 2139,
+  "data": {
+    "category": "info",
+    "reason": "The Registrar announces no classes or office hours on Nov 11 for Veterans Day, which is worth knowing but needs no scheduling or action."
+  }
+}

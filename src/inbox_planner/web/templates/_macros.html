@@ -1,0 +1,25 @@
+{% macro place_link(place) -%}
+  <span class="place">
+  {%- if place.online %}
+    <a class="btn small" href="{{ place.url }}" target="_blank" rel="noopener noreferrer">Rejoindre sur {{ place.label }}</a>
+    {% if place.meeting_id %}<span class="code mono" title="ID de réunion">ID {{ place.meeting_id }}</span>{% endif %}
+    {% if place.passcode %}<span class="code mono" title="Code secret">Code {{ place.passcode }}</span>{% endif %}
+  {%- else %}
+    <a class="map" href="{{ place.url }}" target="_blank" rel="noopener noreferrer" title="Ouvrir dans Google Maps">{{ place.label }}</a>
+  {%- endif %}
+  </span>
+{%- endmacro %}
+
+{% macro entry_row(entry) -%}
+  <li class="entry cat-{{ entry.category }} kind-{{ entry.kind }}">
+    <time class="when mono">
+      {%- if entry.kind == "deadline" %}{{ entry.start|hhmm }}{% else %}{{ entry.start|hhmm }}–{{ entry.end|hhmm }}{% endif -%}
+    </time>
+    <div class="what">
+      <span class="tag">{{ kind_fr[entry.category] }}</span>
+      <span class="title">{{ entry.title }}</span>
+      {% if entry.place %}{{ place_link(entry.place) }}{% endif %}
+    </div>
+    {% if entry.message_id %}<a class="src" href="/mails/{{ entry.message_id }}" title="Voir le mail d'origine">mail ↗</a>{% endif %}
+  </li>
+{%- endmacro %}

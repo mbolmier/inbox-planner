@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m16",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:51+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2492,
+    "output_tokens": 353
+  },
+  "duration_ms": 2763,
+  "data": {
+    "category": "procedure",
+    "reason": "Camille must re-upload a corrected insurance certificate showing coverage dates to complete the waiver by Friday, October 30 at 5:00 PM Pacific, or the student plan will be added to her account."
+  }
+}

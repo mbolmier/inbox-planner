@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from inbox_planner.agents.extraction import ExtractionAgent, ExtractionResult
 from inbox_planner.agents.triage import TriageAgent, TriageResult
-from inbox_planner.connectors.demo import DEMO_TIMEZONES, DemoConnector
+from inbox_planner.connectors.demo import DEMO_NOW, DEMO_TIMEZONES, DemoConnector
 from inbox_planner.evaluation.labels import load_labels
 from inbox_planner.evaluation.metrics import (
     ExtractionScores,
@@ -91,7 +91,7 @@ def _stats(model: str, results: Sequence[TriageResult | ExtractionResult | None]
 
 def run_triage(llm: LLMClient, model: str, workers: int = 4) -> TriageRun:
     messages = DemoConnector().fetch_messages()
-    agent = TriageAgent(llm, model, DEMO_TIMEZONES)
+    agent = TriageAgent(llm, model, DEMO_TIMEZONES, DEMO_NOW)
     results = _run_all(agent.run, messages, workers)
     gold = {mid: label.category for mid, label in load_labels().items()}
     predicted = {mid: r.category if r else None for mid, r in results.items()}
@@ -100,7 +100,7 @@ def run_triage(llm: LLMClient, model: str, workers: int = 4) -> TriageRun:
 
 def run_extraction(llm: LLMClient, model: str, workers: int = 4) -> ExtractionRun:
     messages = DemoConnector().fetch_messages()
-    agent = ExtractionAgent(llm, model, DEMO_TIMEZONES)
+    agent = ExtractionAgent(llm, model, DEMO_TIMEZONES, DEMO_NOW)
     results = _run_all(agent.run, messages, workers)
     gold = {mid: label.items for mid, label in load_labels().items()}
     predicted = {mid: r.items if r else None for mid, r in results.items()}

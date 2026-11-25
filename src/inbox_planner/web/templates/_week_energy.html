@@ -1,0 +1,37 @@
+<section id="week-energy" class="card">
+  <div class="row-between">
+    <h1>Semaine</h1>
+    <span class="eyebrow">Énergie de chaque jour : le plan se recalcule aussitôt</span>
+  </div>
+  <div class="week-energy">
+    {% for day in days %}
+      <label class="day-energy">
+        <span class="d">{{ day|day }}</span>
+        <select name="energy" aria-label="Énergie du {{ day|day }}"
+                hx-post="/energie/{{ day.isoformat() }}" hx-trigger="change"
+                hx-vals='{"view": "week"}' hx-target="#week-energy" hx-swap="outerHTML">
+          {% for choice in energies %}
+            <option value="{{ choice.value }}" {% if choice == energy[day] %}selected{% endif %}>{{ profiles[choice].label_fr }}</option>
+          {% endfor %}
+        </select>
+        <span class="muted small mono">{{ worked[day]|hours }} / {{ profiles[energy[day]].capacity_minutes|hours }}</span>
+      </label>
+    {% endfor %}
+  </div>
+  {% if plan.conflicts %}
+    <div class="notice warn" role="status">
+      <b>Conflit</b> :
+      {% for first, second in plan.conflicts %}
+        {{ first.title }} et {{ second.title }} se chevauchent le {{ first.start.astimezone(zone)|day }} à {{ first.start.astimezone(zone)|hhmm }}.
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% if plan.at_risk %}
+    <div class="notice risk" role="status">
+      <b>À risque</b> :
+      {% for shortfall in plan.at_risk %}
+        {{ shortfall.task.title }} (il manque {{ shortfall.missing_minutes|hours }}){{ "," if not loop.last }}
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>

@@ -1,0 +1,33 @@
+{
+  "tag": "extraction/m06",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:49:39+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3457,
+    "output_tokens": 745
+  },
+  "duration_ms": 3761,
+  "data": {
+    "items": [
+      {
+        "kind": "appointment",
+        "title": "ST 421 - Introduction to Mathematical Statistics",
+        "local_datetime": "2026-09-24T12:00",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": 80,
+        "weekly_on": [
+          "TU",
+          "TH"
+        ],
+        "repeat_until": "2026-12-03",
+        "location": "Larchmont Hall 104",
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "medium"
+      }
+    ]
+  }
+}

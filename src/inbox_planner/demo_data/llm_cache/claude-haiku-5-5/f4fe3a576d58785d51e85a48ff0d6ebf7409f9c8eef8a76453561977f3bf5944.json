@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m10",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:49:57+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3443,
+    "output_tokens": 525
+  },
+  "duration_ms": 2920,
+  "data": {
+    "items": [
+      {
+        "kind": "appointment",
+        "title": "ST 421 Midterm 2 (chapters 5-7; calculator and one handwritten notes page allowed)",
+        "local_datetime": "2026-11-05T12:00",
+        "timezone": "America/Los_Angeles",
+        "duration_minutes": 80,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": "Cypress Auditorium",
+        "video_url": null,
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "high"
+      }
+    ]
+  }
+}

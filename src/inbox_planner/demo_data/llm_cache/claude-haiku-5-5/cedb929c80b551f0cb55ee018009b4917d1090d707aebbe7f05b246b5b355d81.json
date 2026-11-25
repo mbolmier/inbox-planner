@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m12",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:48:02+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2492,
+    "output_tokens": 295
+  },
+  "duration_ms": 2708,
+  "data": {
+    "category": "deadline",
+    "reason": "The CS 340 Step 3 draft (normalized schema + DDL) must be submitted on Canvas by Monday 11:59 PM, which is later today, and late drafts cannot be peer reviewed."
+  }
+}

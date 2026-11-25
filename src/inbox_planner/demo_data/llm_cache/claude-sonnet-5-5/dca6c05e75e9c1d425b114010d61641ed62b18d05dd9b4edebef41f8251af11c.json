@@ -1,0 +1,30 @@
+{
+  "tag": "extraction/m20",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:50:21+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 3485,
+    "output_tokens": 207
+  },
+  "duration_ms": 1565,
+  "data": {
+    "items": [
+      {
+        "kind": "deadline",
+        "title": "Renvoyer le contrat d'études modifié signé (plateforme mobilité)",
+        "local_datetime": "2026-10-31T23:59",
+        "timezone": "Europe/Paris",
+        "duration_minutes": null,
+        "weekly_on": [],
+        "repeat_until": null,
+        "location": null,
+        "video_url": "https://mobilite.univ-lyon2.example/contrat",
+        "meeting_id": null,
+        "passcode": null,
+        "priority": "high"
+      }
+    ]
+  }
+}

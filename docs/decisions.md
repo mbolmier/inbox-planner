@@ -233,3 +233,65 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** en plus des tests classiques, `hypothesis` génère 300 semaines aléatoires (rendez-vous, tâches, énergies) et vérifie 8 règles : pas de chevauchement, marges respectées, rien après l'échéance, journée de travail respectée, longueur des blocs, capacité du jour, aucune minute perdue, résultat indépendant du fuseau d'entrée. Les rendez-vous qui se chevauchent sont signalés.
 - **Alternatives :** quelques exemples écrits à la main.
 - **Pourquoi :** un planificateur a énormément de cas limites, et un exemple écrit à la main ne teste que ce à quoi on a pensé. Vérifié : un bug introduit exprès (capacité du jour ignorée) est attrapé aussitôt. Les conflits sont signalés parce que la semaine de démo en contient un vrai : le lab déplacé au vendredi est encore répété le jeudi (limite D22), et il vaut mieux le montrer que le cacher.
+
+---
+
+## Étape 5 : lieux, vue web, export .ics
+
+### D42. Une heure de référence explicite dans chaque prompt
+- **Décision :** chaque prompt commence par « Reference time (now) » : l'heure réelle en production, l'horloge figée (lundi 26 octobre 2026, 8 h) en démo. Le prompt système demande de juger par rapport à ce moment, jamais par rapport à une autre date connue.
+- **Alternatives :** ne rien dire et laisser le modèle supposer la date.
+- **Pourquoi :** la vue web a montré une justification de tri qui disait « déjà passée, puisque nous sommes le 25 novembre ». Le modèle connaissait la vraie date du jour, injectée par Claude Code. Sur les réponses enregistrées, 20 justifications de tri sur 40 pour Haiku et 6 pour Opus raisonnaient par rapport au 25 novembre. Les catégories et les dates extraites restaient justes, mais c'est un biais : le modèle ne vivait pas au même « maintenant » que la démo. Ce n'est pas un réglage sur le jeu de test au sens de D34 : je ne corrige pas une erreur mesurée, je corrige le contexte donné au modèle. Les 240 réponses ont été réenregistrées. **Après :** plus aucune mention du 25 novembre ou d'une date « déjà passée » (0/240). Le tri bouge : Haiku reste à 95 %, Sonnet passe de 100 à 90 %, Opus de 100 à 98 % (voir D49). L'extraction ne bouge pas (29/29 pour les trois modèles). Les tokens d'entrée de Haiku et Sonnet augmentent d'environ 50 % : ça ne vient pas de la ligne ajoutée (environ 25 tokens), mais du CLI. La version 2.1.332, imposée par Opus 5.5, ajoute environ 850 tokens de contexte par appel, alors que le premier enregistrement de Haiku et Sonnet s'était fait en 2.1.235.
+
+### D43. Lieux cliquables, sans clé d'API
+- **Décision :**
+  - **Lieu physique :** l'URL de recherche documentée de Google Maps (`https://www.google.com/maps/search/?api=1&query=…`), avec la ville de la boîte ajoutée si le lieu ne la nomme pas (« Alder Hall 120, Corvallis, OR »).
+  - **Visio :** le fournisseur (Zoom, Teams, Meet) est reconnu au domaine du lien, déballé des Safe Links. L'ID et le code sont affichés à côté.
+  - **Sécurité :** seuls les liens `https` deviennent cliquables.
+- **Alternatives :** l'API Geocoding de Google (clé, facturation), `geo:` ou Apple Plans, laisser le texte brut.
+- **Pourquoi :** zéro clé, zéro coût, et le lien marche sur ordinateur comme sur téléphone. Le filtre `https` empêche un mail piégé de faire exécuter du code par un lien `javascript:` dans l'app : c'est testé.
+
+### D44. Export .ics avec la bibliothèque `icalendar`
+- **Décision :**
+  - **Fuseaux :** les rendez-vous gardent leur fuseau (TZID et définition VTIMEZONE incluse). Un cours hebdomadaire devient un seul événement récurrent (RRULE) dans son fuseau, avec la date de fin en UTC comme l'exige la RFC 5545.
+  - **Échéances :** un court événement qui finit à l'heure limite, avec un rappel la veille.
+  - **Blocs de travail :** en option, marqués « disponible » (ils n'apparaissent pas comme occupés).
+  - **Identifiants stables :** réimporter le fichier met à jour au lieu de dupliquer.
+- **Alternatives :** écrire le format à la main, tout exporter en UTC, une tâche VTODO par échéance.
+- **Pourquoi :** le format a des pièges (lignes coupées à 75 octets, caractères à échapper, fuseaux) que la bibliothèque gère. En UTC, le cours de 10 h passerait à 9 h après le 1er novembre. Google Agenda ignore les VTODO à l'import. Un test a montré que les annotations, qui portent un décalage fixe, perdaient le fuseau Europe/Paris : l'export utilise donc la sortie réelle du pipeline, qui porte des fuseaux IANA.
+
+### D45. Interface : FastAPI, gabarits Jinja, HTMX, FullCalendar
+- **Décision :**
+  - **Trois pages reliées par de vrais liens :** Aujourd'hui, Semaine, Échéances, plus une page par mail.
+  - **Énergie (HTMX) :** changer l'énergie envoie une requête et le serveur renvoie le fragment de page recalculé, sans écrire de JavaScript. Dans la vue Semaine, le serveur demande en plus au calendrier de recharger ses événements (en-tête `HX-Trigger: planChanged`).
+  - **Heures (FullCalendar) :** le calendrier reçoit les heures locales de l'Oregon sans décalage. Le serveur convertit, le navigateur affiche tel quel.
+- **Alternatives :** React ou Vue avec une API JSON, des vues sans JavaScript du tout, un calendrier dessiné à la main.
+- **Pourquoi :** tout le calcul reste en Python et testé côté serveur. Le seul JavaScript écrit à la main fait 25 lignes. Sans la conversion côté serveur, un recruteur qui ouvre la démo depuis Paris verrait les cours de 10 h à 18 h.
+
+### D46. Sécurité de l'interface
+- **Décision :**
+  - **Mails en texte :** le corps des mails est toujours affiché en texte échappé, jamais en HTML.
+  - **CSP stricte :** une politique de sécurité du contenu limite les scripts à l'app et aux fichiers CDN épinglés.
+  - **Empreintes SRI :** chaque fichier CDN porte son empreinte, et le navigateur refuse un fichier modifié.
+  - **Anti-CSRF :** les requêtes qui modifient quelque chose exigent l'en-tête `HX-Request`, qu'un formulaire d'un autre site ne peut pas envoyer.
+  - **Pas de Referer :** aucun référent n'est envoyé à Maps ou Zoom.
+  - **Écoute locale :** le serveur n'écoute que sur 127.0.0.1 par défaut.
+  - **Polices système :** pas de Google Fonts.
+- **Alternatives :** les réglages par défaut.
+- **Pourquoi :** une app qui lit des mails reçoit, par définition, du contenu écrit par des inconnus. Un mail piégé ne doit pouvoir exécuter ni script ni pixel espion : c'est testé avec un `<script>` et un `<img onerror>`. L'app ne doit pas non plus être joignable depuis le réseau du campus, ni prévenir Google à chaque ouverture.
+
+### D47. SQLite (SQLModel) seulement pour l'énergie choisie
+- **Décision :** une seule table, l'énergie de chaque jour, dans `~/.inbox-planner/` (hors du dépôt). Une base en mémoire sert pour les tests.
+- **Alternatives :** tout stocker (mails, réponses, plans), ou un fichier JSON.
+- **Pourquoi :** tout le reste se recalcule à partir de la boîte et des réponses enregistrées. Stocker plus, ce serait garder des copies de mails sans raison. SQLModel donne une table typée avec Pydantic, et SQLite ne demande aucun serveur. La table servira aussi à la validation humaine des brouillons (étape 6).
+
+### D48. Une interface inspirée de l'outil d'origine, sans ses données ni la marque de l'université
+- **Décision :** l'interface reprend la structure du planner que j'utilisais (onglets, sélecteur d'énergie segmenté, une couleur par type d'élément, heures en police à chasse fixe), lue en n'extrayant que la structure, jamais le contenu. La couleur d'accent n'est pas l'orange d'Oregon State.
+- **Alternatives :** repartir de zéro, reprendre la page telle quelle.
+- **Pourquoi :** l'ergonomie avait fait ses preuves pendant l'échange. Mais aucune donnée réelle ne doit entrer dans le dépôt, et reprendre la couleur de la marque donnerait l'impression d'un outil officiel de l'université.
+
+### D49. Le tri dépend du « maintenant » : constat sur Sonnet
+- **Constat :** avec l'heure de référence au 26 octobre, Sonnet classe en « info » les quatre mails d'emploi du temps reçus fin septembre (m04 à m07) : « message d'accueil vieux d'un mois, rien de nouveau à planifier ». Avec Sonnet comme trieur, ces mails ne passeraient pas à l'extraction, et les cours disparaîtraient du calendrier. Haiku, le trieur par défaut (D33), les garde en « rendez-vous ». Opus ne se trompe que sur une newsletter (m34).
+- **Décision :** garder la chaîne Haiku → Haiku et documenter le risque, sans réenregistrer une troisième fois.
+- **Alternatives :** (1) évaluer chaque mail avec « maintenant » = son heure de réception, ce qui simule une installation qui trie chaque mail dès qu'il arrive ; (2) toujours envoyer à l'extraction les mails qui décrivent un horaire récurrent, quel que soit le tri.
+- **Pourquoi :** c'est un artefact du traitement par lots : les 40 mails sont triés d'un coup, un mois après les premiers. Dans une vraie installation, un mail est trié à sa réception, et le message d'accueil d'un cours est alors forcément un rendez-vous. L'option (1) est la plus juste et sera faite si le temps le permet. Le constat montre en tout cas qu'un modèle « plus fort » n'est pas meilleur sur tout, et que le contexte temporel compte autant que le modèle.

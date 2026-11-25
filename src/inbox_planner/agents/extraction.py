@@ -33,6 +33,8 @@ sender's time zone, which is the mailbox default unless the e-mail says otherwis
 ("heure de Paris" means Europe/Paris; flight times are local to each airport).
 - A deadline without a time is due at 23:59.
 - Resolve relative dates ("this Monday", "tomorrow") from the date the e-mail was sent.
+- Judge time only against the reference time given above the e-mail, never \
+against any other date you may know.
 - duration_minutes: only if the e-mail gives it (a duration, an end time, a time limit); \
 otherwise null.
 - Weekly classes: one item whose local_datetime is the first session, with weekly_on \
@@ -116,16 +118,19 @@ class ExtractionResult:
 
 
 class ExtractionAgent:
-    def __init__(self, llm: LLMClient, model: str, timezones: Mapping[str, str]) -> None:
+    def __init__(
+        self, llm: LLMClient, model: str, timezones: Mapping[str, str], now: datetime
+    ) -> None:
         self.llm = llm
         self.model = model
         self.timezones = timezones
+        self.now = now  # the reference time: real now in production, frozen in the demo
 
     def run(self, message: Message) -> ExtractionResult:
         request = LLMRequest(
             model=self.model,
             system=SYSTEM_PROMPT,
-            prompt=render_message(message, self.timezones),
+            prompt=render_message(message, self.timezones, self.now),
             schema=ModelExtraction,
             tag=f"extraction/{message.id}",
         )

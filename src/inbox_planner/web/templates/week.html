@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Semaine{% endblock %}
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.22/index.global.min.js"
+          integrity="sha256-Zfkn8YAss1QoucXiqNInZjOIConuXqX5p3J/eYknhuo="
+          crossorigin="anonymous" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.22/locales/fr.global.min.js"
+          integrity="sha256-CwU/QBdXmPlg+xv4nmgxVoR7ga49pXpPxR6xhxq0ou0="
+          crossorigin="anonymous" defer></script>
+  <script src="/static/week.js" defer></script>
+{% endblock %}
+{% block content %}
+  {% include "_week_energy.html" %}
+  <section class="card">
+    <div id="calendar" data-initial-date="{{ days[0].isoformat() }}"
+         data-now="{{ now.replace(tzinfo=None).isoformat() }}"></div>
+    <ul class="legend" aria-label="Légende">
+      <li class="cat-cours">Cours</li><li class="cat-rdv">Rendez-vous</li><li class="cat-visio">Visio</li>
+      <li class="cat-travail">Travail planifié</li><li class="cat-echeance">Échéance</li><li class="cat-demarche">Démarche</li>
+    </ul>
+    <p class="muted small">Heures de l'Oregon ({{ zone.key }}), quel que soit le fuseau de ce navigateur. Cliquer sur un élément ouvre le mail d'origine.</p>
+  </section>
+{% endblock %}

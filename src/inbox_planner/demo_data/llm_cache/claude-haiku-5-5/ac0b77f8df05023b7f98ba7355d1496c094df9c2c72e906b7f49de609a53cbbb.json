@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m10",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:59+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2497,
+    "output_tokens": 214
+  },
+  "duration_ms": 1676,
+  "data": {
+    "category": "appointment",
+    "reason": "ST 421 Midterm 2 is on Thursday, November 5, 12:00-1:20 PM in Cypress Auditorium (not Larchmont Hall), so the student must be in that room at a fixed time."
+  }
+}

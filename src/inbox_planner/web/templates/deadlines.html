@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Échéances{% endblock %}
+{% block content %}
+  <section class="card">
+    <div class="row-between">
+      <h1>Échéances</h1>
+      <span class="eyebrow">Triées par urgence</span>
+    </div>
+    <div class="table-wrap">
+      <table class="deadlines">
+        <thead>
+          <tr><th scope="col">Échéance</th><th scope="col">Quand</th><th scope="col">Reste</th>
+              <th scope="col">Travail prévu</th><th scope="col">État</th><th scope="col">Priorité</th><th scope="col">Mail</th></tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr class="cat-{{ row.category }}">
+              <td><span class="tag">{{ kind_fr[row.category] }}</span> {{ row.task.title }}</td>
+              <td class="mono nowrap">{{ row.due|day }} {{ row.due|hhmm }}<br><small class="muted">Paris {{ row.task.due_at.astimezone(home_zone)|hhmm }}</small></td>
+              <td class="nowrap">{{ time_left(row.task.due_at) }}</td>
+              <td class="mono nowrap">{{ row.planned_minutes|hours }} / {{ row.task.minutes|hours }}</td>
+              <td><span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span></td>
+              <td>{{ {"high": "haute", "medium": "moyenne", "low": "basse"}[row.task.priority.value] }}</td>
+              <td><a href="/mails/{{ row.task.message_id }}">voir ↗</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="muted small">« Travail prévu » compte le temps placé dans la semaine selon l'énergie choisie. Sans estimation dans le mail, une tâche compte 1 h.</p>
+  </section>
+{% endblock %}

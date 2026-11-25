@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m11",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:32+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2401,
+    "output_tokens": 107
+  },
+  "duration_ms": 1239,
+  "data": {
+    "category": "info",
+    "reason": "Canvas notice that Quiz 3 grades were posted (18/20); nothing to schedule or submit."
+  }
+}

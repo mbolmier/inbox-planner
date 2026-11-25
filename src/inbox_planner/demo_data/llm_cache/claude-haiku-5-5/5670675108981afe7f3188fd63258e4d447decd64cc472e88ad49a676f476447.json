@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m29",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:46+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2464,
+    "output_tokens": 325
+  },
+  "duration_ms": 3650,
+  "data": {
+    "category": "procedure",
+    "reason": "Camille must upload renter's insurance proof to the resident portal by Saturday, October 31 at 5:00 PM, an administrative task required by the lease rather than academic work."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m38",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:48:08+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2449,
+    "output_tokens": 262
+  },
+  "duration_ms": 1909,
+  "data": {
+    "category": "appointment",
+    "reason": "A booked office-hours meeting with Priya Raman is confirmed for Tuesday, October 27, 2026 at 3:00 PM in Alder Hall 318, so Camille must be on campus then."
+  }
+}

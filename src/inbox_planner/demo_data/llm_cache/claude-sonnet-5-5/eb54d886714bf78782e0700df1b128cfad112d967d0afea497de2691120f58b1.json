@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m25",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:17+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2547,
+    "output_tokens": 282
+  },
+  "duration_ms": 2801,
+  "data": {
+    "category": "appointment",
+    "reason": "This confirms a booked flight leaving PDX on Friday 18 December 2026 at 13:05, so the student has to be at the airport at that time."
+  }
+}

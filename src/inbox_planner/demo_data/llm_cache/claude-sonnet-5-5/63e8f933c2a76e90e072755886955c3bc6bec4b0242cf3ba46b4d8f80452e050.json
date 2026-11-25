@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m27",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:20+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2386,
+    "output_tokens": 104
+  },
+  "duration_ms": 2081,
+  "data": {
+    "category": "noise",
+    "reason": "This is a streaming service's weekly newsletter with new releases, so it has no action or date for the student."
+  }
+}

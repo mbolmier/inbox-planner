@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m14",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:23+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2431,
+    "output_tokens": 112
+  },
+  "duration_ms": 1598,
+  "data": {
+    "category": "info",
+    "reason": "Optional career fair announced to all students via newsletter, with no registration required, so it's worth knowing but nothing to schedule."
+  }
+}

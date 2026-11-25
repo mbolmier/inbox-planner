@@ -7,6 +7,7 @@ goes through an explicit human validation step, added with those features.
 from collections.abc import Mapping
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from inbox_planner.agents.extraction import ExtractionAgent, ExtractionResult
 from inbox_planner.agents.triage import TriageAgent, TriageResult
@@ -34,10 +35,13 @@ def process_mailbox(
     triage_model: str = DEFAULT_TRIAGE_MODEL,
     extraction_model: str = DEFAULT_EXTRACTION_MODEL,
     workers: int = 4,
+    now: datetime | None = None,
 ) -> list[ProcessedMessage]:
+    """`now` is the reference time given to the agents (real time unless told otherwise)."""
+    now = now or datetime.now(UTC)
     messages = connector.fetch_messages()
-    triage_agent = TriageAgent(llm, triage_model, timezones)
-    extraction_agent = ExtractionAgent(llm, extraction_model, timezones)
+    triage_agent = TriageAgent(llm, triage_model, timezones, now)
+    extraction_agent = ExtractionAgent(llm, extraction_model, timezones, now)
 
     def triage(message: Message) -> TriageResult | None:
         try:

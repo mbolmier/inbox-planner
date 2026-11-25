@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m03",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:37+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2536,
+    "output_tokens": 140
+  },
+  "duration_ms": 1481,
+  "data": {
+    "category": "procedure",
+    "reason": "The student must complete an administrative alternance application file (company info sheet, liability insurance certificate, calendar) on the ENT before 6 Nov 2026 at 12:00, so it is a paperwork process."
+  }
+}

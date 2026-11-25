@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m02",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:56+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2547,
+    "output_tokens": 261
+  },
+  "duration_ms": 2120,
+  "data": {
+    "category": "appointment",
+    "reason": "Dana Whitfield has booked a 20-minute Zoom check-in with Camille on Thursday, October 29 at 2:00 PM Pacific, which is an online meeting at a set time."
+  }
+}

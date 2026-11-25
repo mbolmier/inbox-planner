@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m16",
+  "requested_model": "claude-opus-5-5",
+  "model": "claude-opus-5-5",
+  "recorded_at": "2026-11-25T10:48:57+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2471,
+    "output_tokens": 206
+  },
+  "duration_ms": 3521,
+  "data": {
+    "category": "procedure",
+    "reason": "The health insurance waiver was declined, so a new certificate of coverage has to be uploaded by Friday, October 30 at 5:00 PM Pacific, four days from the reference time."
+  }
+}

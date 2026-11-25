@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m26",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:30+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2471,
+    "output_tokens": 122
+  },
+  "duration_ms": 1520,
+  "data": {
+    "category": "appointment",
+    "reason": "Dental cleaning booked for Wednesday, November 4, 2026 at 9:30 AM in Corvallis, so the student must be there in person."
+  }
+}

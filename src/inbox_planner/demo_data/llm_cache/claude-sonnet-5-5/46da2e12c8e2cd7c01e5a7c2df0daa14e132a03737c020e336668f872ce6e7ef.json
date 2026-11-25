@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m29",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:16+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2442,
+    "output_tokens": 119
+  },
+  "duration_ms": 1714,
+  "data": {
+    "category": "procedure",
+    "reason": "The student must upload proof of renter's insurance to the resident portal (an administrative process required by the lease) by Oct 31, 5 PM."
+  }
+}

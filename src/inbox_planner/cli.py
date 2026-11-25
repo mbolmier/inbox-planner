@@ -82,7 +82,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         help="energy of each day from the demo Monday, e.g. creve,normal,forme,normal,off",
     )
+    web = commands.add_parser("web", help="open the web view of the demo (local only)")
+    web.add_argument(
+        "--host", default="127.0.0.1", help="127.0.0.1: reachable from this computer only"
+    )
+    web.add_argument("--port", type=int, default=8000)
     return parser
+
+
+def _web(args: argparse.Namespace) -> int:
+    import uvicorn
+
+    from inbox_planner.web.app import create_app
+
+    uvicorn.run(create_app(), host=args.host, port=args.port)
+    return 0
 
 
 def _evaluate(args: argparse.Namespace) -> int:
@@ -112,7 +126,7 @@ def _evaluate(args: argparse.Namespace) -> int:
 
 def _plan(args: argparse.Namespace) -> int:
     zone = ZoneInfo(DEMO_TIMEZONES["osu"])
-    processed = process_mailbox(DemoConnector(), CachedClient(), DEMO_TIMEZONES)
+    processed = process_mailbox(DemoConnector(), CachedClient(), DEMO_TIMEZONES, now=DEMO_NOW)
     items = items_by_message(processed)
     settings = PlannerSettings()
     horizon_end = DEMO_NOW + timedelta(days=settings.horizon_days)
@@ -132,11 +146,12 @@ def _plan(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
-    if args.command not in ("eval", "plan"):
-        print(f"inbox-planner {__version__}. Try: inbox-planner eval --help, inbox-planner plan")
+    commands = {"eval": _evaluate, "plan": _plan, "web": _web}
+    if args.command not in commands:
+        print(f"inbox-planner {__version__}. Commands: eval, plan, web (see --help)")
         return 0
     try:
-        return _evaluate(args) if args.command == "eval" else _plan(args)
+        return commands[args.command](args)
     except CacheMiss as error:
         print(f"Missing recorded answer ({error}). Re-run eval with --record.", file=sys.stderr)
         return 2

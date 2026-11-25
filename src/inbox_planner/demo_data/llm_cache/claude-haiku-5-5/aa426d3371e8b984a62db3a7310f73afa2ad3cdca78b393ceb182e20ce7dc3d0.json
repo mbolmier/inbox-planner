@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m23",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:57+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2408,
+    "output_tokens": 105
+  },
+  "duration_ms": 1328,
+  "data": {
+    "category": "noise",
+    "reason": "This is a social networking promotion about profile searches and a free Premium trial, with no action or schedule required."
+  }
+}

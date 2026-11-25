@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m06",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T10:48:14+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2490,
+    "output_tokens": 126
+  },
+  "duration_ms": 2343,
+  "data": {
+    "category": "info",
+    "reason": "This is a general course schedule sent to the whole class list. It gives the regular meeting times, and exact exam dates will come later, so there is nothing specific to schedule yet."
+  }
+}

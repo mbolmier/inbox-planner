@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m36",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T10:47:56+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2412,
+    "output_tokens": 218
+  },
+  "duration_ms": 2104,
+  "data": {
+    "category": "info",
+    "reason": "It announces a university closure with no classes on Wednesday, November 11 (Veterans Day), which is worth knowing but requires nothing to be scheduled or handed in."
+  }
+}

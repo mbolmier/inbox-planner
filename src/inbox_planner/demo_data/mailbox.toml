@@ -771,18 +771,23 @@ Need to cancel? https://bookings.oregonstate.example/manage/5521
 [[message]]
 id = "m39"
 mailbox = "personal"
-from = "Isabelle Roux <isabelle.roux@perso.example>"
+from = "Inès Garnier <ines.garnier@perso.example>"
 to = "Camille Roux <camille.roux@perso.example>"
-date = 2026-10-24T22:30:00+02:00
-subject = "Appel dimanche ?"
+date = 2026-10-25T19:40:00-07:00
+subject = "Blue Pool samedi + séance projet dimanche"
 text = '''
-Coucou ma chérie,
+Salut Camille !
 
-On t'appelle dimanche 1er novembre à 19 h, heure française, ça te va ?
-Papa sera là aussi. Dis-nous si c'est trop tôt pour toi avec le décalage.
+C'est validé pour la rando à Blue Pool samedi 31 octobre. Je passe te prendre à 7 h 30,
+retour prévu à Corvallis à 16 h. Un peu moins de 2 h de route jusqu'au départ du sentier
+(Tamolitch Blue Pool Trailhead), puis environ 7 km aller-retour à pied. Prends de bonnes
+chaussures, de l'eau et ton pique-nique.
 
-Bisous,
-Maman
+Et dimanche 1er novembre, on se pose chez moi de 14 h à 17 h pour avancer l'analyse du
+projet ST 411 et finir le HW 4 de CS 434.
+
+À samedi !
+Inès
 '''
 
 [[message]]

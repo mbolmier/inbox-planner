@@ -104,9 +104,10 @@ def test_calendar_feed_gives_oregon_wall_clock_times_without_offset(client):
 
     deadlines = [e for e in feed if e["title"].startswith("Échéance : ")]
     assert deadlines and all("end" not in e for e in deadlines)  # an instant, never past midnight
-    call = next(e for e in feed if e["title"] == "Appel avec la famille")
-    assert call["start"] == "2026-11-01T10:00:00"  # 19:00 in Paris that day
-    assert call["url"] == "/mails/m39"
+    hike, session = (e for e in feed if e.get("url") == "/mails/m39")
+    assert (hike["start"], hike["end"]) == ("2026-10-31T07:30:00", "2026-10-31T16:00:00")
+    # After the 1 November change (-07:00 to -08:00), 14:00 stays 14:00 on the wall clock.
+    assert (session["start"], session["end"]) == ("2026-11-01T14:00:00", "2026-11-01T17:00:00")
     assert all("+" not in e["start"] and not e["start"].endswith("Z") for e in feed)
 
 

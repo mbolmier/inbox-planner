@@ -363,3 +363,13 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** dans le texte d'un mail, seuls les liens `https` deviennent cliquables. Le texte affiché est court (domaine et début du chemin), le lien Outlook Safe Links est déballé, et le lien complet (le vrai, pas l'enveloppe Outlook) reste disponible sur demande. Tout le reste du texte est échappé.
 - **Alternatives :** le texte brut (illisible avec un lien Safe Links de 400 caractères), un HTML de mail rendu tel quel.
 - **Pourquoi :** lisibilité, sans rien céder sur la sécurité. Un lien `javascript:` ou `http:` reste du texte, et c'est testé.
+
+### D62. Une vue « Par jour » où chaque élément se lit en entier
+- **Décision :** la semaine s'ouvre sur une vue par jour (une colonne par jour, une case par élément) où chaque case grandit avec son texte. La grille horaire reste disponible d'un clic, et le choix est retenu dans le navigateur. Une échéance est un instant, sans heure de fin : elle n'occupe plus une heure qui déborde sur le lendemain.
+- **Alternatives :** agrandir encore les créneaux de la grille horaire, couper les titres.
+- **Pourquoi :** dans une grille horaire, la hauteur d'une case suit la durée. Un rendez-vous de 15 minutes ne peut donc jamais afficher un titre de deux lignes, quelle que soit la taille des créneaux. La vue par jour règle le problème à la racine. La grille reste utile pour voir les trous dans la journée.
+
+### D63. Une vie en dehors des cours dans la boîte de démo
+- **Décision :** le mail m39 (un appel familial) est remplacé par le mail d'une amie : une randonnée à Blue Pool le samedi 31 octobre et une séance de travail (projet ST 411, devoir de CS 434) le dimanche 1er novembre. Les deux éléments sont de part et d'autre du passage de l'Oregon à l'heure d'hiver (-07:00 puis -08:00). Le mail, son annotation et ses réponses enregistrées ont été refaits.
+- **Alternatives :** garder l'appel, ajouter un 41e mail.
+- **Pourquoi :** une semaine d'étudiant n'est pas faite que de cours, et un planificateur doit tenir compte des sorties. Garder 40 mails évite de changer la répartition par catégorie. Le piège des changements d'heure est conservé sous une autre forme : la séance de 14 h le dimanche doit rester à 14 h après le changement, ce que vérifient les tests.

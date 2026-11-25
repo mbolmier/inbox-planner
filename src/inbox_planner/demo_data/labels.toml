@@ -383,13 +383,22 @@ category = "appointment"
 [[label]]
 message = "m39"
 category = "appointment"
-note = "19 h à Paris le 1er novembre = 10 h en Oregon (écart de 9 h ce jour-là)."
+note = "Les deux sorties encadrent le changement d'heure américain (1er novembre, 2 h) : -07:00 le samedi, -08:00 le dimanche."
 
   [[label.items]]
   kind = "appointment"
-  title = "Appel avec la famille"
-  starts_at = 2026-11-01T19:00:00+01:00
+  title = "Randonnée à Blue Pool"
+  starts_at = 2026-10-31T07:30:00-07:00
+  duration_minutes = 510
+  location = "Tamolitch Blue Pool Trailhead"
   priority = "low"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "Séance de travail : projet ST 411 et HW 4 de CS 434"
+  starts_at = 2026-11-01T14:00:00-08:00
+  duration_minutes = 180
+  priority = "medium"
 
 [[label]]
 message = "m40"

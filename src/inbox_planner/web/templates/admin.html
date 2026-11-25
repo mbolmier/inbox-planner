@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import jn %}
+{% block title %}Administratif{% endblock %}
+{% block content %}
+  <section class="card">
+    <div class="row-between">
+      <h1>Administratif</h1>
+      <div class="counts">
+        <span class="status s-risk">{{ todo_count }} à faire</span>
+        <span class="status s-ok">{{ done_count }} faite{{ "s" if done_count > 1 }}</span>
+      </div>
+    </div>
+    <p class="muted small">Les démarches trouvées dans tes mails (visa, assurance, logement, dossiers de l'école…), groupées par organisme. Coche une démarche quand elle est faite : le travail prévu pour elle disparaît du planning.</p>
+    {% for group, rows in groups.items() %}
+      <section class="adm-group">
+        <h2>{{ group }} <small class="muted">{{ rows|length }} démarche{{ "s" if rows|length > 1 }}</small></h2>
+        <ul class="tasks">
+          {% for row in rows %}
+            {% set part = row.part %}
+            {% set is_done = row.status == "faite" %}
+            <li class="task cat-demarche{% if is_done %} done{% endif %}">
+              <input type="checkbox" name="done" value="true" {% if is_done %}checked{% endif %}
+                     aria-label="Marquer fait : {{ part.short }}"
+                     hx-post="/taches/{{ part.task_id }}/fait" hx-trigger="change" hx-swap="none">
+              <div class="task-body">
+                <span class="t">{{ part.short }}</span>
+                {% if part.short != part.title %}<div class="note">{{ part.title }}</div>{% endif %}
+                <div class="meta">
+                  {{ jn(part.due) }}
+                  <span class="mono">{{ row.due|day }} {{ row.due|hhmm }} · Paris {{ row.task.due_at.astimezone(home_zone)|hhmm }}</span>
+                  <span class="status s-{{ status_slug[row.status] }}">{{ row.status }}</span>
+                  {% if not is_done %}<span class="mono">travail prévu {{ row.planned_minutes|hours }} / {{ row.task.minutes|hours }}</span>{% endif %}
+                  {% if part.message_id %}<a href="/mails/{{ part.message_id }}">mail ↗</a>{% endif %}
+                  {% if part.site %}<a class="btn small" href="{{ part.site }}" target="_blank" rel="noopener noreferrer">Ouvrir le site</a>{% endif %}
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% else %}
+      <p class="muted">Aucune démarche dans tes mails.</p>
+    {% endfor %}
+  </section>
+{% endblock %}

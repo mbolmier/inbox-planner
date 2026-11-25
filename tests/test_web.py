@@ -9,7 +9,7 @@ from fakes import FakeLLM, oracle
 from fastapi.testclient import TestClient
 
 from inbox_planner.web.app import countdown, create_app
-from inbox_planner.web.state import AppData
+from inbox_planner.web.state import AppData, short_title, site_link
 from inbox_planner.web.store import LocalStore
 
 DATA = AppData.demo_mailbox(FakeLLM(oracle))
@@ -23,7 +23,16 @@ def client() -> TestClient:
 
 @pytest.mark.parametrize(
     "path",
-    ["/", "/jours", "/semaine", "/echeances", "/mails/m02", "/api/calendrier", "/export.ics"],
+    [
+        "/",
+        "/jours",
+        "/semaine",
+        "/echeances",
+        "/administratif",
+        "/mails/m02",
+        "/api/calendrier",
+        "/export.ics",
+    ],
 )
 def test_every_page_answers_with_security_headers(client, path):
     response = client.get(path)
@@ -107,7 +116,7 @@ def test_calendar_feed_gives_oregon_wall_clock_times_without_offset(client):
 
     deadlines = [e for e in feed if e["title"].startswith("Échéance : ")]
     assert deadlines and all("end" not in e for e in deadlines)  # an instant, never past midnight
-    hike, session = (e for e in feed if e.get("url") == "/mails/m39")
+    hike, session = (e for e in feed if e["extendedProps"].get("mail") == "/mails/m39")
     assert (hike["start"], hike["end"]) == ("2026-10-31T07:30:00", "2026-10-31T16:00:00")
     # After the 1 November change (-07:00 to -08:00), 14:00 stays 14:00 on the wall clock.
     assert (session["start"], session["end"]) == ("2026-11-01T14:00:00", "2026-11-01T17:00:00")
@@ -188,7 +197,9 @@ def test_day_by_day_shows_every_day_its_load_and_when_the_work_is_due(client):
     assert html.count('<article class="day-row') == 7
     assert html.count('<article class="day-row is-today">') == 1
     assert 'aria-label="Énergie du Samedi 31/10"' in html
-    assert 'échéance <span class="jn' in html  # each work block says when its deadline is
+    assert "Séance de travail" in html
+    assert 'hx-post="/taches/' in html  # every task can be ticked
+    assert '<span class="jn' in html  # and says how many days are left
     assert "Randonnée à Blue Pool" in html
 
 
@@ -201,3 +212,76 @@ def test_an_energy_change_in_the_day_by_day_view_replans_the_days(client):
     assert response.text.lstrip().startswith('<section id="days"')
     assert '<option value="off" selected>Off</option>' in response.text
     assert "0 h / 0 h" in response.text
+
+
+def test_a_work_session_is_one_calendar_item_with_a_short_line_per_task(client):
+    feed = client.get("/api/calendrier").json()
+
+    sessions = [e for e in feed if e["extendedProps"]["kind"] == "session"]
+    assert sessions and all(e["title"] == "Séance de travail" for e in sessions)
+    part = sessions[0]["extendedProps"]["parts"][0]
+    assert set(part) >= {"title", "short", "time", "due", "countdown", "mail"}
+    assert len(part["short"]) <= 44
+
+
+def test_a_task_marked_done_gets_no_more_work_and_can_be_unticked(client):
+    feed = client.get("/api/calendrier").json()
+    task_ids = {
+        p["mail"]
+        for e in feed
+        if e["extendedProps"]["kind"] == "session"
+        for p in e["extendedProps"]["parts"]
+    }
+    assert "/mails/m03" in task_ids  # the application file is planned this week
+
+    assert client.post("/taches/m03-0/fait", data={"done": "true"}).status_code == 403
+    response = client.post("/taches/m03-0/fait", data={"done": "true"}, headers=HTMX)
+    assert response.status_code == 204 and response.headers["hx-refresh"] == "true"
+    admin = client.get("/administratif").text
+    assert "1 faite" in admin
+    feed = client.get("/api/calendrier").json()
+    assert all(
+        p["mail"] != "/mails/m03"
+        for e in feed
+        for p in e["extendedProps"]["parts"]
+        if e["extendedProps"]["kind"] == "session"
+    )
+
+    client.post("/taches/m03-0/fait", headers=HTMX)  # unticked: no "done" field
+    assert "0 faite" in client.get("/administratif").text
+    assert client.post("/taches/nope/fait", data={"done": "true"}, headers=HTMX).status_code == 404
+
+
+def test_the_administrative_tab_groups_procedures_by_organisation(client):
+    html = client.get("/administratif").text
+
+    assert "Université Lyon 2" in html and "Oregon State University" in html
+    assert "à faire" in html
+
+
+@pytest.mark.parametrize(
+    ("title", "short"),
+    [
+        (
+            "CS 340 project: Step 3 draft (normalized schema + DDL) due on Canvas",
+            "CS 340 project: Step 3 draft",
+        ),
+        (
+            "ST 411 group project proposal due on Canvas (1-2 pages, PDF)",
+            "ST 411 group project proposal",
+        ),
+        ("CS 434 Quiz 5 (decision trees and ensembles) closes; timed", "CS 434 Quiz 5"),
+        ("Rendre le test technique (https://recrutement.example/test)", "Rendre le test technique"),
+    ],
+)
+def test_the_calendar_shows_a_few_words_per_task(title, short):
+    assert short_title(title) == short
+
+
+def test_only_https_links_become_a_site_button():
+    assert (
+        site_link("Confirm address (https://portal.example/iss/a).")
+        == "https://portal.example/iss/a"
+    )
+    assert site_link("Confirm address (http://portal.example/iss/a)") is None
+    assert site_link("Nothing to open") is None

@@ -1,5 +1,6 @@
 """What the pages show: the demo mailbox, or a real one (Gmail, IMAP)."""
 
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
@@ -10,7 +11,7 @@ from inbox_planner.connectors.base import MailConnector
 from inbox_planner.connectors.demo import DEMO_NOW, DEMO_TIMEZONES, DemoConnector
 from inbox_planner.llm.base import LLMClient
 from inbox_planner.llm.cache import CachedClient
-from inbox_planner.locations import Place, resolve_place
+from inbox_planner.locations import Place, is_safe_link, resolve_place
 from inbox_planner.pipeline import ProcessedMessage, items_by_message, process_mailbox
 from inbox_planner.planning.calendar import Event, build_events
 from inbox_planner.planning.energy import Energy
@@ -26,25 +27,58 @@ DRAFTING_MODEL = "claude-sonnet-5-5"
 
 
 @dataclass(frozen=True)
+class TaskPart:
+    """One task inside a work session, or a deadline: what to do, for when."""
+
+    task_id: str
+    title: str  # as extracted from the e-mail
+    short: str  # a few words, for the calendar
+    category: str  # echeance (coursework) or demarche (administrative)
+    due: datetime  # local time
+    minutes: int  # planned in this session (or the whole estimate, for a deadline)
+    message_id: str | None = None
+    site: str | None = None  # https link found in the task, if any
+    start: datetime | None = None  # local time, inside the session
+    end: datetime | None = None
+
+
+@dataclass(frozen=True)
 class AgendaEntry:
-    kind: str  # "event", "work" or "deadline"
+    kind: str  # "event", "session" or "deadline"
     category: str  # css class: cours, rdv, visio, travail, echeance, demarche
     title: str
     start: datetime  # local time
     end: datetime
     place: Place | None = None
     message_id: str | None = None
-    due: datetime | None = None  # local time of the deadline, for work and deadlines
+    parts: tuple[TaskPart, ...] = ()  # the tasks of a work session, or the deadline
+
+
+def short_title(title: str, limit: int = 44) -> str:
+    """A few words for the calendar: the title up to its first detail in brackets,
+    its first link or its "due on ..." ending. The full title stays one click away."""
+    text = re.split(r"\s\(|;\s|\s<?https?://", title, maxsplit=1)[0]
+    text = re.sub(r"\s+(due|closes|à rendre)\b.*$", "", text, flags=re.IGNORECASE)
+    text = text.rstrip(" ,:;-–") or title
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+
+
+def site_link(title: str) -> str | None:
+    """The first https link written in a task (a portal, a form), if any."""
+    match = re.search(r"https://[^\s<>()\"']+", title)
+    link = match.group(0).rstrip(".,;:") if match else None
+    return link if link and is_safe_link(link) else None
 
 
 @dataclass(frozen=True)
 class DeadlineRow:
     task: Task
+    part: TaskPart
     due: datetime  # local time
     category: str
     planned_minutes: int
     missing_minutes: int
-    status: str  # planifiée, à risque, dépassée, à suivre
+    status: str  # planifiée, à risque, dépassée, à suivre, faite
 
 
 @dataclass(frozen=True)
@@ -119,10 +153,16 @@ class AppData:
         end = self.now + timedelta(days=self.settings.horizon_days)
         return build_events(self.items, self.now, end, self.zone)
 
-    def plan(self, energy_by_day: Mapping[date, Energy]) -> Plan:
-        return plan_week(
-            self.tasks, self.events(), self.now, self.zone, energy_by_day, self.settings
-        )
+    def plan(
+        self, energy_by_day: Mapping[date, Energy], done: frozenset[str] = frozenset()
+    ) -> Plan:
+        """The week's plan; tasks marked done get no more work."""
+        tasks = [t for t in self.tasks if t.id not in done]
+        return plan_week(tasks, self.events(), self.now, self.zone, energy_by_day, self.settings)
+
+    def mailbox_of(self, message_id: str | None) -> str | None:
+        processed = self.processed.get(message_id or "")
+        return processed.message.mailbox if processed else None
 
     def area_of(self, message_id: str | None) -> str | None:
         processed = self.processed.get(message_id or "")
@@ -140,8 +180,25 @@ def _event_category(event: Event) -> str:
     return "visio" if event.video_url else "rdv"
 
 
-def agenda(data: AppData, plan: Plan, day: date) -> list[AgendaEntry]:
-    """Appointments, planned work and deadlines of one day, in time order."""
+def task_part(data: AppData, task: Task, **when) -> TaskPart:
+    return TaskPart(
+        task_id=task.id,
+        title=task.title,
+        short=short_title(task.title),
+        category=data.deadline_category(task.message_id),
+        due=task.due_at.astimezone(data.zone),
+        minutes=when.pop("minutes", task.minutes),
+        message_id=task.message_id,
+        site=site_link(task.title),
+        **when,
+    )
+
+
+def agenda(
+    data: AppData, plan: Plan, day: date, done: frozenset[str] = frozenset()
+) -> list[AgendaEntry]:
+    """Appointments, work sessions and deadlines of one day, in time order. Work blocks
+    that follow each other form one session."""
     local = data.zone
     entries = []
     for event in plan.events:
@@ -165,22 +222,22 @@ def agenda(data: AppData, plan: Plan, day: date) -> list[AgendaEntry]:
                 )
             )
     tasks = {t.id: t for t in data.tasks}
-    for block in plan.blocks:
-        if block.start.astimezone(local).date() == day:
-            entries.append(
-                AgendaEntry(
-                    "work",
-                    "travail",
-                    block.title,
-                    block.start.astimezone(local),
-                    block.end.astimezone(local),
-                    message_id=tasks[block.task_id].message_id,
-                    due=tasks[block.task_id].due_at.astimezone(local),
-                )
-            )
+    session: list[TaskPart] = []
+    for block in sorted(plan.blocks, key=lambda b: b.start):
+        if block.start.astimezone(local).date() != day:
+            continue
+        start, end = block.start.astimezone(local), block.end.astimezone(local)
+        if session and session[-1].end != start:
+            entries.append(_session(session))
+            session = []
+        session.append(
+            task_part(data, tasks[block.task_id], minutes=block.minutes, start=start, end=end)
+        )
+    if session:
+        entries.append(_session(session))
     for task in data.tasks:
         due = task.due_at.astimezone(local)
-        if due.date() == day:
+        if due.date() == day and task.id not in done:
             entries.append(
                 AgendaEntry(
                     "deadline",
@@ -189,13 +246,21 @@ def agenda(data: AppData, plan: Plan, day: date) -> list[AgendaEntry]:
                     due,
                     due,
                     message_id=task.message_id,
-                    due=due,
+                    parts=(task_part(data, task),),
                 )
             )
     return sorted(entries, key=lambda e: (e.start, e.kind != "deadline", e.title))
 
 
-def deadline_rows(data: AppData, plan: Plan) -> list[DeadlineRow]:
+def _session(parts: list[TaskPart]) -> AgendaEntry:
+    return AgendaEntry(
+        "session", "travail", "Séance de travail", parts[0].start, parts[-1].end, parts=tuple(parts)
+    )
+
+
+def deadline_rows(
+    data: AppData, plan: Plan, done: frozenset[str] = frozenset()
+) -> list[DeadlineRow]:
     """Every deadline, most urgent first, with how much of it is planned."""
     planned: dict[str, int] = {}
     for block in plan.blocks:
@@ -204,7 +269,9 @@ def deadline_rows(data: AppData, plan: Plan) -> list[DeadlineRow]:
     rows = []
     for task in data.tasks:
         shortfall = shortfalls.get(task.id)
-        if shortfall is None:
+        if task.id in done:
+            status = "faite"
+        elif shortfall is None:
             status = "planifiée"
         elif shortfall.reason == "échéance déjà passée":
             status = "dépassée"
@@ -215,6 +282,7 @@ def deadline_rows(data: AppData, plan: Plan) -> list[DeadlineRow]:
         rows.append(
             DeadlineRow(
                 task=task,
+                part=task_part(data, task),
                 due=task.due_at.astimezone(data.zone),
                 category=data.deadline_category(task.message_id),
                 planned_minutes=planned.get(task.id, 0),

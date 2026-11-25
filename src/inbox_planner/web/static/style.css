@@ -221,3 +221,40 @@ table.deadlines { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .meter i { display: block; height: 100%; background: var(--ok); }
 .meter.full i { background: var(--risk); }
 @media (max-width: 860px) { .day-row { grid-template-columns: 1fr; } }
+
+/* Tasks, as in a paper planner: a box to tick, what to do, for when */
+.tasks { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.task { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+.task input[type="checkbox"] { width: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--ok); cursor: pointer; }
+.task .t { font-weight: 650; }
+.task .note { color: var(--muted); font-size: .86rem; margin-top: 2px; overflow-wrap: anywhere; }
+.task .meta, .detail .meta { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin-top: 4px; font-size: .82rem; color: var(--muted); }
+.task.done { opacity: .6; }
+.task.done .t { text-decoration: line-through; }
+.hint { display: block; font-size: .8rem; color: var(--muted); font-style: italic; }
+.s-done { background: var(--ok); }
+.deadlines tr.done td { opacity: .6; }
+.deadlines td.tick { width: 28px; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.counts { display: flex; gap: 8px; }
+.adm-group { margin-top: 18px; }
+.adm-group h2 { font-size: 1.05rem; margin: 0 0 8px; }
+.day-sum { list-style: none; margin: 0; padding: 0; font-size: .82rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+
+/* Work sessions in the calendar: one short line per task */
+#calendar .ev-parts { margin: 3px 0 0; padding-left: 14px; font-size: .78rem; font-weight: 500; }
+#calendar .ev-parts li { margin: 1px 0; overflow-wrap: anywhere; }
+#calendar .fc-event { cursor: pointer; }
+
+/* Detail of a calendar item */
+.detail { max-width: 560px; width: calc(100% - 32px); border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); color: var(--ink); padding: 18px 20px; }
+.detail::backdrop { background: rgb(0 0 0 / .55); }
+.detail h2 { margin: 0 24px 4px 0; font-size: 1.15rem; }
+.detail-close { position: absolute; top: 10px; right: 12px; margin: 0; }
+.detail-close button { border: 0; background: transparent; color: var(--muted); font-size: 1.1rem; cursor: pointer; }
+.detail-parts { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.detail-part { border-left: 3px solid var(--travail); padding-left: 10px; }
+.detail-task { margin: 0; font-weight: 600; }
+.detail-links { display: flex; gap: 14px; margin: 6px 0 0; font-size: .9rem; }

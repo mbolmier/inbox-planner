@@ -10,7 +10,7 @@
 
 *Démo sur une boîte mail entièrement fictive. Aucun compte n'est nécessaire.*
 
-> **English summary.** inbox-planner reads several mailboxes (read-only), uses Claude to triage each e-mail and extract appointments and deadlines as validated JSON, then plans the week with a deterministic, energy-aware algorithm. Two design rules: **the LLM reads, the code computes** (time zones and daylight-saving changes are computed with `zoneinfo`, never by the model), and **nothing is ever sent** (replies are proposed, reviewed by a human, then saved as drafts). On 40 hand-labelled fictional e-mails, extraction is 30/30 with exact dates and time zones for Haiku, Sonnet and Opus, so the default chain uses Haiku (about $0.03 per 40 e-mails). Everything ran on a Claude subscription through Claude Code (a 20 €/month Pro plan is plenty; API-equivalent cost: about $0.03 for a week of 40 e-mails). Demo: `uv run inbox-planner web`, no account and no API key.
+> **English summary.** inbox-planner reads several mailboxes (read-only), uses Claude to triage each e-mail and extract appointments and deadlines as validated JSON, then plans the week with a deterministic, energy-aware algorithm. Two design rules: **the LLM reads, the code computes** (time zones and daylight-saving changes are computed with `zoneinfo`, never by the model), and **nothing is ever sent** (replies are proposed, reviewed by a human, then saved as drafts). On 40 hand-labelled fictional e-mails, extraction is 31/31 with exact dates and time zones for Haiku, Sonnet and Opus, so the default chain uses Haiku (about $0.03 per 40 e-mails). Everything ran on a Claude subscription through Claude Code (a 20 €/month Pro plan is plenty; API-equivalent cost: about $0.03 for a week of 40 e-mails). Demo: `uv run inbox-planner web`, no account and no API key.
 
 ---
 
@@ -27,10 +27,10 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 | **Connecteurs mail, lecture seule** | **Demo** (boîte fictive, par défaut). **Gmail** (API officielle, OAuth, lecture seule par défaut). **IMAP** (`EXAMINE` + `BODY.PEEK`, rien n'est modifié ni marqué comme lu). Tous passent par le même parseur. |
 | **Agent de tri** | Le mail est-il utile, et de quel type : rendez-vous, échéance, démarche, info ou bruit ? |
 | **Agent d'extraction** | Il renvoie du JSON validé par un schéma : titre, date et heure locales avec fuseau, durée, lieu, lien de visio avec ID et code, priorité, récurrence. |
-| **Planification** | Un algorithme déterministe (échéance la plus proche d'abord) répartit le travail à l'avance sur les jours qui précèdent chaque échéance, selon l'énergie du jour : Off, Crevé, Normal, En forme. |
+| **Planification** | Un algorithme déterministe (échéance la plus proche d'abord) répartit le travail à l'avance sur les jours qui précèdent chaque échéance, en séances à des heures normales (une par jour, deux si un cours coupe la journée), selon l'énergie du jour : Off, Crevé (1 h), Normal (2 h), En forme (3 h). L'énergie est proposée d'après la semaine et les cours, et se change d'un clic. |
 | **Agent de rédaction** | Il propose une réponse (confirmer, décliner, poser une question). Elle est relue, modifiée si besoin, puis enregistrée comme brouillon. **Jamais envoyée.** |
 | **Lieux cliquables** | Un rendez-vous physique ouvre Google Maps, un rendez-vous en ligne ouvre Teams, Zoom ou Meet (lien déballé des Safe Links d'Outlook). |
-| **Vue web** | Aujourd'hui avec les prochaines échéances en compte à rebours (auj., demain, J-3), le jour par jour avec la charge de chaque jour, la semaine (FullCalendar), les échéances triées par urgence, en thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
+| **Vue web** | Aujourd'hui avec les prochaines échéances en compte à rebours (auj., demain, J-3), le jour par jour avec la charge de chaque jour, la semaine (FullCalendar, détail au clic), les échéances triées par urgence, l'administratif groupé par organisme. Chaque tâche se coche quand elle est faite. Thème sombre ou clair. Chaque élément est relié à son mail d'origine, dont les liens sont raccourcis et cliquables. |
 | **Export** | Un fichier `.ics` pour Apple Calendar et Google Agenda : fuseaux conservés, cours récurrents, rappel la veille des échéances. |
 
 | Aujourd'hui | Semaine |
@@ -41,24 +41,24 @@ Je me suis construit un planner piloté par l'IA. Il lisait mes mails, en tirait
 
 ## Les chiffres
 
-Évaluation sur **40 mails fictifs annotés** ([guide d'annotation](docs/guide-annotation.md)), **30 éléments attendus**. Le jeu contient des pièges voulus : la semaine où l'écart Paris – Oregon n'est que de 8 h, des échéances juste après le changement d'heure, une sortie le samedi et une séance de travail le dimanche, de part et d'autre du passage à l'heure d'hiver en Oregon, des dates relatives (« this Monday »), un lien Teams emballé par Outlook Safe Links, un mail en HTML seul, une séance déplacée, des dates dans des promotions et un hameçonnage.
+Évaluation sur **40 mails fictifs annotés** ([guide d'annotation](docs/guide-annotation.md)), **31 éléments attendus**. Le jeu contient des pièges voulus : la semaine où l'écart Paris – Oregon n'est que de 8 h, des échéances juste après le changement d'heure, une sortie le samedi et une séance de travail le dimanche, de part et d'autre du passage à l'heure d'hiver en Oregon, un cours qui n'a pas la même heure le mercredi, des dates relatives (« this Monday »), un lien Teams emballé par Outlook Safe Links, un mail en HTML seul, une séance déplacée, des dates dans des promotions et un hameçonnage.
 
 | Tri | Exactitude | Rappel « utile » | Coût estimé (40 mails) |
 |---|---|---|---|
 | Haiku 5.5 | 95 % | 100 % | 0,016 $ |
 | Sonnet 5.5 | 90 % | 100 % | 0,250 $ |
-| Opus 5.5 | 98 % | 100 % | 0,544 $ |
+| Opus 5.5 | 98 % | 100 % | 0,543 $ |
 
 | Extraction | Dates exactes, fuseau compris | Liens visio | ID + code | Récurrences | Coût estimé (40 mails) |
 |---|---|---|---|---|---|
-| Haiku 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,023 $ |
-| Sonnet 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,368 $ |
-| Opus 5.5 | **30/30** | 4/4 | 4/4 | 5/5 | 0,771 $ |
+| Haiku 5.5 | **31/31** | 4/4 | 4/4 | 6/6 | 0,023 $ |
+| Sonnet 5.5 | **31/31** | 4/4 | 4/4 | 6/6 | 0,371 $ |
+| Opus 5.5 | **31/31** | 4/4 | 4/4 | 6/6 | 0,782 $ |
 
 **Chaîne par défaut : Haiku → Haiku**, avec 100 % de précision et de rappel pour **0,034 $** les 40 mails. Rapport complet : [docs/evaluation.md](docs/evaluation.md). La CI le régénère à chaque PR et échoue s'il n'est plus à jour.
 
 **Ce que ces chiffres disent, et ne disent pas :**
-- **L'extraction ne départage pas les modèles :** 100 % pour les trois. Avec 30 éléments, un 100 % reste compatible avec environ 10 % d'erreur réelle (règle de trois). Il faudrait un jeu plus difficile.
+- **L'extraction ne départage pas les modèles :** 100 % pour les trois. Avec 31 éléments, un 100 % reste compatible avec environ 10 % d'erreur réelle (règle de trois). Il faudrait un jeu plus difficile.
 - **Un modèle « plus fort » n'est pas meilleur sur tout.** Sonnet classe en « info » les mails d'emploi du temps reçus un mois plus tôt, ce qui retirerait les cours du calendrier ([D49](docs/decisions.md#d49-le-tri-dépend-du--maintenant---constat-sur-sonnet)).
 - **Les erreurs restantes viennent de ma spécification**, pas des modèles. Je n'ai volontairement pas retouché les prompts sur le jeu de test ([D34](docs/decisions.md#d34-pas-de-retouche-des-prompts-sur-le-jeu-de-test)).
 - **Coûts estimés au tarif public de l'API.** En réalité, tout a tourné sur un abonnement Claude, sans rien payer en plus (voir ci-dessous).
@@ -71,7 +71,7 @@ Pour comparer, voici ce que ça coûterait via l'API Anthropic, au tarif public 
 
 | Usage | Tokens | Coût API estimé |
 |---|---|---|
-| Une semaine type : les 40 mails de la démo, chaîne Haiku → Haiku | ≈ 222 000 | ≈ 0,03 $ |
+| Une semaine type : les 40 mails de la démo, chaîne Haiku → Haiku | ≈ 223 000 | ≈ 0,03 $ |
 | Ma vraie boîte Gmail : 100 mails sur 14 jours, analysés deux fois | ≈ 1,3 million | ≈ 0,15 $ |
 | Tout le projet : évaluation des 3 modèles enregistrée deux fois, essais réels, brouillons | — | ≈ 4 $ |
 
@@ -124,7 +124,7 @@ flowchart LR
 
 ## Les choix que je défends
 
-Les 66 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
+Les 71 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
 
 - **Le LLM lit, le code calcule** ([D25](docs/decisions.md#d25-le-llm-lit-le-code-calcule)). Le modèle renvoie une heure *locale* et un nom de fuseau ; `zoneinfo` calcule le décalage. Un LLM peut se tromper sur un changement d'heure, `zoneinfo` jamais. Exemple visible dans la démo : pour l'entretien du 3 novembre (mail m21), la justification écrite par le modèle dit « 17 h 30 à Paris, soit 9 h 30 à Los Angeles », ce qui est faux. L'heure affichée, calculée par `zoneinfo`, est la bonne : 8 h 30.
 - **La planification est un algorithme, pas un LLM** ([D36](docs/decisions.md#d36-la-planification-est-un-algorithme-pas-un-llm)). Elle a des contraintes dures (aucun chevauchement, capacité du jour, échéances) et doit être déterministe, testable et explicable. 300 semaines aléatoires vérifient 8 règles à chaque commit (tests par propriétés avec `hypothesis`).
@@ -163,7 +163,7 @@ src/inbox_planner/
   export/       .ics
   demo_data/    boîte fictive, annotations, réponses enregistrées
 docs/           décisions, évaluation, guide d'annotation, connecteurs, données de démo
-tests/          171 tests, dont propriétés (hypothesis) et garde-fous de confidentialité
+tests/          193 tests, dont propriétés (hypothesis) et garde-fous de confidentialité
 ```
 
 **Stack :** Python 3.12, uv, ruff, pytest, hypothesis, Pydantic, FastAPI, Jinja2, HTMX, FullCalendar, SQLModel/SQLite, icalendar, Claude (Haiku, Sonnet, Opus 5.5), GitHub Actions, Docker, gitleaks.

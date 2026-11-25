@@ -6,6 +6,8 @@
   </div>
   {% for row in rows %}
     {% set pct = [100, (100 * row.worked / row.capacity)|round|int]|min if row.capacity else 0 %}
+    {% set sessions = row.entries|selectattr("kind", "equalto", "session")|list %}
+    {% set deadlines = row.entries|selectattr("kind", "equalto", "deadline")|list %}
     <article class="day-row{% if row.day == today %} is-today{% endif %}">
       <header class="day-head">
         <h2>{{ row.day|day(true) }}</h2>
@@ -17,13 +19,19 @@
             <option value="{{ choice.value }}" {% if choice == row.energy %}selected{% endif %}>{{ profiles[choice].label_fr }}</option>
           {% endfor %}
         </select>
-        <div class="load" title="Travail prévu / capacité du jour">
-          <span class="mono small">{{ row.worked|hours }} / {{ row.capacity|hours }}</span>
+        {% if not row.chosen %}<span class="hint">proposée d'après la journée</span>{% endif %}
+        <div class="load" title="Travail perso prévu / capacité du jour">
+          <span class="mono small">{{ row.worked|hours }} / {{ row.capacity|hours }} de travail perso</span>
           <div class="meter{% if pct >= 90 %} full{% endif %}"><i style="width: {{ pct }}%"></i></div>
         </div>
+        <ul class="day-sum">
+          <li>{{ row.classes|hours }} de cours et rendez-vous</li>
+          <li>{{ sessions|length }} séance{{ "s" if sessions|length > 1 }} de travail</li>
+          {% if deadlines %}<li>{{ deadlines|length }} échéance{{ "s" if deadlines|length > 1 }}</li>{% endif %}
+        </ul>
       </header>
       <ol class="agenda">
-        {% for entry in row.entries %}{{ entry_row(entry) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
+        {% for entry in row.entries %}{{ entry_row(entry, done) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
       </ol>
     </article>
   {% endfor %}

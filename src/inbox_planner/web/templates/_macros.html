@@ -15,18 +15,48 @@
   <span class="jn u-{{ urgency }}" title="Échéance : {{ due|day }} à {{ due|hhmm }}">{{ label }}</span>
 {%- endmacro %}
 
-{% macro entry_row(entry) -%}
+{# One task, as in a paper planner: a box to tick, what to do, for when. #}
+{% macro task_line(part, done, show_time=true) -%}
+  {%- set is_done = part.task_id in done -%}
+  <li class="task cat-{{ part.category }}{% if is_done %} done{% endif %}">
+    <input type="checkbox" name="done" value="true" {% if is_done %}checked{% endif %}
+           aria-label="Marquer fait : {{ part.short }}"
+           hx-post="/taches/{{ part.task_id }}/fait" hx-trigger="change" hx-swap="none">
+    <div class="task-body">
+      <span class="t">{{ part.short }}</span>
+      {% if part.short != part.title %}<div class="note">{{ part.title }}</div>{% endif %}
+      <div class="meta">
+        <span class="tag">{{ "Démarche" if part.category == "demarche" else "Devoir" }}</span>
+        {% if show_time and part.start %}<span class="mono">{{ part.start|hhmm }}–{{ part.end|hhmm }}</span>{% endif %}
+        <span class="mono">≈ {{ part.minutes|duration }}</span>
+        <span>échéance {{ part.due|day }} {{ part.due|hhmm }}</span>
+        {{ jn(part.due) }}
+        {% if part.message_id %}<a href="/mails/{{ part.message_id }}">mail ↗</a>{% endif %}
+        {% if part.site %}<a href="{{ part.site }}" target="_blank" rel="noopener noreferrer">site ↗</a>{% endif %}
+      </div>
+    </div>
+  </li>
+{%- endmacro %}
+
+{% macro entry_row(entry, done) -%}
   <li class="entry cat-{{ entry.category }} kind-{{ entry.kind }}">
     <time class="when mono">
       {%- if entry.kind == "deadline" %}{{ entry.start|hhmm }}{% else %}{{ entry.start|hhmm }}–{{ entry.end|hhmm }}{% endif -%}
     </time>
     <div class="what">
-      <span class="tag">{{ kind_fr[entry.category] }}</span>
-      <span class="title">{{ entry.title }}</span>
-      {% if entry.kind == "work" and entry.due %}<span class="for">échéance {{ jn(entry.due) }}</span>{% endif %}
-      {% if entry.kind == "deadline" %}<span class="for">{{ jn(entry.due) }}</span>{% endif %}
-      {% if entry.place %}{{ place_link(entry.place) }}{% endif %}
+      {% if entry.kind == "session" %}
+        <span class="tag">Séance de travail</span>
+        <span class="muted small">{{ ((entry.end - entry.start).total_seconds() // 60)|int|duration }}</span>
+        <ul class="tasks">{% for part in entry.parts %}{{ task_line(part, done) }}{% endfor %}</ul>
+      {% elif entry.kind == "deadline" %}
+        <span class="tag">Échéance</span>
+        <ul class="tasks">{% for part in entry.parts %}{{ task_line(part, done, false) }}{% endfor %}</ul>
+      {% else %}
+        <span class="tag">{{ kind_fr[entry.category] }}</span>
+        <span class="title">{{ entry.title }}</span>
+        {% if entry.place %}{{ place_link(entry.place) }}{% endif %}
+      {% endif %}
     </div>
-    {% if entry.message_id %}<a class="src" href="/mails/{{ entry.message_id }}" title="Voir le mail d'origine">mail ↗</a>{% endif %}
+    {% if entry.kind == "event" and entry.message_id %}<a class="src" href="/mails/{{ entry.message_id }}" title="Voir le mail d'origine">mail ↗</a>{% endif %}
   </li>
 {%- endmacro %}

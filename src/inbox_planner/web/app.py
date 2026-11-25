@@ -26,7 +26,7 @@ from inbox_planner.llm.base import CacheMiss, LLMError
 from inbox_planner.locations import resolve_place
 from inbox_planner.mail.compose import DraftReply
 from inbox_planner.mail.models import Message
-from inbox_planner.planning.energy import PROFILES, Energy
+from inbox_planner.planning.energy import PROFILES, Energy, suggested_energy
 from inbox_planner.planning.render import DAYS_FR, hours
 from inbox_planner.schemas import Category
 from inbox_planner.web.links import linkify
@@ -45,7 +45,13 @@ CATEGORY_FR = {
     Category.INFO: "Info",
     Category.NOISE: "Bruit",
 }
-STATUS_SLUG = {"planifiée": "ok", "à risque": "risk", "dépassée": "late", "à suivre": "later"}
+STATUS_SLUG = {
+    "planifiée": "ok",
+    "à risque": "risk",
+    "dépassée": "late",
+    "à suivre": "later",
+    "faite": "done",
+}
 KIND_FR = {
     "cours": "Cours",
     "rdv": "Rendez-vous",
@@ -75,6 +81,13 @@ def time_left(due: datetime, now: datetime) -> str:
     if days:
         return f"dans {days} j {seconds // 3600} h"
     return f"dans {seconds // 3600} h {seconds % 3600 // 60:02d}"
+
+
+MAILBOX_FR = {"lyon2": "Université Lyon 2", "osu": "Oregon State University", "personal": "Perso"}
+
+
+def duration(minutes: int) -> str:
+    return f"{minutes} min" if minutes < 60 else hours(minutes)
 
 
 def countdown(due: datetime, now: datetime, zone: ZoneInfo) -> tuple[str, str]:
@@ -107,6 +120,7 @@ def create_app(
     templates.env.filters["hhmm"] = lambda moment: f"{moment:%H:%M}"
     templates.env.filters["day"] = day_label
     templates.env.filters["hours"] = hours
+    templates.env.filters["duration"] = duration
     templates.env.filters["linkify"] = linkify
     templates.env.globals.update(
         profiles=PROFILES,
@@ -134,8 +148,15 @@ def create_app(
         return response
 
     def energy_by_day() -> dict[date, Energy]:
+        """The energy chosen for each day, or the suggested one (D66) until then."""
         saved = store.energies()
-        return {day: saved.get(day, Energy.NORMAL) for day in data.days}
+        events = data.events()
+        return {
+            day: saved.get(day) or suggested_energy(day, events, data.zone) for day in data.days
+        }
+
+    def chosen_days() -> set[date]:
+        return set(store.energies())
 
     def context(request: Request, page: str) -> dict:
         now = data.now.astimezone(data.zone)
@@ -152,18 +173,22 @@ def create_app(
 
     def today_context(request: Request) -> dict:
         energy = energy_by_day()
-        plan = data.plan(energy)
+        done = store.done_tasks()
+        plan = data.plan(energy, done)
         today = data.days[0]
-        entries = agenda(data, plan, today)
+        entries = agenda(data, plan, today, done)
         upcoming = [e for e in entries if e.end > data.now.astimezone(data.zone)]
         soon = [
             row
-            for row in deadline_rows(data, plan)
+            for row in deadline_rows(data, plan, done)
             if data.now <= row.task.due_at < data.now + timedelta(days=len(data.days))
+            and row.status != "faite"
         ]
         return context(request, "today") | {
             "day": today,
             "energy": energy[today],
+            "energy_chosen": today in chosen_days(),
+            "done": done,
             "entries": entries,
             "next_entry": next((e for e in upcoming if e.kind != "deadline"), None),
             "soon": soon,
@@ -178,7 +203,7 @@ def create_app(
 
     def week_context(request: Request) -> dict:
         energy = energy_by_day()
-        plan = data.plan(energy)
+        plan = data.plan(energy, store.done_tasks())
         worked = dict.fromkeys(data.days, 0)
         for block in plan.blocks:
             worked[block.start.astimezone(data.zone).date()] += block.minutes
@@ -191,7 +216,9 @@ def create_app(
 
     def days_context(request: Request) -> dict:
         energy = energy_by_day()
-        plan = data.plan(energy)
+        done = store.done_tasks()
+        chosen = chosen_days()
+        plan = data.plan(energy, done)
         worked = dict.fromkeys(data.days, 0)
         for block in plan.blocks:
             worked[block.start.astimezone(data.zone).date()] += block.minutes
@@ -201,11 +228,19 @@ def create_app(
                 "energy": energy[day],
                 "worked": worked[day],
                 "capacity": PROFILES[energy[day]].capacity_minutes,
-                "entries": agenda(data, plan, day),
+                "chosen": day in chosen,
+                "entries": (entries := agenda(data, plan, day, done)),
+                "classes": sum((e.end - e.start for e in entries if e.kind == "event"), timedelta())
+                // timedelta(minutes=1),
             }
             for day in data.days
         ]
-        return context(request, "days") | {"rows": rows, "today": data.days[0], "plan": plan}
+        return context(request, "days") | {
+            "rows": rows,
+            "today": data.days[0],
+            "plan": plan,
+            "done": done,
+        }
 
     @app.get("/jours", response_class=HTMLResponse)
     def days(request: Request):
@@ -217,9 +252,35 @@ def create_app(
 
     @app.get("/echeances", response_class=HTMLResponse)
     def deadlines(request: Request):
-        rows = deadline_rows(data, data.plan(energy_by_day()))
+        done = store.done_tasks()
+        rows = deadline_rows(data, data.plan(energy_by_day(), done), done)
         return templates.TemplateResponse(
-            request, "deadlines.html", context(request, "deadlines") | {"rows": rows}
+            request, "deadlines.html", context(request, "deadlines") | {"rows": rows, "done": done}
+        )
+
+    @app.get("/administratif", response_class=HTMLResponse)
+    def administrative(request: Request):
+        """The administrative procedures only, grouped by the organisation that asks."""
+        done = store.done_tasks()
+        rows = [
+            r
+            for r in deadline_rows(data, data.plan(energy_by_day(), done), done)
+            if r.category == "demarche"
+        ]
+        groups: dict[str, list] = {}
+        for row in rows:
+            mailbox = data.mailbox_of(row.task.message_id) or ""
+            groups.setdefault(MAILBOX_FR.get(mailbox, mailbox or "Autre"), []).append(row)
+        return templates.TemplateResponse(
+            request,
+            "admin.html",
+            context(request, "admin")
+            | {
+                "groups": groups,
+                "done": done,
+                "todo_count": sum(r.status != "faite" for r in rows),
+                "done_count": sum(r.status == "faite" for r in rows),
+            },
         )
 
     @app.get("/mails/{message_id}", response_class=HTMLResponse)
@@ -245,22 +306,63 @@ def create_app(
     def calendar_feed() -> JSONResponse:
         """Events for FullCalendar, as local wall-clock times: the browser shows them
         as they are, whatever its own time zone (a recruiter in Paris sees Oregon time)."""
-        plan = data.plan(energy_by_day())
+        done = store.done_tasks()
+        plan = data.plan(energy_by_day(), done)
         feed = []
         for day in data.days:
-            for entry in agenda(data, plan, day):
+            for entry in agenda(data, plan, day, done):
                 # A deadline is an instant: no end, so it never spills over midnight.
                 is_deadline = entry.kind == "deadline"
+                title = entry.title
+                if is_deadline:
+                    title = "Échéance : " + entry.parts[0].short
                 feed.append(
                     {
-                        "title": ("Échéance : " if is_deadline else "") + entry.title,
+                        "title": title,
                         "start": entry.start.replace(tzinfo=None).isoformat(),
                         "classNames": [f"cat-{entry.category}", f"kind-{entry.kind}"],
+                        "extendedProps": detail(entry),
                     }
                     | ({} if is_deadline else {"end": entry.end.replace(tzinfo=None).isoformat()})
-                    | ({"url": f"/mails/{entry.message_id}"} if entry.message_id else {})
                 )
         return JSONResponse(feed)
+
+    def detail(entry) -> dict:
+        """What the calendar shows when an item is clicked. Links are only the app's
+        own pages, and https links already checked on the server."""
+        time_text = f"{entry.start:%H:%M}" + (
+            "" if entry.kind == "deadline" else f"–{entry.end:%H:%M}"
+        )
+        info: dict = {
+            "kind": entry.kind,
+            "title": entry.title,
+            "day": day_label(entry.start),
+            "time": time_text,
+        }
+        if entry.message_id:
+            info["mail"] = f"/mails/{entry.message_id}"
+        if entry.place:
+            info["place"] = {
+                "label": entry.place.label,
+                "url": entry.place.url,
+                "online": entry.place.online,
+            }
+        info["parts"] = [
+            {
+                "title": part.title,
+                "short": part.short,
+                "tag": "Démarche" if part.category == "demarche" else "Devoir",
+                "time": f"{part.start:%H:%M}–{part.end:%H:%M}" if part.start else None,
+                "minutes": duration(part.minutes),
+                "due": f"{day_label(part.due)} {part.due:%H:%M}",
+                "countdown": countdown(part.due, data.now, data.zone)[0],
+                "urgency": countdown(part.due, data.now, data.zone)[1],
+                "mail": f"/mails/{part.message_id}" if part.message_id else None,
+                "site": part.site,
+            }
+            for part in entry.parts
+        ]
+        return info
 
     @app.post("/energie/{day}", response_class=HTMLResponse)
     def set_energy(
@@ -283,6 +385,19 @@ def create_app(
             response.headers["HX-Trigger"] = "planChanged"  # the calendar reloads its events
             return response
         return templates.TemplateResponse(request, "_day_plan.html", today_context(request))
+
+    @app.post("/taches/{task_id}/fait")
+    def mark_done(
+        task_id: str,
+        done: Annotated[bool, Form()] = False,
+        hx_request: Annotated[str | None, Header()] = None,
+    ) -> Response:
+        """Tick or untick a task. Done tasks get no more work, so the page reloads."""
+        require_htmx(hx_request)
+        if task_id not in {t.id for t in data.tasks}:
+            raise HTTPException(status_code=404, detail="tâche inconnue")
+        store.set_done(task_id, done)
+        return Response(status_code=204, headers={"HX-Refresh": "true"})
 
     def require_htmx(hx_request: str | None) -> None:
         if hx_request != "true":
@@ -344,7 +459,7 @@ def create_app(
 
     @app.get("/export.ics")
     def export(travail: bool = False) -> Response:
-        plan = data.plan(energy_by_day()) if travail else None
+        plan = data.plan(energy_by_day(), store.done_tasks()) if travail else None
         body = build_calendar(
             data.items,
             {mid: p.message for mid, p in data.processed.items()},

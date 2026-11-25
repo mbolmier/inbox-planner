@@ -26,7 +26,7 @@ from inbox_planner.pipeline import (
     process_mailbox,
 )
 from inbox_planner.planning.calendar import build_events
-from inbox_planner.planning.energy import Energy
+from inbox_planner.planning.energy import Energy, suggested_energy
 from inbox_planner.planning.planner import PlannerSettings, plan_week, tasks_from_items
 from inbox_planner.planning.render import render_plan
 from inbox_planner.settings import map_area, paths, user_timezone
@@ -231,10 +231,15 @@ def _plan(args: argparse.Namespace) -> int:
     settings = PlannerSettings()
     horizon_end = DEMO_NOW + timedelta(days=settings.horizon_days)
     first_day = DEMO_NOW.astimezone(zone).date()
-    energy = {first_day + timedelta(days=n): e for n, e in enumerate(args.energy)}
+    events = build_events(items, DEMO_NOW, horizon_end, zone)
+    days = [first_day + timedelta(days=n) for n in range(settings.horizon_days)]
+    # Days not given on the command line get the suggested energy (start of the week
+    # fresh, end of the week and busy days tired).
+    energy = {day: suggested_energy(day, events, zone) for day in days}
+    energy |= {first_day + timedelta(days=n): e for n, e in enumerate(args.energy or [])}
     plan = plan_week(
         tasks_from_items(items, settings),
-        build_events(items, DEMO_NOW, horizon_end, zone),
+        events,
         DEMO_NOW,
         zone,
         energy,

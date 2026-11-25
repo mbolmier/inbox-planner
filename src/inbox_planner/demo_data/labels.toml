@@ -36,14 +36,24 @@ category = "procedure"
 [[label]]
 message = "m04"
 category = "appointment"
-note = "Les permanences (office hours) libres ne sont pas des rendez-vous."
+note = "Les permanences (office hours) libres ne sont pas des rendez-vous. Le cours du mercredi est à 9 h, les autres à 10 h : deux séries ; celle du lundi et du vendredi commence le vendredi 25 septembre."
 
   [[label.items]]
   kind = "appointment"
-  title = "ST 411 lecture"
-  starts_at = 2026-09-23T10:00:00-07:00
+  title = "ST 411 lecture (Wednesday)"
+  starts_at = 2026-09-23T09:00:00-07:00
   duration_minutes = 50
-  weekly_on = ["MO", "WE", "FR"]
+  weekly_on = ["WE"]
+  repeat_until = 2026-12-04
+  location = "Alder Hall 120"
+  priority = "medium"
+
+  [[label.items]]
+  kind = "appointment"
+  title = "ST 411 lecture (Monday and Friday)"
+  starts_at = 2026-09-25T10:00:00-07:00
+  duration_minutes = 50
+  weekly_on = ["MO", "FR"]
   repeat_until = 2026-12-04
   location = "Alder Hall 120"
   priority = "medium"

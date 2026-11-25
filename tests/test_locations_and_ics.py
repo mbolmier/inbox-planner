@@ -89,17 +89,19 @@ def events_of(calendar: Calendar) -> dict[str, object]:
 
 
 def test_weekly_class_is_one_recurring_event_in_its_time_zone():
-    [lecture] = [
-        e
+    lectures = {
+        tuple(e["rrule"]["BYDAY"]): e
         for uid, e in events_of(demo_calendar()).items()
-        if uid.startswith("m04-") and e["rrule"]["BYDAY"] == ["MO", "WE", "FR"]
-    ]
+        if uid.startswith("m04-")
+    }
+    monday_friday, wednesday = lectures[("MO", "FR")], lectures[("WE",)]
 
-    start = lecture.decoded("dtstart")
+    start = monday_friday.decoded("dtstart")
     assert start.tzinfo.key == "America/Los_Angeles"  # a TZID, not a fixed offset
     assert (start.hour, start.minute) == (10, 0)
-    rule = lecture["rrule"]
-    assert rule["FREQ"] == ["WEEKLY"] and rule["BYDAY"] == ["MO", "WE", "FR"]
+    assert (wednesday.decoded("dtstart").hour, wednesday.decoded("dtstart").minute) == (9, 0)
+    rule = monday_friday["rrule"]
+    assert rule["FREQ"] == ["WEEKLY"] and rule["BYDAY"] == ["MO", "FR"]
     assert rule["UNTIL"][0].tzinfo is not None  # UNTIL is in UTC, as RFC 5545 requires
 
 

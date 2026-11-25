@@ -1,0 +1,16 @@
+{
+  "tag": "triage/m04",
+  "requested_model": "claude-haiku-5-5",
+  "model": "claude-haiku-5-5",
+  "recorded_at": "2026-11-25T14:39:18+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2650,
+    "output_tokens": 714
+  },
+  "duration_ms": 6421,
+  "data": {
+    "category": "appointment",
+    "reason": "The e-mail lays out recurring in-person lectures (Mon/Wed/Fri) and Thursday labs that run until the last day of class on December 4, so the student must attend at those times; the first lecture on September 23 is already past as of the reference time."
+  }
+}

@@ -19,7 +19,8 @@
     <p class="muted">
       {% if profiles[energy].capacity_minutes %}
         {{ profiles[energy].label_fr }} : jusqu'à {{ profiles[energy].capacity_minutes|hours }} de travail,
-        par blocs de {{ profiles[energy].max_block_minutes }} min au plus. Prévu aujourd'hui : <b>{{ worked|hours }}</b>.
+        en séances de {{ profiles[energy].max_session_minutes|duration }} au plus. Prévu aujourd'hui : <b>{{ worked|hours }}</b>.
+        {% if not energy_chosen %}<span class="hint">Énergie proposée d'après ta journée : change-la si besoin.</span>{% endif %}
       {% else %}
         Journée off : aucun travail n'est planifié, seuls les rendez-vous restent.
       {% endif %}
@@ -28,7 +29,7 @@
       <p class="next">Ensuite : <time class="mono">{{ next_entry.start|hhmm }}</time> · {{ next_entry.title }}</p>
     {% endif %}
     <ol class="agenda">
-      {% for entry in entries %}{{ entry_row(entry) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
+      {% for entry in entries %}{{ entry_row(entry, done) }}{% else %}<li class="muted">Rien de prévu.</li>{% endfor %}
     </ol>
   </div>
 

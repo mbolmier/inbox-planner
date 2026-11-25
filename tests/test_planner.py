@@ -5,7 +5,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from inbox_planner.planning.calendar import Event, build_events, occurrences
-from inbox_planner.planning.energy import PROFILES, Energy
+from inbox_planner.planning.energy import PROFILES, Energy, suggested_energy
 from inbox_planner.planning.planner import (
     PlannerSettings,
     Task,
@@ -36,6 +36,19 @@ def event(start: datetime, minutes: int, title: str = "class") -> Event:
 
 def all_days(energy: Energy) -> dict[date, Energy]:
     return {MONDAY + timedelta(days=n): energy for n in range(7)}
+
+
+def session_lengths(plan) -> list[int]:
+    """Minutes of each work session: blocks that follow each other without a break."""
+    lengths: list[int] = []
+    previous = None
+    for block in sorted(plan.blocks, key=lambda b: b.start):
+        if previous is not None and previous.end == block.start:
+            lengths[-1] += block.minutes
+        else:
+            lengths.append(block.minutes)
+        previous = block
+    return lengths
 
 
 def minutes_per_task(plan) -> dict[str, int]:
@@ -125,12 +138,12 @@ def test_a_day_in_good_shape_takes_more_of_the_work():
     tuesday = at(1, 0).date()
     energy = all_days(Energy.NORMAL) | {tuesday: Energy.ENERGIZED}
 
-    plan = plan_week([task(f"t{n}", at(1, 20), 60) for n in range(4)], [], NOW, OREGON, energy)
+    plan = plan_week([task(f"t{n}", at(1, 20), 60) for n in range(5)], [], NOW, OREGON, energy)
 
     worked = {MONDAY: 0, tuesday: 0}
     for block in plan.blocks:
         worked[block.start.astimezone(OREGON).date()] += block.minutes
-    assert worked == {MONDAY: 60, tuesday: 180}
+    assert worked == {MONDAY: 120, tuesday: 180}
 
 
 def test_same_deadline_goes_by_priority():
@@ -149,12 +162,33 @@ def test_an_off_day_gets_no_work():
     assert all(b.start.astimezone(OREGON).date() != MONDAY for b in plan.blocks)
 
 
-def test_a_tired_day_has_short_blocks_and_little_work():
+def test_a_tired_day_has_short_sessions_and_little_work():
     plan = plan_week([task("big", at(6, 20), 600)], [], NOW, OREGON, all_days(Energy.TIRED))
 
     monday = [b for b in plan.blocks if b.start.astimezone(OREGON).date() == MONDAY]
     assert sum(b.minutes for b in monday) <= PROFILES[Energy.TIRED].capacity_minutes
-    assert all(b.minutes <= PROFILES[Energy.TIRED].max_block_minutes for b in plan.blocks)
+    assert all(s <= PROFILES[Energy.TIRED].max_session_minutes for s in session_lengths(plan))
+
+
+def test_the_work_of_a_day_forms_one_session_from_nine_in_the_morning():
+    tasks = [task("a", at(0, 20), 60), task("b", at(0, 20), 60)]
+
+    plan = plan_week(tasks, [event(at(0, 13), 60)], NOW, OREGON)
+
+    assert [
+        (b.start.astimezone(OREGON).time(), b.end.astimezone(OREGON).time()) for b in plan.blocks
+    ] == [
+        (time(9, 0), time(10, 0)),
+        (time(10, 0), time(11, 0)),
+    ]
+
+
+def test_a_class_in_the_way_splits_the_work_into_two_sessions():
+    # 10:00-10:50 class: 9:00-9:50 is too short for an hour, the session starts at 11:00.
+    plan = plan_week([task("a", at(0, 20), 60)], [event(at(0, 10), 50)], NOW, OREGON)
+
+    [block] = plan.blocks
+    assert block.start.astimezone(OREGON).time() == time(11, 0)
 
 
 def test_work_never_lands_on_an_appointment_or_its_margin():
@@ -168,10 +202,10 @@ def test_work_never_lands_on_an_appointment_or_its_margin():
 
 
 def test_no_crumbs_when_a_task_is_split():
-    # 60 minutes on a tired day (45-minute blocks) gives 35 + 25, not 45 + 15.
-    plan = plan_week([task("t", at(0, 20), 60)], [], NOW, OREGON, all_days(Energy.TIRED))
+    # 130 minutes on a day "En forme" (2-hour sessions) gives 105 + 25, not 120 + 10.
+    plan = plan_week([task("t", at(0, 20), 130)], [], NOW, OREGON, all_days(Energy.ENERGIZED))
 
-    assert [b.minutes for b in plan.blocks] == [35, 25]
+    assert [b.minutes for b in plan.blocks] == [105, 25]
 
 
 def test_not_enough_time_before_the_deadline_is_flagged():
@@ -258,9 +292,9 @@ def test_the_planning_rules_always_hold(events, tasks, energy):
     by_id = {t.id: t for t in tasks}
     blocks = sorted(plan.blocks, key=lambda b: b.start)
 
-    # 1. Blocks never overlap each other, and keep a break between them.
+    # 1. Blocks never overlap: they follow each other (same session) or keep a break.
     for first, second in zip(blocks, blocks[1:], strict=False):
-        assert first.end + GAP <= second.start
+        assert first.end == second.start or first.end + GAP <= second.start
     for block in blocks:
         local_start, local_end = block.start.astimezone(OREGON), block.end.astimezone(OREGON)
         profile = PROFILES[energy[local_start.date()]]
@@ -271,9 +305,18 @@ def test_the_planning_rules_always_hold(events, tasks, energy):
         # 4. Inside the working day.
         assert local_start.time() >= SETTINGS.day_start
         assert local_end.date() == local_start.date() and local_end.time() <= SETTINGS.day_end
-        # 5. Not longer than the energy of the day allows, and no crumbs.
-        assert block.minutes <= profile.max_block_minutes
+        # 5. No crumbs.
         assert block.minutes >= min(SETTINGS.min_block_minutes, by_id[block.task_id].minutes)
+        assert profile.capacity_minutes > 0
+    # 5b. A work session is never longer than the energy of its day allows.
+    previous, length = None, 0
+    for block in blocks:
+        length = (
+            length + block.minutes if previous and previous.end == block.start else block.minutes
+        )
+        day = block.start.astimezone(OREGON).date()
+        assert length <= PROFILES[energy[day]].max_session_minutes
+        previous = block
     # 6. The work of a day never exceeds its capacity.
     for day, day_energy in energy.items():
         worked = sum(b.minutes for b in blocks if b.start.astimezone(OREGON).date() == day)
@@ -285,3 +328,12 @@ def test_the_planning_rules_always_hold(events, tasks, energy):
         assert planned.get(t.id, 0) + missing.get(t.id, 0) == t.minutes
     # 8. Computed in UTC, so the plan does not depend on the zone of the input.
     assert plan == plan_week(tasks, events, NOW.astimezone(UTC), OREGON, energy)
+
+
+def test_suggested_energy_follows_the_week_and_the_classes():
+    busy_wednesday = [event(at(2, 9), 120), event(at(2, 13), 130)]  # 4 h 10
+
+    assert suggested_energy(MONDAY, [], OREGON) is Energy.ENERGIZED
+    assert suggested_energy(at(1, 0).date(), [], OREGON) is Energy.NORMAL
+    assert suggested_energy(at(2, 0).date(), busy_wednesday, OREGON) is Energy.TIRED
+    assert suggested_energy(at(4, 0).date(), [], OREGON) is Energy.TIRED  # Friday

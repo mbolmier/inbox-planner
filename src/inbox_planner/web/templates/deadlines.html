@@ -10,12 +10,15 @@
     <div class="table-wrap">
       <table class="deadlines">
         <thead>
-          <tr><th scope="col">Échéance</th><th scope="col">Quand</th><th scope="col">Reste</th>
+          <tr><th scope="col"><span class="visually-hidden">Fait</span></th><th scope="col">Échéance</th><th scope="col">Quand</th><th scope="col">Reste</th>
               <th scope="col">Travail prévu</th><th scope="col">État</th><th scope="col">Priorité</th><th scope="col">Mail</th></tr>
         </thead>
         <tbody>
           {% for row in rows %}
-            <tr class="cat-{{ row.category }}">
+            <tr class="cat-{{ row.category }}{% if row.status == "faite" %} done{% endif %}">
+              <td class="tick"><input type="checkbox" name="done" value="true" {% if row.status == "faite" %}checked{% endif %}
+                     aria-label="Marquer fait : {{ row.part.short }}"
+                     hx-post="/taches/{{ row.task.id }}/fait" hx-trigger="change" hx-swap="none"></td>
               <td><span class="tag">{{ kind_fr[row.category] }}</span> {{ row.task.title }}</td>
               <td class="mono nowrap">{{ row.due|day }} {{ row.due|hhmm }}<br><small class="muted">Paris {{ row.task.due_at.astimezone(home_zone)|hhmm }}</small></td>
               <td class="nowrap">{{ jn(row.due) }}<br><small class="muted">{{ time_left(row.task.due_at) }}</small></td>

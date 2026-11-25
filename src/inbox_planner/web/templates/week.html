@@ -18,6 +18,10 @@
       <li class="cat-cours">Cours</li><li class="cat-rdv">Rendez-vous</li><li class="cat-visio">Visio</li>
       <li class="cat-travail">Travail planifié</li><li class="cat-echeance">Échéance</li><li class="cat-demarche">Démarche</li>
     </ul>
-    <p class="muted small">Heures de l'Oregon ({{ zone.key }}), quel que soit le fuseau de ce navigateur. « Par jour » montre chaque élément en entier ; « Grille horaire » montre les durées. Cliquer sur un élément ouvre le mail d'origine.</p>
+    <p class="muted small">Heures de l'Oregon ({{ zone.key }}), quel que soit le fuseau de ce navigateur. « Par jour » montre chaque élément en entier ; « Grille horaire » montre les durées. Cliquer sur un élément affiche son détail.</p>
   </section>
+  <dialog id="detail" class="detail" aria-labelledby="detail-title">
+    <form method="dialog" class="detail-close"><button aria-label="Fermer">✕</button></form>
+    <div id="detail-body"></div>
+  </dialog>
 {% endblock %}

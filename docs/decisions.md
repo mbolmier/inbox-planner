@@ -217,7 +217,7 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 ### D38. L'énergie fixe la capacité du jour et la longueur des blocs
 - **Décision :** Off = 0, Crevé = 2 h par blocs de 45 min, Normal = 4 h par blocs de 1 h 30, En forme = 6 h par blocs de 2 h. Les journées vont de 8 h à 22 h, avec 15 min de marge autour de chaque rendez-vous et entre deux blocs. Une tâche sans estimation compte 1 h.
 - **Alternatives :** l'énergie qui change seulement l'ordre des tâches, un modèle appris.
-- **Pourquoi :** des règles simples qu'on peut expliquer et régler, et l'utilisatrice comprend tout de suite l'effet de son choix. Pas assez de données pour apprendre quoi que ce soit.
+- **Pourquoi :** des règles simples qu'on peut expliquer et régler, et l'utilisatrice comprend tout de suite l'effet de son choix. Pas assez de données pour apprendre quoi que ce soit. *(Capacités revues en D66 : 1, 2 et 3 h de travail perso, en séances.)*
 
 ### D39. Pas de miettes
 - **Décision :** un bloc ne laisse jamais un reste de moins de 25 minutes. Il prend tout d'un coup, ou s'arrête assez tôt pour laisser un vrai bloc.
@@ -383,3 +383,28 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** les échéances affichent un compte à rebours en jours de calendrier, comme dans un agenda papier : « auj. », « demain », « J-3 ». Chaque bloc de travail dit pour quand est son échéance. Un onglet « Jour par jour » liste les 7 jours : l'énergie (modifiable), la charge du jour (prévu / capacité, avec une jauge), puis les cours, rendez-vous, blocs de travail et échéances.
 - **Alternatives :** garder seulement « dans 2 j 15 h », tout montrer dans le calendrier de la semaine.
 - **Pourquoi :** c'est la mise en page de l'outil que j'utilisais pendant l'échange, et c'est le retour du premier utilisateur. « J-2 » se lit d'un coup d'œil, alors que « dans 2 j 15 h » se calcule. Les jours sont comptés dans le fuseau local : une échéance à 0 h 30 demain est « demain », pas « dans 16 h ». Le temps exact reste dans l'onglet Échéances. Le calendrier montre les heures, le jour par jour montre la charge.
+
+### D66. Des séances de travail, à des heures normales
+- **Décision :** le travail d'un jour forme une séance continue : un nouveau bloc prolonge la séance du jour s'il le peut. Une deuxième séance ne s'ouvre que si un cours coupe la journée ou si la séance a atteint sa durée maximale. Une séance s'ouvre dans le premier créneau libre assez long pour une séance complète, pas dans un reste de 50 minutes avant un cours. Pas de travail perso avant 9 h ni après 20 h, et 10 minutes de battement autour des cours. L'énergie fixe le travail perso du jour, en plus des cours : Crevé 1 h, Normal 2 h, En forme 3 h (avant : 2, 4 et 6 h), en séances de 2 h au plus (1 h si Crevé).
+- **Alternatives :** des blocs séparés par tâche (D64), des plages horaires fixes saisies à la main pour chaque jour.
+- **Pourquoi :** c'est le retour du premier utilisateur : des blocs éparpillés de 8 h à 13 h ne ressemblent pas à une journée d'étudiant, qui travaille en une séance, deux si les cours l'en empêchent. Avec la règle, la démo donne lundi 11 h – 13 h (après le cours de 10 h), mardi 9 h – 11 h, mercredi 10 h – 12 h (après le cours de 9 h). Une règle vaut mieux que des horaires saisis à la main : elle marche aussi sur une vraie boîte, et 300 semaines aléatoires la vérifient. Limite : le vendredi, la règle place la séance après le cours de 10 h (11 h – 12 h) ; 8 h – 10 h demanderait d'enchaîner sans battement avant le cours.
+
+### D67. Une énergie proposée selon la semaine
+- **Décision :** tant que l'étudiante n'a pas choisi, chaque jour reçoit une énergie proposée : En forme le lundi, Crevé le vendredi et les jours avec 4 h ou plus de cours et de rendez-vous, Normal sinon. L'interface indique qu'elle est proposée. Un choix l'emporte toujours sur la proposition.
+- **Alternatives :** Normal partout (ce qui était fait), une énergie apprise sur l'historique.
+- **Pourquoi :** avec Normal partout, le plan mettait la même charge chaque jour, ce qui n'est pas réaliste : on a plus d'énergie en début de semaine et moins les jours chargés en cours. La règle est simple, se dit en une phrase, et ne sert que de point de départ. Il n'y a pas d'historique pour apprendre.
+
+### D68. Dans le calendrier, une séance et quelques mots par tâche
+- **Décision :** dans la semaine, une séance de travail est une seule case « Séance de travail », avec une ligne courte par tâche. Le titre court est calculé en code : le titre jusqu'à sa première parenthèse, son premier lien ou son « due on… ». Un clic ouvre le détail : titre complet, horaire, durée, échéance et compte à rebours, liens vers le mail et vers le site de la démarche. Le détail est construit avec `textContent`, et seuls des liens `https` vérifiés côté serveur sont cliquables.
+- **Alternatives :** demander au modèle un titre court (un champ de plus dans l'extraction, donc tout réenregistrer), garder une case par tâche.
+- **Pourquoi :** une case par tâche, avec les titres complets des mails, rendait la semaine illisible. Couper le titre est de la mise en forme, pas de la compréhension : pas besoin d'un modèle. Le titre complet reste à un clic.
+
+### D69. Cocher une tâche faite, et un onglet Administratif
+- **Décision :** chaque tâche a une case « fait », enregistrée dans la base locale. Une tâche faite ne reçoit plus de travail et le plan se recalcule. Un onglet Administratif regroupe les démarches par organisme (Lyon 2, Oregon State, perso), avec le compte « à faire / faites » et un bouton vers le site quand le mail en donne un.
+- **Alternatives :** retirer la tâche du mail (impossible en lecture seule), garder les démarches mêlées aux devoirs.
+- **Pourquoi :** c'est la mise en page de l'outil d'origine. Sans case à cocher, un planificateur replanifie sans fin ce qui est déjà fait. Les démarches (visa, assurance, logement) n'ont pas le même rythme que les devoirs : elles méritent leur liste.
+
+### D70. Le cours de ST 411 du mercredi passe à 9 h
+- **Décision :** dans le mail m04, le cours a lieu le lundi et le vendredi à 10 h, et le mercredi à 9 h. L'annotation a désormais deux séries (31 éléments attendus au lieu de 30), et les réponses de ce mail ont été réenregistrées.
+- **Alternatives :** déplacer les trois séances à 9 h.
+- **Pourquoi :** c'est une demande du premier utilisateur, pour une démo plus proche d'un vrai emploi du temps. C'est aussi un piège de plus : la série du lundi et du vendredi commence le vendredi 25 septembre, pas le mercredi 23. Les trois modèles l'ont trouvé (31/31).

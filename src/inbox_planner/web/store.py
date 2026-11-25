@@ -1,6 +1,6 @@
 """SQLite storage for what must survive a restart: the energy chosen for each day,
-and, in the demo, the reply drafts the user approved (with a real mailbox they
-go to the mailbox's own drafts instead).
+the tasks marked done, and, in the demo, the reply drafts the user approved (with
+a real mailbox they go to the mailbox's own drafts instead).
 
 Everything else on the pages is recomputed from the mailbox and the recorded
 answers, so nothing else is stored.
@@ -23,6 +23,11 @@ DEFAULT_DB = Path.home() / ".inbox-planner" / "inbox-planner.db"
 class EnergyChoice(SQLModel, table=True):
     day: date = Field(primary_key=True)
     energy: Energy
+
+
+class DoneTask(SQLModel, table=True):
+    task_id: str = Field(primary_key=True)  # "<message id>-<item number>"
+    done_at: datetime
 
 
 class SavedDraft(SQLModel, table=True):
@@ -61,6 +66,19 @@ class LocalStore:
     def set_energy(self, day: date, energy: Energy) -> None:
         with Session(self.engine) as session:
             session.merge(EnergyChoice(day=day, energy=energy))
+            session.commit()
+
+    def done_tasks(self) -> frozenset[str]:
+        with Session(self.engine) as session:
+            return frozenset(d.task_id for d in session.exec(select(DoneTask)))
+
+    def set_done(self, task_id: str, done: bool) -> None:
+        with Session(self.engine) as session:
+            existing = session.get(DoneTask, task_id)
+            if done and existing is None:
+                session.add(DoneTask(task_id=task_id, done_at=datetime.now(UTC)))
+            elif not done and existing is not None:
+                session.delete(existing)
             session.commit()
 
     def save(self, original: Message, draft: DraftReply) -> str:

@@ -21,6 +21,11 @@ inbox-planner = "inbox_planner:main"
 anthropic = [
     "anthropic>=2.14.0",
 ]
+gmail = [
+    "google-api-python-client>=2.202.0",
+    "google-auth>=2.63.1",
+    "google-auth-oauthlib>=1.5.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
@@ -28,7 +33,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
-    "httpx>=0.28.1",
+    "httpx2>=2.16.2",
     "hypothesis>=6.170.17",
     "pre-commit>=4.7.0",
     "pytest>=9.2.0",

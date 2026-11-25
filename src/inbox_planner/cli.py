@@ -5,12 +5,14 @@
 """
 
 import argparse
+import os
 import sys
 from datetime import timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from inbox_planner import __version__
+from inbox_planner.agents.drafting import INSTRUCTIONS, can_reply
 from inbox_planner.connectors.demo import DEMO_NOW, DEMO_TIMEZONES, DemoConnector
 from inbox_planner.evaluation.report import render_report
 from inbox_planner.evaluation.runner import run_extraction, run_triage, score_pipeline
@@ -27,6 +29,7 @@ from inbox_planner.planning.calendar import build_events
 from inbox_planner.planning.energy import Energy
 from inbox_planner.planning.planner import PlannerSettings, plan_week, tasks_from_items
 from inbox_planner.planning.render import render_plan
+from inbox_planner.settings import map_area, paths, user_timezone
 
 MODELS = ("claude-haiku-5-5", "claude-sonnet-5-5", "claude-opus-5-5")
 ENERGY_WORDS = {
@@ -82,20 +85,117 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         help="energy of each day from the demo Monday, e.g. creve,normal,forme,normal,off",
     )
-    web = commands.add_parser("web", help="open the web view of the demo (local only)")
+    web = commands.add_parser("web", help="open the web view (local only)")
     web.add_argument(
         "--host", default="127.0.0.1", help="127.0.0.1: reachable from this computer only"
     )
     web.add_argument("--port", type=int, default=8000)
+    web.add_argument(
+        "--source",
+        choices=["demo", "gmail"],
+        default="demo",
+        help="demo: fictional mailbox, no account; gmail: your inbox (read-only)",
+    )
+    web.add_argument(
+        "--drafts",
+        action="store_true",
+        help="with gmail: save approved replies as Gmail drafts (separate consent, never sent)",
+    )
+    web.add_argument("--signature", default=os.environ.get("INBOX_PLANNER_SIGNATURE", "Martin"))
+
+    gmail = commands.add_parser("gmail", help="Gmail sign-in (opens your browser)")
+    gmail.add_argument("action", choices=["login"])
+    gmail.add_argument(
+        "--drafts", action="store_true", help="also allow saving drafts (gmail.compose)"
+    )
+
+    record = commands.add_parser(
+        "record-drafts", help="record demo reply drafts with Claude Code (your subscription)"
+    )
+    record.add_argument("--intent", default="confirmer", choices=list(INSTRUCTIONS))
     return parser
+
+
+def _gmail_service(drafts: bool, allow_browser: bool):
+    from inbox_planner.connectors.google_auth import (
+        GMAIL_DRAFT_SCOPES,
+        GMAIL_READ_SCOPES,
+        gmail_credentials,
+        gmail_service,
+    )
+
+    folder = paths()
+    scopes, token = (
+        (GMAIL_DRAFT_SCOPES, folder.tokens / "gmail-drafts.json")
+        if drafts
+        else (GMAIL_READ_SCOPES, folder.tokens / "gmail-read.json")
+    )
+    credentials = gmail_credentials(scopes, token, folder.google_client_secret, allow_browser)
+    return gmail_service(credentials)
+
+
+def _gmail(args: argparse.Namespace) -> int:
+    from inbox_planner.connectors.google_auth import ConnectorAuthError
+
+    try:
+        service = _gmail_service(drafts=False, allow_browser=True)
+        address = service.users().getProfile(userId="me").execute()["emailAddress"]
+        print(f"Lecture Gmail autorisée pour {address}.")
+        if args.drafts:
+            _gmail_service(drafts=True, allow_browser=True)
+            print("Création de brouillons autorisée (jamais d'envoi).")
+    except ConnectorAuthError as error:
+        print(f"Connexion Gmail impossible : {error}", file=sys.stderr)
+        return 2
+    print(f"Jetons enregistrés dans {paths().tokens} (lisibles par toi seul).")
+    return 0
 
 
 def _web(args: argparse.Namespace) -> int:
     import uvicorn
 
     from inbox_planner.web.app import create_app
+    from inbox_planner.web.state import AppData
 
-    uvicorn.run(create_app(), host=args.host, port=args.port)
+    if args.source == "demo":
+        app = create_app()
+    else:
+        from inbox_planner.connectors.gmail import GmailConnector, GmailDraftWriter
+
+        print(
+            "Analyse de ta boîte Gmail (14 derniers jours) avec Claude Code.\n"
+            "Le contenu des mails est envoyé à Claude avec ton abonnement ; les réponses\n"
+            f"restent en cache dans {paths().llm_cache}, hors du dépôt."
+        )
+        connector = GmailConnector(_gmail_service(drafts=False, allow_browser=False))
+        llm = CachedClient(paths().llm_cache, live=ClaudeCodeClient())
+        data = AppData.real_mailbox(
+            connector, llm, user_timezone(), map_area(), signature=args.signature
+        )
+        writer = (
+            GmailDraftWriter(_gmail_service(drafts=True, allow_browser=False))
+            if args.drafts
+            else None
+        )
+        print(f"{len(data.processed)} mails analysés.")
+        app = create_app(data, draft_sink=writer)
+    uvicorn.run(app, host=args.host, port=args.port)
+    return 0
+
+
+def _record_drafts(args: argparse.Namespace) -> int:
+    """Record the demo's reply proposals, so the demo can show them without an account."""
+    from inbox_planner.web.state import AppData
+
+    data = AppData.demo_mailbox(CachedClient(live=ClaudeCodeClient()))
+    drafter = data.drafter()
+    done = 0
+    for processed in data.processed.values():
+        actionable = processed.extraction is not None
+        if actionable and can_reply(processed.message):
+            drafter.run(processed.message, args.intent)
+            done += 1
+    print(f"{done} propositions de réponse enregistrées ({args.intent}).")
     return 0
 
 
@@ -146,9 +246,15 @@ def _plan(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
-    commands = {"eval": _evaluate, "plan": _plan, "web": _web}
+    commands = {
+        "eval": _evaluate,
+        "plan": _plan,
+        "web": _web,
+        "gmail": _gmail,
+        "record-drafts": _record_drafts,
+    }
     if args.command not in commands:
-        print(f"inbox-planner {__version__}. Commands: eval, plan, web (see --help)")
+        print(f"inbox-planner {__version__}. Commands: eval, plan, web, gmail (see --help)")
         return 0
     try:
         return commands[args.command](args)

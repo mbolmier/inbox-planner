@@ -12,20 +12,24 @@ Security choices:
 
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Protocol
 
 from fastapi import FastAPI, Form, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from inbox_planner.agents.drafting import INSTRUCTIONS, can_reply
 from inbox_planner.export.ics import build_calendar
+from inbox_planner.llm.base import CacheMiss, LLMError
 from inbox_planner.locations import resolve_place
+from inbox_planner.mail.compose import DraftReply
+from inbox_planner.mail.models import Message
 from inbox_planner.planning.energy import PROFILES, Energy
 from inbox_planner.planning.render import DAYS_FR, hours
 from inbox_planner.schemas import Category
-from inbox_planner.web.state import DEMO_AREAS, HOME_ZONE, DemoData, agenda, deadline_rows
-from inbox_planner.web.store import EnergyStore
+from inbox_planner.web.state import HOME_ZONE, AppData, agenda, deadline_rows
+from inbox_planner.web.store import LocalStore
 
 HERE = Path(__file__).parent
 MONTHS_FR = (
@@ -71,9 +75,20 @@ def time_left(due: datetime, now: datetime) -> str:
     return f"dans {seconds // 3600} h {seconds % 3600 // 60:02d}"
 
 
-def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -> FastAPI:
-    data = data or DemoData.load()
-    store = store or EnergyStore.from_env()
+class DraftSink(Protocol):
+    """Where an approved draft goes: local storage (demo) or the mailbox's drafts."""
+
+    def save(self, original: Message, draft: DraftReply) -> str: ...
+
+
+def create_app(
+    data: AppData | None = None,
+    store: LocalStore | None = None,
+    draft_sink: DraftSink | None = None,
+) -> FastAPI:
+    data = data or AppData.demo_mailbox()
+    store = store or LocalStore.from_env()
+    sink: DraftSink = draft_sink or store
     app = FastAPI(title="inbox-planner", docs_url=None, redoc_url=None, openapi_url=None)
     app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
     templates = Jinja2Templates(directory=HERE / "templates")
@@ -88,6 +103,9 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
         kind_fr=KIND_FR,
         home_zone=HOME_ZONE,
         time_left=lambda due: time_left(due, data.now),
+        demo=data.demo,
+        intents=list(INSTRUCTIONS),
+        draft_target=getattr(sink, "label", "cet ordinateur"),
         item_place=lambda item, area: resolve_place(
             item.location, item.video_url, item.meeting_id, item.passcode, area
         ),
@@ -102,7 +120,7 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
         return response
 
     def energy_by_day() -> dict[date, Energy]:
-        saved = store.all()
+        saved = store.energies()
         return {day: saved.get(day, Energy.NORMAL) for day in data.days}
 
     def context(request: Request, page: str) -> dict:
@@ -182,7 +200,8 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
                 "processed": processed,
                 "sent": processed.message.sent_at.astimezone(data.zone),
                 "items": items,
-                "area": DEMO_AREAS.get(processed.message.mailbox),
+                "area": data.areas.get(processed.message.mailbox),
+                "can_reply": can_reply(processed.message),
             },
         )
 
@@ -214,11 +233,10 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
         view: Annotated[str, Form()] = "today",
         hx_request: Annotated[str | None, Header()] = None,
     ):
-        if hx_request != "true":
-            raise HTTPException(status_code=403, detail="requête refusée")
+        require_htmx(hx_request)
         if day not in data.days:
             raise HTTPException(status_code=404, detail="jour hors de la période planifiée")
-        store.set(day, energy)
+        store.set_energy(day, energy)
         if view == "week":
             response = templates.TemplateResponse(
                 request, "_week_energy.html", week_context(request)
@@ -227,6 +245,64 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
             return response
         return templates.TemplateResponse(request, "_day_plan.html", today_context(request))
 
+    def require_htmx(hx_request: str | None) -> None:
+        if hx_request != "true":
+            raise HTTPException(status_code=403, detail="requête refusée")
+
+    def message_or_404(message_id: str) -> Message:
+        processed = data.processed.get(message_id)
+        if processed is None:
+            raise HTTPException(status_code=404, detail="mail inconnu")
+        return processed.message
+
+    @app.post("/mails/{message_id}/reponse", response_class=HTMLResponse)
+    def propose_reply(
+        request: Request,
+        message_id: str,
+        intent: Annotated[str, Form()] = "confirmer",
+        hx_request: Annotated[str | None, Header()] = None,
+    ):
+        """Step 1: the agent PROPOSES a reply. Nothing is written anywhere."""
+        require_htmx(hx_request)
+        message = message_or_404(message_id)
+        if intent not in INSTRUCTIONS or not can_reply(message):
+            raise HTTPException(status_code=400, detail="réponse impossible")
+        error, draft = None, None
+        try:
+            draft = data.drafter().run(message, intent)
+        except CacheMiss:
+            error = "Cette réponse n'a pas été enregistrée pour la démo."
+        except LLMError:
+            error = "Le modèle n'a pas pu proposer de réponse. Réessaie plus tard."
+        return templates.TemplateResponse(
+            request,
+            "_draft.html",
+            context(request, "mail") | {"message": message, "draft": draft, "error": error},
+        )
+
+    @app.post("/mails/{message_id}/reponse/enregistrer", response_class=HTMLResponse)
+    def save_reply(
+        request: Request,
+        message_id: str,
+        to: Annotated[str, Form()],
+        subject: Annotated[str, Form()],
+        body: Annotated[str, Form()],
+        hx_request: Annotated[str | None, Header()] = None,
+    ):
+        """Step 2: the user reviewed (and maybe edited) the text and clicked. Only now
+        is a DRAFT written. Never sent."""
+        require_htmx(hx_request)
+        message = message_or_404(message_id)
+        if not body.strip():
+            raise HTTPException(status_code=400, detail="brouillon vide")
+        draft = DraftReply(source_message_id=message.id, to=to, subject=subject, body=body)
+        draft_id = sink.save(message, draft)
+        return templates.TemplateResponse(
+            request,
+            "_draft_saved.html",
+            context(request, "mail") | {"draft": draft, "draft_id": draft_id},
+        )
+
     @app.get("/export.ics")
     def export(travail: bool = False) -> Response:
         plan = data.plan(energy_by_day()) if travail else None
@@ -234,7 +310,7 @@ def create_app(data: DemoData | None = None, store: EnergyStore | None = None) -
             data.items,
             {mid: p.message for mid, p in data.processed.items()},
             data.zone,
-            DEMO_AREAS,
+            data.areas,
             plan.blocks if plan else (),
         )
         return Response(

@@ -41,7 +41,25 @@
       {% elif processed.extraction is none and processed.triage %}
         <p class="muted small">Pas d'extraction : le tri n'a rien trouvé à planifier.</p>
       {% endif %}
-      <p class="muted small">Aucune réponse n'est envoyée automatiquement.</p>
     </aside>
   </section>
+
+  {% if can_reply %}
+  <section class="card reply-box">
+    <div class="row-between">
+      <h2>Répondre</h2>
+      <div class="seg" role="group" aria-label="Type de réponse">
+        {% for intent in intents %}
+          <button type="button" hx-post="/mails/{{ message.id }}/reponse"
+                  hx-vals='{"intent": "{{ intent }}"}' hx-target="#reply" hx-swap="outerHTML">
+            {{ {"confirmer": "Confirmer", "decliner": "Décliner", "question": "Poser une question"}[intent] }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+    <div id="reply" class="reply">
+      <p class="muted small">L'IA propose un texte ; tu le relis, tu le modifies et tu décides de l'enregistrer comme brouillon. Rien n'est jamais envoyé.</p>
+    </div>
+  </section>
+  {% endif %}
 {% endblock %}

@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m32",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:16+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2258,
+    "output_tokens": 134
+  },
+  "duration_ms": 1524,
+  "data": {
+    "body": "Bonjour,\n\nJe vous confirme la bonne réception de votre message. Je rendrai mon rapport intermédiaire sur la plateforme mobilité dans les délais, avant le vendredi 20 novembre.\n\nCordialement,\nCamille"
+  }
+}

@@ -59,6 +59,8 @@ def oracle(request: LLMRequest) -> dict[str, Any]:
     """A perfect model: it answers exactly what the labels expect."""
     task, message_id = request.tag.split("/")
     label = load_labels()[message_id]
+    if task.startswith("draft-"):
+        return {"body": f"Bonjour,\n\nC'est noté pour « {message_id} ».\n\nCamille"}
     if task == "triage":
         return {"category": label.category.value, "reason": "oracle"}
     return {"items": [as_model_item(item) for item in label.items]}

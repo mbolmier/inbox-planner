@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m16",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:13+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2237,
+    "output_tokens": 139
+  },
+  "duration_ms": 1412,
+  "data": {
+    "body": "Hello,\n\nThank you for your message. I confirm that I have received it, and I will upload an updated certificate of coverage in English, showing the policy start and end dates, before the deadline of 5:00 PM Pacific on Friday, October 30.\n\nKind regards,\nCamille"
+  }
+}

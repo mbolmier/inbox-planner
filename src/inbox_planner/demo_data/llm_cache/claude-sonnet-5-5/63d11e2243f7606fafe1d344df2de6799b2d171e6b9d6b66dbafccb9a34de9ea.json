@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m13",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:40+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2210,
+    "output_tokens": 123
+  },
+  "duration_ms": 1452,
+  "data": {
+    "body": "Hi Noor,\n\nThank you for the update. I confirm that I've noted the change: lab on Friday, October 30, 1:00-2:50 PM, in Hemlock Hall 211.\n\nBest regards,\nCamille"
+  }
+}

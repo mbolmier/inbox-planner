@@ -16,3 +16,6 @@ class Message(BaseModel):
     sent_at: AwareDatetime  # a date without a timezone is rejected
     body_text: str
     body_html: str | None = None
+    header_id: str | None = None  # the RFC Message-ID, used to reply in the same thread
+    references: tuple[str, ...] = ()  # earlier Message-IDs of the thread
+    thread_id: str | None = None  # provider thread id (Gmail), when there is one

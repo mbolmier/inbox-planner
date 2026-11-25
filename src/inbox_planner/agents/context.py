@@ -19,10 +19,14 @@ def _stamp(moment: datetime, zone_name: str) -> str:
     return f"{local:%A %Y-%m-%d %H:%M} ({zone_name}, UTC{offset[:3]}:{offset[3:]})"
 
 
-def render_message(message: Message, timezones: Mapping[str, str], now: datetime) -> str:
+def render_message(message: Message, timezones: Mapping[str, str], now: datetime | None) -> str:
+    """`now=None` means "as of the e-mail's arrival": the reference time is its sending
+    time. That is how a real installation works (each e-mail is analysed when it
+    arrives), and it keeps the prompt, hence the cache key, stable over time."""
     zone_name = timezones.get(message.mailbox, "UTC")
+    reference = now or message.sent_at
     return (
-        f"Reference time (now): {_stamp(now, zone_name)}\n"
+        f"Reference time (now): {_stamp(reference, zone_name)}\n"
         f"Mailbox: {message.mailbox} (default time zone: {zone_name})\n"
         f"From: {message.sender}\n"
         f"To: {', '.join(message.recipients)}\n"

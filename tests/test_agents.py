@@ -43,6 +43,12 @@ def test_prompt_gives_the_sending_weekday_and_the_mailbox_time_zone():
     assert "Mailbox: osu (default time zone: America/Los_Angeles)" in prompt
 
 
+def test_without_a_frozen_clock_each_email_is_judged_as_of_its_arrival():
+    prompt = render_message(MESSAGES["m12"], DEMO_TIMEZONES, None)
+
+    assert prompt.startswith("Reference time (now): Friday 2026-10-23 10:15 (America/Los_Angeles")
+
+
 @pytest.mark.parametrize(
     ("local", "zone", "offset_hours"),
     [

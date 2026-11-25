@@ -29,7 +29,8 @@ def parse_rfc822(raw: bytes, *, mailbox: str, message_id: str | None = None) -> 
         # "-0000" means UTC with an unknown local zone (RFC 5322, section 3.3).
         sent_at = sent_at.replace(tzinfo=UTC)
 
-    resolved_id = message_id or str(msg["Message-ID"] or "").strip().strip("<>")
+    header_id = str(msg["Message-ID"] or "").strip() or None
+    resolved_id = message_id or (header_id or "").strip("<>")
     if not resolved_id:
         raise ValueError("e-mail has no identifier")
 
@@ -52,6 +53,8 @@ def parse_rfc822(raw: bytes, *, mailbox: str, message_id: str | None = None) -> 
         sent_at=sent_at,
         body_text=body_text.strip(),
         body_html=body_html,
+        header_id=header_id,
+        references=tuple(str(msg["References"] or "").split()),
     )
 
 

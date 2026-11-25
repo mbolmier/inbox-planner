@@ -51,6 +51,11 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Alternatives :** pas de CI au début, ou des permissions par défaut.
 - **Pourquoi :** la CI prouve que le projet s'installe et passe ses tests sur une machine propre, pas seulement sur la mienne. Le moindre privilège limite les dégâts si une action tierce était compromise. Coût : gratuit (quota inclus pour les dépôts privés, illimité en public).
 
+### D9 bis. Actions GitHub épinglées par SHA de commit
+- **Décision :** chaque action tierce est référencée par le SHA complet d'un commit, avec la version en commentaire (`actions/checkout@3d3c42e… # v7.0.1`).
+- **Alternatives :** un tag de version majeure (`@v7`) ou exacte (`@v7.0.1`).
+- **Pourquoi :** le propriétaire d'une action peut déplacer un tag vers un autre code, mais pas un SHA. C'est la recommandation de GitHub contre les attaques de chaîne d'approvisionnement. Leçon du premier run : `setup-uv` ne publie pas de tag `@v10`, et la CI avait échoué au démarrage.
+
 ### D10. Projet hors du dossier synchronisé par iCloud
 - **Décision :** le projet vit dans `~/Portfolio/inbox-planner`, pas dans `~/Documents`.
 - **Alternatives :** le laisser dans `~/Documents`.

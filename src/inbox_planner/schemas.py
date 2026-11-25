@@ -21,6 +21,10 @@ class Category(StrEnum):
     NOISE = "noise"  # marketing, newsletters, social notifications, phishing
 
 
+# Categories worth sending to the extraction agent.
+ACTIONABLE_CATEGORIES = frozenset({Category.APPOINTMENT, Category.DEADLINE, Category.PROCEDURE})
+
+
 class ItemKind(StrEnum):
     APPOINTMENT = "appointment"
     DEADLINE = "deadline"

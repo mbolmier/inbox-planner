@@ -9,7 +9,6 @@ from inbox_planner.agents.triage import TriageAgent, TriageResult
 from inbox_planner.connectors.demo import DEMO_TIMEZONES, DemoConnector
 from inbox_planner.evaluation.labels import load_labels
 from inbox_planner.evaluation.metrics import (
-    ACTIONABLE,
     ExtractionScores,
     TriageScores,
     score_extraction,
@@ -17,6 +16,7 @@ from inbox_planner.evaluation.metrics import (
 )
 from inbox_planner.llm.base import CacheMiss, LLMClient, LLMError, LLMUnavailable, Usage
 from inbox_planner.mail.models import Message
+from inbox_planner.schemas import ACTIONABLE_CATEGORIES
 
 # Anthropic public API prices, USD per million tokens (input, output), as listed on
 # 2026-11-03. Used only to ESTIMATE what a run would cost with an API key: the
@@ -116,6 +116,6 @@ def score_pipeline(triage: TriageRun, extraction: ExtractionRun) -> ExtractionSc
     predicted = {}
     for mid, result in extraction.results.items():
         verdict = triage.results.get(mid)
-        keep = verdict is not None and verdict.category in ACTIONABLE
+        keep = verdict is not None and verdict.category in ACTIONABLE_CATEGORIES
         predicted[mid] = (result.items if result else None) if keep else ()
     return score_extraction(gold, predicted)

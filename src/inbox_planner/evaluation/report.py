@@ -3,10 +3,10 @@
 from collections.abc import Sequence
 
 from inbox_planner.evaluation.labels import load_labels
-from inbox_planner.evaluation.metrics import ACTIONABLE, ExtractionScores, instant, match_items
+from inbox_planner.evaluation.metrics import ExtractionScores, instant, match_items
 from inbox_planner.evaluation.runner import ExtractionRun, TriageRun, estimate_cost
 from inbox_planner.llm.base import Usage
-from inbox_planner.schemas import Category
+from inbox_planner.schemas import ACTIONABLE_CATEGORIES, Category
 
 CATEGORY_FR = {
     Category.APPOINTMENT: "rendez-vous",
@@ -116,7 +116,7 @@ def _pipeline_section(
         for mid, result in extraction.results.items()
         if result is not None
         and (verdict := triage.results.get(mid)) is not None
-        and verdict.category in ACTIONABLE
+        and verdict.category in ACTIONABLE_CATEGORIES
     ]
     extraction_usage = sum((r.usage for r in kept), Usage())
     extraction_cost = estimate_cost(extraction.stats.model, extraction_usage) or 0.0

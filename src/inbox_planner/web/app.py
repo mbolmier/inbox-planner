@@ -215,14 +215,15 @@ def create_app(
         feed = []
         for day in data.days:
             for entry in agenda(data, plan, day):
-                end = entry.end if entry.kind != "deadline" else entry.end + timedelta(minutes=20)
+                # A deadline is an instant: no end, so it never spills over midnight.
+                is_deadline = entry.kind == "deadline"
                 feed.append(
                     {
-                        "title": ("Échéance : " if entry.kind == "deadline" else "") + entry.title,
+                        "title": ("Échéance : " if is_deadline else "") + entry.title,
                         "start": entry.start.replace(tzinfo=None).isoformat(),
-                        "end": end.replace(tzinfo=None).isoformat(),
                         "classNames": [f"cat-{entry.category}", f"kind-{entry.kind}"],
                     }
+                    | ({} if is_deadline else {"end": entry.end.replace(tzinfo=None).isoformat()})
                     | ({"url": f"/mails/{entry.message_id}"} if entry.message_id else {})
                 )
         return JSONResponse(feed)

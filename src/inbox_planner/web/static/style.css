@@ -153,9 +153,23 @@ table.deadlines { width: 100%; border-collapse: collapse; font-size: .92rem; }
 #calendar .fc-timegrid-slot-label-cushion { color: var(--muted); }
 #calendar .fc-event { background: var(--soft); border: 0; border-left: 4px solid var(--strong); border-radius: 6px; color: var(--ink); }
 #calendar .fc-event .fc-event-main { color: var(--ink); padding: 2px 4px; }
-#calendar .ev { padding: 1px 2px; line-height: 1.25; overflow: hidden; height: 100%; }
+#calendar .ev { padding: 1px 2px; line-height: 1.25; }
+#calendar .fc-timegrid-event .ev { overflow: hidden; height: 100%; }
+/* "Par jour": every box grows with its text, nothing is cut */
+#calendar .fc-daygrid-event { white-space: normal; margin: 4px 6px; padding: 5px 6px; }
+#calendar .fc-daygrid-event .ev-time { display: block; margin-bottom: 2px; }
+#calendar .fc-daygrid-day-frame { min-height: 0; }
+#calendar .fc-daygrid-day-top { display: none; } /* the date is already in the column header */
+/* Toolbar: title and view switch, in the theme colours */
+#calendar { --fc-button-bg-color: var(--surface-2); --fc-button-border-color: var(--line);
+            --fc-button-text-color: var(--ink); --fc-button-hover-bg-color: var(--accent-soft);
+            --fc-button-hover-border-color: var(--line); --fc-button-active-bg-color: var(--accent);
+            --fc-button-active-border-color: var(--accent); }
+#calendar .fc-toolbar-title { font-size: 1.1rem; font-weight: 700; }
+#calendar .fc-button { font-size: .85rem; font-weight: 600; text-transform: none; box-shadow: none; }
+#calendar .fc-button-active { color: var(--on-accent) !important; }
 #calendar .ev-time { font-family: var(--mono); font-size: .76rem; color: var(--strong); font-weight: 700; white-space: nowrap; }
-#calendar .ev-title { font-weight: 600; font-size: .82rem; }
+#calendar .ev-title { font-weight: 600; font-size: .82rem; overflow-wrap: anywhere; }
 #calendar .kind-deadline { border-left-style: dashed; }
 
 /* Mail page */

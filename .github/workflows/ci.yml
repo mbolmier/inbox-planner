@@ -32,6 +32,27 @@ jobs:
       - name: The published evaluation report is up to date
         run: git diff --exit-code docs/evaluation.md
 
+  docker:
+    name: Docker image (build and smoke test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build
+        run: docker build -t inbox-planner:ci .
+      - name: The demo answers from inside the container
+        run: |
+          docker run -d --name demo -p 127.0.0.1:8000:8000 inbox-planner:ci
+          for attempt in $(seq 1 30); do
+            curl -fsS -o /dev/null http://127.0.0.1:8000/ && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8000/ | grep -q "Lundi 26 octobre"
+          curl -fsS http://127.0.0.1:8000/export.ics | head -n 1 | grep -q "BEGIN:VCALENDAR"
+          test "$(docker exec demo id -u)" = "10001"  # not root
+      - name: Container logs (on failure)
+        if: failure()
+        run: docker logs demo || true
+
   secret-scan:
     name: Secret scan (gitleaks)
     runs-on: ubuntu-latest

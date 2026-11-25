@@ -5,7 +5,7 @@ La boîte mail de démo (`src/inbox_planner/demo_data/mailbox.toml`) raconte un 
 | Élément | Statut | Détail |
 |---|---|---|
 | Écoles | **Réel** | Université Lumière Lyon 2, IUT Lumière, BUT Science des données ; Oregon State University (Corvallis, Oregon). |
-| Codes et intitulés des cours OSU | **Réel, à vérifier** | Tirés du catalogue public d'OSU. Le catalogue (catalog.oregonstate.edu) était hors service le 25/11/2026 : les intitulés seront revérifiés avant la fusion de l'étape 2. |
+| Codes et intitulés des cours OSU | **Réel, vérifié** | Vérifiés dans le catalogue public d'OSU (catalog.oregonstate.edu) le 25/11/2026. |
 | Étudiante (Camille Roux), profs, conseillers, tuteurs | Inventé | Toute ressemblance avec une personne réelle serait fortuite. |
 | Adresses mail | Inventé | Uniquement des domaines `.example`, réservés par la RFC 2606 : ils ne pointent vers aucun serveur. Vérifié automatiquement par `tests/test_demo_privacy.py`. |
 | Bâtiments et salles | Inventé | Aucun bâtiment réel du campus d'OSU. |
@@ -18,9 +18,9 @@ La boîte mail de démo (`src/inbox_planner/demo_data/mailbox.toml`) raconte un 
 
 | Code | Intitulé | Statut |
 |---|---|---|
-| ST 411 | Methods of Data Analysis | À vérifier dans le catalogue |
-| ST 421 | Introduction to Mathematical Statistics | À vérifier dans le catalogue |
-| CS 340 | Introduction to Databases | À vérifier dans le catalogue |
-| CS 434 | Machine Learning and Data Mining | À vérifier dans le catalogue |
+| ST 411 | Methods of Data Analysis | Vérifié (4 crédits) |
+| ST 421 | Introduction to Mathematical Statistics | Vérifié (4 crédits) |
+| CS 340 | Introduction to Databases | Vérifié (4 crédits) |
+| CS 434 | Machine Learning and Data Mining | Vérifié (4 crédits) |
 
 Les horaires, salles, bâtiments (Alder Hall, Hemlock Hall, Larchmont Hall, Fernwood Center, Cypress Auditorium, Juniper Student Center) et enseignants de ces cours sont inventés.

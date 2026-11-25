@@ -7,8 +7,6 @@ from datetime import datetime
 
 from inbox_planner.schemas import Category, ExtractedItem
 
-ACTIONABLE = frozenset({Category.APPOINTMENT, Category.DEADLINE, Category.PROCEDURE})
-
 
 def ratio(part: int, whole: int) -> float | None:
     return part / whole if whole else None

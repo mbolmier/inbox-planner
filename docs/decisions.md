@@ -193,3 +193,43 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** à chaque PR, la CI relance `inbox-planner eval` en mode rejeu (aucun appel au modèle, aucun compte), puis vérifie par `git diff` que `docs/evaluation.md` est identique. Le garde-fou de confidentialité scanne aussi les 240 réponses enregistrées.
 - **Alternatives :** publier des chiffres calculés une fois à la main.
 - **Pourquoi :** un chiffre du README qui ne correspond plus au code est attrapé automatiquement, et n'importe qui peut refaire le calcul. Le rapport ne contient donc pas de date, sinon il changerait tous les jours.
+
+---
+
+## Étape 4 : planification selon l'énergie
+
+### D36. La planification est un algorithme, pas un LLM
+- **Décision :** le plan de la semaine est calculé par un algorithme déterministe (`planning/planner.py`), sans appel à un modèle.
+- **Alternatives :** demander à un LLM de « répartir les tâches dans la semaine ».
+- **Pourquoi :**
+  1. **Contraintes dures.** Ne jamais chevaucher un cours, ne jamais dépasser l'énergie du jour, ne jamais placer du travail après une échéance. Un LLM peut inventer un créneau qui chevauche ou oublier une tâche, et pour vérifier sa réponse il faudrait de toute façon cet algorithme.
+  2. **Déterministe, donc testable.** Même entrée, même plan : on peut écrire des tests exacts, et 300 semaines aléatoires vérifient les règles à chaque commit.
+  3. **Explicable.** « Cette tâche est là parce que son échéance est la plus proche » se dit en une phrase.
+  4. **Gratuit, instantané, hors ligne.** Aucune donnée personnelle n'est envoyée.
+
+  Le LLM sert là où il faut comprendre du texte libre (les mails). La planification est un problème d'optimisation bien posé, et l'algorithme y est meilleur.
+
+### D37. Échéance la plus proche d'abord (EDF)
+- **Décision :** les tâches sont prises par date limite, puis par priorité. Chacune est placée dans les premiers créneaux libres avant son échéance.
+- **Alternatives :** la priorité d'abord, le placement au plus tard, un solveur d'optimisation (programmation linéaire).
+- **Pourquoi :** EDF est un classique de l'ordonnancement. Quand tout est disponible dès maintenant, c'est la stratégie optimale pour tenir les échéances sur une seule ressource (règle de Jackson, 1955). Avec les contraintes d'énergie et de pauses, c'est une heuristique solide, pas une garantie mathématique. Placer au plus tôt laisse le maximum de marge, et un solveur serait plus lourd sans gain visible à cette échelle. Limite assumée : le travail est concentré en début de semaine.
+
+### D38. L'énergie fixe la capacité du jour et la longueur des blocs
+- **Décision :** Off = 0, Crevé = 2 h par blocs de 45 min, Normal = 4 h par blocs de 1 h 30, En forme = 6 h par blocs de 2 h. Les journées vont de 8 h à 22 h, avec 15 min de marge autour de chaque rendez-vous et entre deux blocs. Une tâche sans estimation compte 1 h.
+- **Alternatives :** l'énergie qui change seulement l'ordre des tâches, un modèle appris.
+- **Pourquoi :** des règles simples qu'on peut expliquer et régler, et l'utilisatrice comprend tout de suite l'effet de son choix. Pas assez de données pour apprendre quoi que ce soit.
+
+### D39. Pas de miettes
+- **Décision :** un bloc ne laisse jamais un reste de moins de 25 minutes. Il prend tout d'un coup, ou s'arrête assez tôt pour laisser un vrai bloc.
+- **Alternatives :** couper au maximum de la longueur autorisée.
+- **Pourquoi :** le premier essai sur la semaine de démo planifiait un bloc de 5 minutes, ce qui ne sert à rien. 60 minutes un jour « crevé » donnent maintenant 35 + 25 au lieu de 45 + 15.
+
+### D40. Calcul en UTC, affichage en heure locale ; récurrences en heure locale
+- **Décision :** les créneaux libres et les blocs sont calculés en UTC. Un cours hebdomadaire se répète à la même heure locale dans son fuseau.
+- **Alternatives :** calculer en heure locale, répéter tous les 7 × 24 h.
+- **Pourquoi :** l'arithmétique en heure locale se trompe autour des changements d'heure, et répéter tous les 7 × 24 h décalerait le cours de 10 h à 9 h après le 1er novembre. Un test vérifie que le cours de 10 h reste à 10 h (-07:00 puis -08:00).
+
+### D41. Tests par propriétés (hypothesis) et signalement des conflits
+- **Décision :** en plus des tests classiques, `hypothesis` génère 300 semaines aléatoires (rendez-vous, tâches, énergies) et vérifie 8 règles : pas de chevauchement, marges respectées, rien après l'échéance, journée de travail respectée, longueur des blocs, capacité du jour, aucune minute perdue, résultat indépendant du fuseau d'entrée. Les rendez-vous qui se chevauchent sont signalés.
+- **Alternatives :** quelques exemples écrits à la main.
+- **Pourquoi :** un planificateur a énormément de cas limites, et un exemple écrit à la main ne teste que ce à quoi on a pensé. Vérifié : un bug introduit exprès (capacité du jour ignorée) est attrapé aussitôt. Les conflits sont signalés parce que la semaine de démo en contient un vrai : le lab déplacé au vendredi est encore répété le jeudi (limite D22), et il vaut mieux le montrer que le cacher.

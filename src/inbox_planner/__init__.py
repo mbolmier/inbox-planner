@@ -5,6 +5,8 @@ from importlib.metadata import version
 __version__ = version("inbox-planner")
 
 
-def main() -> None:
-    """Command-line entry point. Subcommands arrive in later steps."""
-    print(f"inbox-planner {__version__}")
+def main() -> int:
+    """Console entry point; the commands live in inbox_planner.cli."""
+    from inbox_planner.cli import main as cli_main
+
+    return cli_main()

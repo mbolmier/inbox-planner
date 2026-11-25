@@ -25,6 +25,13 @@ DEFAULT_MAILBOX: Traversable = files("inbox_planner") / "demo_data" / "mailbox.t
 # summer time (25 Oct) but Oregon has not (1 Nov): the gap is 8 hours, not 9.
 DEMO_NOW = datetime(2026, 10, 26, 8, 0, tzinfo=ZoneInfo("America/Los_Angeles"))
 
+# Default time zone of each demo mailbox: what a real installation would configure.
+DEMO_TIMEZONES = {
+    "lyon2": "Europe/Paris",
+    "osu": "America/Los_Angeles",
+    "personal": "America/Los_Angeles",  # the student lives in Oregon this term
+}
+
 
 class DemoConnector:
     """Read-only access to the fictional mailbox."""

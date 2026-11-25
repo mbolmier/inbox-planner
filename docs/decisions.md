@@ -134,3 +134,47 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** répartition 14 rendez-vous, 7 échéances, 6 démarches, 6 infos, 7 bruits, sur trois boîtes. Pièges : semaine à 8 h d'écart, échéances qui tombent après le changement d'heure, dates relatives, lien Safe Links, mail HTML seul, report de séance, dates dans des promotions, hameçonnage.
 - **Alternatives :** des mails « faciles ».
 - **Pourquoi :** des mails faciles donneraient des chiffres flatteurs qui ne disent rien. Les pièges viennent des vrais problèmes rencontrés pendant l'échange.
+
+---
+
+## Étape 3 : agents de tri et d'extraction, évaluation
+
+### D25. Le LLM lit, le code calcule
+- **Décision :** pour chaque date, le modèle renvoie une heure *locale* (`2026-11-05T12:00`) et un nom de fuseau IANA (`America/Los_Angeles`). C'est Python (`zoneinfo`) qui calcule le décalage UTC, changements d'heure compris. Les liens Outlook Safe Links sont déballés en code, pas par le modèle.
+- **Alternatives :** demander au modèle une date avec son décalage (`-08:00`), lui demander de déballer les liens.
+- **Pourquoi :** savoir que l'Oregon passe à -08:00 le 1er novembre à 2 h, c'est de l'arithmétique de calendrier : un LLM peut s'y tromper, `zoneinfo` jamais, et c'est testable. Même logique que pour la planification : le modèle sert là où il faut comprendre du texte, le code là où il faut un résultat exact.
+
+### D26. Tri et extraction séparés, chacun avec son modèle
+- **Décision :** deux agents, deux appels, deux modèles réglables. L'évaluation compare Haiku 5.5, Sonnet 5.5 et Opus 5.5 sur chaque tâche.
+- **Alternatives :** un seul appel qui trie et extrait, un seul modèle pour tout.
+- **Pourquoi :** chaque agent a une seule mission, se mesure séparément, et peut tourner sur le modèle le moins cher qui tient la qualité. En production, le bruit n'est jamais envoyé à l'extraction, plus coûteuse.
+
+### D27. Ce que voit le modèle
+- **Décision :** le prompt donne la boîte, son fuseau par défaut, la date d'envoi avec le jour de la semaine, puis le mail. Le prompt système reprend les règles du guide d'annotation, jamais les annotations.
+- **Alternatives :** le mail brut seul.
+- **Pourquoi :** une vraie installation connaît le fuseau de chaque boîte, et « this Monday » n'a de sens qu'avec la date d'envoi. Les règles définissent la tâche, comme un cahier des charges. Donner les réponses, en revanche, serait tricher.
+
+### D28. Cache par empreinte, sans le prompt
+- **Décision :** chaque réponse est rangée sous le hash SHA-256 de (modèle, prompt système, prompt, schéma). Le fichier garde la réponse, les tokens, la durée et une étiquette (`triage/m02`), jamais le prompt.
+- **Alternatives :** une clé par identifiant de mail, stocker le prompt avec la réponse.
+- **Pourquoi :** si un prompt change, l'ancienne réponse ne correspond plus. Le mode « rejeu » échoue alors franchement au lieu de servir une réponse périmée. Et comme le prompt n'est pas stocké, utiliser le cache sur de vrais mails ne recopie aucun contenu sur le disque.
+
+### D29. Client Claude Code isolé, incapable de facturer une clé API
+- **Décision :** chaque appel `claude -p` tourne dans un dossier temporaire vide, avec notre prompt système à la place de celui de Claude Code, aucun outil, aucun serveur MCP, aucune session sauvegardée. `ANTHROPIC_API_KEY` est retirée de son environnement. Si le CLI est injoignable (déconnecté, délai dépassé), l'évaluation s'arrête ; si une réponse ne respecte pas le schéma, c'est un échec compté pour ce mail.
+- **Alternatives :** appeler le CLI tel quel.
+- **Pourquoi :** le modèle ne doit voir que le mail, pas les fichiers du projet (il y trouverait les annotations). Retirer la clé garantit que l'abonnement est utilisé, jamais une carte bancaire. Et une panne ne doit pas se déguiser en mauvais score.
+
+### D30. Client API Anthropic écrit, testé, mais jamais exécuté
+- **Décision :** `AnthropicClient` utilise le SDK officiel (`beta.messages.parse` avec le schéma Pydantic), dans une dépendance optionnelle (`uv sync --extra anthropic`). Le repli automatique côté serveur est activé quand le modèle refuse de répondre, sauf pour Haiku, qui ne le propose pas.
+- **Alternatives :** ne pas l'écrire, ou appeler l'API en HTTP brut.
+- **Pourquoi :** quelqu'un qui a une clé peut s'en servir tout de suite. Comme il n'est jamais exécuté ici, les appels ont été vérifiés contre la signature du SDK installé (2.14.0), et le client est testé avec un faux SDK. Le README le dira clairement.
+
+### D31. Ce que mesure l'évaluation
+- **Décision :** tri : exactitude, précision et rappel par catégorie et pour « utile » (tout sauf le bruit). Extraction : un élément est retrouvé s'il a le bon type et *exactement* le bon instant, fuseau compris. Sont comptés à part les « bonne heure, mauvais fuseau », les liens de visio, ID et codes exacts, les récurrences et les durées. Le coût est estimé au tarif public de l'API, en borne haute (sans remise de cache).
+- **Alternatives :** une tolérance d'une heure sur les dates, une similarité de titre.
+- **Pourquoi :** une heure de décalage, c'est un entretien raté : la tolérance cacherait exactement l'erreur que le projet veut mesurer. Les titres ne sont pas notés, car deux formulations peuvent être justes.
+
+### D32. Un faux modèle « parfait » doit obtenir 100 %
+- **Décision :** un test fait répondre un faux modèle exactement selon les annotations, puis vérifie 100 % sur toutes les métriques, chaîne complète comprise.
+- **Alternatives :** tester seulement les fonctions une par une.
+- **Pourquoi :** si la conversion des fuseaux ou l'appariement perdait quelque chose en route, un modèle parfait n'aurait pas 100 %. Ce test prouve que les chiffres mesurent le modèle, pas un bug de la mesure.

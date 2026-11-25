@@ -11,8 +11,9 @@
         <dt>De</dt><dd>{{ message.sender }}</dd>
         <dt>À</dt><dd>{{ message.recipients|join(", ") }}</dd>
       </dl>
-      {# Always plain, escaped text: no HTML from an e-mail is ever rendered. #}
-      <pre class="body">{{ message.body_text }}</pre>
+      {# Always escaped text: no HTML from an e-mail is ever rendered. Only https links
+         become clickable, shortened, with the full address on demand. #}
+      <div class="body">{{ message.body_text|linkify }}</div>
     </article>
 
     <aside class="card">

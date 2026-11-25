@@ -349,3 +349,17 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** l'essai sur ma boîte Gmail perso a été vérifié avec un script qui n'affiche que des totaux. Le contenu, je le regarde moi-même dans l'interface.
 - **Résultat (14 derniers jours, plafond de 100 mails) :** 100 mails, aucun illisible. Tri : 63 bruit, 32 info, 4 démarches, 1 rendez-vous. 5 mails sur 100 partent en extraction. Environ 6 000 tokens par mail pour le tri, contre 1 600 en démo : les vraies newsletters sont longues. Coût estimé : 0,07 $ (non payé, abonnement). Durée : 101 s au premier passage, 12 s ensuite grâce au cache.
 - **Pourquoi :** une vraie boîte n'a pas d'annotations, donc aucune précision mesurable. Les chiffres sérieux restent ceux du jeu annoté. Mais l'essai prouve que la chaîne complète marche sur des mails réels, et il a révélé deux vrais problèmes, corrigés en D57 et D58. Piste notée : envoyer au tri seulement le début des mails longs, à mesurer d'abord sur le jeu annoté.
+
+---
+
+## Après publication : retours d'usage
+
+### D60. Thème sombre par défaut, et un calendrier lisible
+- **Décision :** l'interface démarre en thème sombre, sur une palette brun-noir chaude reprise de l'outil d'origine. Un bouton repasse en clair, et le choix est retenu dans le navigateur. Dans le calendrier de la semaine, les éléments simultanés sont côte à côte (`slotEventOverlap: false`), les créneaux sont plus hauts, l'heure est sur la ligne du titre, et le titre complet s'affiche au survol. Ce contenu est construit avec `textContent`, jamais en HTML.
+- **Alternatives :** suivre seulement le réglage du système, garder les événements superposés.
+- **Pourquoi :** c'est le retour du premier utilisateur. Dans la version d'avant, les éléments se chevauchaient et les titres étaient coupés. `textContent` compte, parce que sur une vraie boîte les titres viennent de mails, donc d'inconnus (D58).
+
+### D61. Des liens courts dans les mails
+- **Décision :** dans le texte d'un mail, seuls les liens `https` deviennent cliquables. Le texte affiché est court (domaine et début du chemin), le lien Outlook Safe Links est déballé, et le lien complet (le vrai, pas l'enveloppe Outlook) reste disponible sur demande. Tout le reste du texte est échappé.
+- **Alternatives :** le texte brut (illisible avec un lien Safe Links de 400 caractères), un HTML de mail rendu tel quel.
+- **Pourquoi :** lisibilité, sans rien céder sur la sécurité. Un lien `javascript:` ou `http:` reste du texte, et c'est testé.

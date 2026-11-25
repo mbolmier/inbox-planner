@@ -116,3 +116,43 @@ def test_ics_download_with_and_without_planned_work(client):
     assert 'filename="inbox-planner.ics"' in plain.headers["content-disposition"]
     assert plain.text.startswith("BEGIN:VCALENDAR")
     assert "Travail :" not in plain.text and "Travail :" in with_work.text
+
+
+# --- links inside e-mails ---------------------------------------------------------
+
+from inbox_planner.web.links import linkify, short_url  # noqa: E402
+
+SAFE_LINK = (
+    "https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fteams.microsoft.com"
+    "%2Fl%2Fmeetup-join%2F19%253ameeting_abc%2540thread.v2%2F0&data=05&reserved=0"
+)
+
+
+def test_long_links_are_short_clickable_and_unwrapped():
+    html = str(linkify(f"Rejoindre la réunion maintenant <{SAFE_LINK}>"))
+
+    assert 'class="mail-link" href="https://teams.microsoft.com/l/meetup-join/' in html
+    assert ">teams.microsoft.com/l/meetup-join/19%3am" in html and "…</a>" in html
+    assert "<code>https://teams.microsoft.com/l/meetup-join/" in html  # full link = real one
+    assert "safelinks" not in html.split("<code>")[1]
+    assert "&lt;https" not in html  # Outlook's angle brackets removed
+
+
+def test_only_https_links_become_clickable_and_text_stays_escaped():
+    html = str(linkify("<b>x</b> http://plain.example/a javascript:alert(1) https://zoom.us/j/1."))
+
+    assert "&lt;b&gt;x&lt;/b&gt;" in html
+    assert 'href="http://plain.example' not in html and "javascript:alert(1)" in html
+    assert 'href="https://zoom.us/j/1"' in html and html.endswith("</a>.")
+
+
+def test_short_url_keeps_host_and_start_of_path():
+    assert short_url("https://www.example.org/") == "example.org"
+    assert len(short_url("https://zoom.us/j/" + "9" * 80)) == 42
+
+
+def test_mail_page_shows_the_meeting_link_short(client):
+    html = client.get("/mails/m18").text
+
+    assert 'class="mail-link" href="https://teams.microsoft.com/' in html
+    assert ">eur03.safelinks" not in html  # the long wrapper is never the visible text

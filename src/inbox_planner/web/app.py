@@ -28,6 +28,7 @@ from inbox_planner.mail.models import Message
 from inbox_planner.planning.energy import PROFILES, Energy
 from inbox_planner.planning.render import DAYS_FR, hours
 from inbox_planner.schemas import Category
+from inbox_planner.web.links import linkify
 from inbox_planner.web.state import HOME_ZONE, AppData, agenda, deadline_rows
 from inbox_planner.web.store import LocalStore
 
@@ -95,6 +96,7 @@ def create_app(
     templates.env.filters["hhmm"] = lambda moment: f"{moment:%H:%M}"
     templates.env.filters["day"] = day_label
     templates.env.filters["hours"] = hours
+    templates.env.filters["linkify"] = linkify
     templates.env.globals.update(
         profiles=PROFILES,
         energies=list(Energy),

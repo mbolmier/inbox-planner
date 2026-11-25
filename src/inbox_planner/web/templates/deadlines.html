@@ -18,7 +18,7 @@
             <tr class="cat-{{ row.category }}{% if row.status == "faite" %} done{% endif %}">
               <td class="tick"><input type="checkbox" name="done" value="true" {% if row.status == "faite" %}checked{% endif %}
                      aria-label="Marquer fait : {{ row.part.short }}"
-                     hx-post="/taches/{{ row.task.id }}/fait" hx-trigger="change" hx-swap="none"></td>
+                     hx-post="/taches/{{ row.task.id }}/fait" hx-trigger="change" hx-swap="none"{% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}></td>
               <td><span class="tag">{{ kind_fr[row.category] }}</span> {{ row.task.title }}</td>
               <td class="mono nowrap">{{ row.due|day }} {{ row.due|hhmm }}<br><small class="muted">Paris {{ row.task.due_at.astimezone(home_zone)|hhmm }}</small></td>
               <td class="nowrap">{{ jn(row.due) }}<br><small class="muted">{{ time_left(row.task.due_at) }}</small></td>

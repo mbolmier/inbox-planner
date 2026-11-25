@@ -14,7 +14,7 @@
         {% if row.day == today %}<span class="pill">Aujourd'hui</span>{% endif %}
         <select name="energy" aria-label="Énergie du {{ row.day|day }}"
                 hx-post="/energie/{{ row.day.isoformat() }}" hx-trigger="change"
-                hx-vals='{"view": "days"}' hx-target="#days" hx-swap="outerHTML">
+                hx-vals='{"view": "days"}' hx-target="#days" hx-swap="outerHTML"{% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}>
           {% for choice in energies %}
             <option value="{{ choice.value }}" {% if choice == row.energy %}selected{% endif %}>{{ profiles[choice].label_fr }}</option>
           {% endfor %}

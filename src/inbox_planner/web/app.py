@@ -110,7 +110,10 @@ def create_app(
     data: AppData | None = None,
     store: LocalStore | None = None,
     draft_sink: DraftSink | None = None,
+    static_site: bool = False,
 ) -> FastAPI:
+    """The web app. With static_site, the pages are rendered for a read-only copy
+    (GitHub Pages): a banner, and the controls that change the plan are disabled."""
     data = data or AppData.demo_mailbox()
     store = store or LocalStore.from_env()
     sink: DraftSink = draft_sink or store
@@ -132,6 +135,7 @@ def create_app(
         time_left=lambda due: time_left(due, data.now),
         countdown=lambda due: countdown(due, data.now, data.zone),
         demo=data.demo,
+        static_site=static_site,
         intents=list(INSTRUCTIONS),
         draft_target=getattr(sink, "label", "cet ordinateur"),
         item_place=lambda item, area: resolve_place(

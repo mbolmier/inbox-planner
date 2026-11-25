@@ -12,7 +12,7 @@
 {% block content %}
   {% include "_week_energy.html" %}
   <section class="card">
-    <div id="calendar" data-initial-date="{{ days[0].isoformat() }}"
+    <div id="calendar" data-events="/api/calendrier" data-initial-date="{{ days[0].isoformat() }}"
          data-now="{{ now.replace(tzinfo=None).isoformat() }}"></div>
     <ul class="legend" aria-label="Légende">
       <li class="cat-cours">Cours</li><li class="cat-rdv">Rendez-vous</li><li class="cat-visio">Visio</li>

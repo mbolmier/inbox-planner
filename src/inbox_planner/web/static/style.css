@@ -258,3 +258,9 @@ table.deadlines { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .detail-part { border-left: 3px solid var(--travail); padding-left: 10px; }
 .detail-task { margin: 0; font-weight: 600; }
 .detail-links { display: flex; gap: 14px; margin: 6px 0 0; font-size: .9rem; }
+
+/* Read-only copy on GitHub Pages */
+.static-banner { margin-top: 14px; margin-bottom: -6px; background: var(--accent-soft); border: 1px solid var(--line);
+  border-radius: 10px; padding: 9px 14px; font-size: .9rem; }
+.static-banner code { font-family: var(--mono); font-size: .85rem; }
+button:disabled, select:disabled, input:disabled { cursor: not-allowed; }

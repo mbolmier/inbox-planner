@@ -2,6 +2,7 @@
 
 - `inbox-planner eval`: score triage and extraction on the demo mailbox.
 - `inbox-planner plan`: plan the demo week according to the energy of each day.
+- `inbox-planner export-site`: write the read-only demo as static files (GitHub Pages).
 """
 
 import argparse
@@ -113,6 +114,10 @@ def build_parser() -> argparse.ArgumentParser:
         "record-drafts", help="record demo reply drafts with Claude Code (your subscription)"
     )
     record.add_argument("--intent", default="confirmer", choices=list(INSTRUCTIONS))
+    site = commands.add_parser(
+        "export-site", help="write the read-only demo as static files, for GitHub Pages"
+    )
+    site.add_argument("--output", type=Path, default=Path("site"))
     return parser
 
 
@@ -249,6 +254,14 @@ def _plan(args: argparse.Namespace) -> int:
     return 0
 
 
+def _export_site(args: argparse.Namespace) -> int:
+    from inbox_planner.web.export_site import export_site
+
+    written = export_site(args.output)
+    print(f"{len(written)} files written to {args.output}/")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
     commands = {
@@ -257,6 +270,7 @@ def main(argv: list[str] | None = None) -> int:
         "web": _web,
         "gmail": _gmail,
         "record-drafts": _record_drafts,
+        "export-site": _export_site,
     }
     if args.command not in commands:
         print(f"inbox-planner {__version__}. Commands: eval, plan, web, gmail (see --help)")

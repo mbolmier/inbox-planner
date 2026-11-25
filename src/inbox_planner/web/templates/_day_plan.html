@@ -11,7 +11,7 @@
                     hx-post="/energie/{{ day.isoformat() }}"
                     hx-vals='{"energy": "{{ choice.value }}", "view": "today"}'
                     hx-target="#day-plan" hx-swap="outerHTML"
-                    aria-pressed="{{ 'true' if choice == energy else 'false' }}">{{ profiles[choice].label_fr }}</button>
+                    aria-pressed="{{ 'true' if choice == energy else 'false' }}"{% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}>{{ profiles[choice].label_fr }}</button>
           {% endfor %}
         </div>
       </div>

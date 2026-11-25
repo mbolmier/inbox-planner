@@ -27,6 +27,8 @@ __pycache__/
 .venv/
 dist/
 build/
+# Static copy of the demo, built by CI for GitHub Pages
+site/
 *.egg-info/
 
 # --- Tool caches ---

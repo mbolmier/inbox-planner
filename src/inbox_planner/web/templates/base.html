@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}inbox-planner{% endblock %} · inbox-planner</title>
+  {% if static_site %}
+  {# GitHub Pages sends no security headers: the same policy, as meta tags. #}
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  {% endif %}
   <link rel="stylesheet" href="/static/style.css">
   <script src="/static/theme.js"></script>
   {# Pinned version + SRI hash: the browser refuses the file if the CDN serves anything else. #}
@@ -33,6 +38,13 @@
       <a class="export" href="/export.ics" download>Exporter vers le calendrier (.ics)</a>
     </nav>
   </header>
+  {% if static_site %}
+  <div class="wrap static-banner{% if page == "week" %} wide{% endif %}" role="note">
+    <b>Version en ligne, en lecture seule.</b> Changer l'énergie, cocher une tâche et proposer une réponse
+    marchent quand l'app tourne sur ton ordinateur : <code>uv run inbox-planner web</code>.
+    <a href="https://github.com/mbolmier/inbox-planner#readme">Le projet et la démo animée</a>
+  </div>
+  {% endif %}
   <main class="wrap{% if page == "week" %} wide{% endif %}">
     {% block content %}{% endblock %}
   </main>

@@ -52,7 +52,8 @@
       <div class="seg" role="group" aria-label="Type de réponse">
         {% for intent in intents %}
           <button type="button" hx-post="/mails/{{ message.id }}/reponse"
-                  hx-vals='{"intent": "{{ intent }}"}' hx-target="#reply" hx-swap="outerHTML">
+                  hx-vals='{"intent": "{{ intent }}"}' hx-target="#reply" hx-swap="outerHTML"
+                 {% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}>
             {{ {"confirmer": "Confirmer", "decliner": "Décliner", "question": "Poser une question"}[intent] }}
           </button>
         {% endfor %}

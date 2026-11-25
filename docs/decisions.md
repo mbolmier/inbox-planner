@@ -408,3 +408,8 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** dans le mail m04, le cours a lieu le lundi et le vendredi à 10 h, et le mercredi à 9 h. L'annotation a désormais deux séries (31 éléments attendus au lieu de 30), et les réponses de ce mail ont été réenregistrées.
 - **Alternatives :** déplacer les trois séances à 9 h.
 - **Pourquoi :** c'est une demande du premier utilisateur, pour une démo plus proche d'un vrai emploi du temps. C'est aussi un piège de plus : la série du lundi et du vendredi commence le vendredi 25 septembre, pas le mercredi 23. Les trois modèles l'ont trouvé (31/31).
+
+### D71. Une démo en ligne, en lecture seule, sur GitHub Pages
+- **Décision :** chaque push sur `main` régénère une copie statique de la démo et la publie sur GitHub Pages. Les pages sont rendues par la vraie app (boîte fictive, réponses enregistrées, horloge figée), puis leurs liens sont rendus relatifs. Rien ne tourne côté serveur : changer l'énergie, cocher une tâche et proposer une réponse sont affichés désactivés, avec un bandeau qui le dit. GitHub Pages n'envoie pas d'en-têtes de sécurité, donc la même politique CSP est mise en balise `<meta>`.
+- **Alternatives :** héberger la vraie app (Render, Hugging Face Spaces), ne rien mettre en ligne.
+- **Pourquoi :** un recruteur doit pouvoir voir l'app en un clic, sans rien installer. GitHub Pages est gratuit, sans nouveau compte, et s'ouvre tout de suite. Une app hébergée gratuitement se met en veille (environ une minute d'attente au premier visiteur), demande un compte de plus, et partagerait son état entre visiteurs : ce que l'un coche, le suivant le verrait. L'interactivité reste visible dans le GIF et en local.

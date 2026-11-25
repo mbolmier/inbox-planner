@@ -21,7 +21,7 @@
   <li class="task cat-{{ part.category }}{% if is_done %} done{% endif %}">
     <input type="checkbox" name="done" value="true" {% if is_done %}checked{% endif %}
            aria-label="Marquer fait : {{ part.short }}"
-           hx-post="/taches/{{ part.task_id }}/fait" hx-trigger="change" hx-swap="none">
+           hx-post="/taches/{{ part.task_id }}/fait" hx-trigger="change" hx-swap="none"{% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}>
     <div class="task-body">
       <span class="t">{{ part.short }}</span>
       {% if part.short != part.title %}<div class="note">{{ part.title }}</div>{% endif %}

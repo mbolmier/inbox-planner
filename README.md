@@ -10,7 +10,9 @@
 
 *Démo sur une boîte mail entièrement fictive. Aucun compte n'est nécessaire.*
 
-> **English summary.** inbox-planner reads several mailboxes (read-only), uses Claude to triage each e-mail and extract appointments and deadlines as validated JSON, then plans the week with a deterministic, energy-aware algorithm. Two design rules: **the LLM reads, the code computes** (time zones and daylight-saving changes are computed with `zoneinfo`, never by the model), and **nothing is ever sent** (replies are proposed, reviewed by a human, then saved as drafts). On 40 hand-labelled fictional e-mails, extraction is 31/31 with exact dates and time zones for Haiku, Sonnet and Opus, so the default chain uses Haiku (about $0.03 per 40 e-mails). Everything ran on a Claude subscription through Claude Code (a 20 €/month Pro plan is plenty; API-equivalent cost: about $0.03 for a week of 40 e-mails). Demo: `uv run inbox-planner web`, no account and no API key.
+**[→ Ouvrir la démo en ligne](https://mbolmier.github.io/inbox-planner/)** : une copie en lecture seule, régénérée à chaque push. Changer l'énergie, cocher une tâche et proposer une réponse marchent en local (voir [Démarrer](#démarrer)).
+
+> **English summary.** inbox-planner reads several mailboxes (read-only), uses Claude to triage each e-mail and extract appointments and deadlines as validated JSON, then plans the week with a deterministic, energy-aware algorithm. Two design rules: **the LLM reads, the code computes** (time zones and daylight-saving changes are computed with `zoneinfo`, never by the model), and **nothing is ever sent** (replies are proposed, reviewed by a human, then saved as drafts). On 40 hand-labelled fictional e-mails, extraction is 31/31 with exact dates and time zones for Haiku, Sonnet and Opus, so the default chain uses Haiku (about $0.03 per 40 e-mails). Everything ran on a Claude subscription through Claude Code (a 20 €/month Pro plan is plenty; API-equivalent cost: about $0.03 for a week of 40 e-mails). Live read-only demo: <https://mbolmier.github.io/inbox-planner/>. Full demo: `uv run inbox-planner web`, no account and no API key.
 
 ---
 
@@ -84,6 +86,7 @@ uv sync
 uv run inbox-planner web          # http://127.0.0.1:8000, démo fictive, sans compte ni clé
 uv run inbox-planner plan --energy creve,normal,forme,normal,normal,off,normal
 uv run inbox-planner eval         # rejoue l'évaluation depuis les réponses enregistrées
+uv run inbox-planner export-site  # la copie en lecture seule publiée sur GitHub Pages, dans site/
 ```
 
 Avec Docker (la démo, sous un utilisateur non-root, accessible depuis cette machine seulement) :
@@ -126,7 +129,7 @@ flowchart LR
 
 ## Les choix que je défends
 
-Les 71 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
+Les 72 décisions sont expliquées dans [docs/decisions.md](docs/decisions.md), chacune avec la décision, les alternatives et le pourquoi. Les principales :
 
 - **Le LLM lit, le code calcule** ([D25](docs/decisions.md#d25-le-llm-lit-le-code-calcule)). Le modèle renvoie une heure *locale* et un nom de fuseau ; `zoneinfo` calcule le décalage. Un LLM peut se tromper sur un changement d'heure, `zoneinfo` jamais. Exemple visible dans la démo : pour l'entretien du 3 novembre (mail m21), la justification écrite par le modèle dit « 17 h 30 à Paris, soit 9 h 30 à Los Angeles », ce qui est faux. L'heure affichée, calculée par `zoneinfo`, est la bonne : 8 h 30.
 - **La planification est un algorithme, pas un LLM** ([D36](docs/decisions.md#d36-la-planification-est-un-algorithme-pas-un-llm)). Elle a des contraintes dures (aucun chevauchement, capacité du jour, échéances) et doit être déterministe, testable et explicable. 300 semaines aléatoires vérifient 8 règles à chaque commit (tests par propriétés avec `hypothesis`).
@@ -165,7 +168,7 @@ src/inbox_planner/
   export/       .ics
   demo_data/    boîte fictive, annotations, réponses enregistrées
 docs/           décisions, évaluation, guide d'annotation, connecteurs, données de démo
-tests/          193 tests, dont propriétés (hypothesis) et garde-fous de confidentialité
+tests/          198 tests, dont propriétés (hypothesis) et garde-fous de confidentialité
 ```
 
 **Stack :** Python 3.12, uv, ruff, pytest, hypothesis, Pydantic, FastAPI, Jinja2, HTMX, FullCalendar, SQLModel/SQLite, icalendar, Claude (Haiku, Sonnet, Opus 5.5), GitHub Actions, Docker, gitleaks.

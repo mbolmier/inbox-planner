@@ -1,7 +1,7 @@
 <section id="week-energy" class="card">
   <div class="row-between">
     <h1>Semaine</h1>
-    <span class="eyebrow">Énergie de chaque jour : le plan se recalcule aussitôt</span>
+    <span class="eyebrow">{% if static_site %}Énergie proposée pour chaque jour{% else %}Énergie de chaque jour : le plan se recalcule aussitôt{% endif %}</span>
   </div>
   <div class="week-energy">
     {% for day in days %}
@@ -9,7 +9,7 @@
         <span class="d">{{ day|day }}</span>
         <select name="energy" aria-label="Énergie du {{ day|day }}"
                 hx-post="/energie/{{ day.isoformat() }}" hx-trigger="change"
-                hx-vals='{"view": "week"}' hx-target="#week-energy" hx-swap="outerHTML">
+                hx-vals='{"view": "week"}' hx-target="#week-energy" hx-swap="outerHTML"{% if static_site %} disabled title="Disponible quand l'app tourne sur ton ordinateur"{% endif %}>
           {% for choice in energies %}
             <option value="{{ choice.value }}" {% if choice == energy[day] %}selected{% endif %}>{{ profiles[choice].label_fr }}</option>
           {% endfor %}

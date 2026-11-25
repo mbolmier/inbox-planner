@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     headerToolbar: { left: "title", center: "", right: "dayGridWeek,timeGridWeek" },
     buttonText: { dayGridWeek: "Par jour", timeGridWeek: "Grille horaire" },
     height: "auto",
-    events: "/api/calendrier",
+    events: element.dataset.events,
     eventTimeFormat: { hour: "2-digit", minute: "2-digit", hour12: false },
     displayEventEnd: true,
     defaultTimedEventDuration: "00:15", // deadlines have no end: a short mark in the grid

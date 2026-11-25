@@ -126,3 +126,12 @@ table.deadlines { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .headers dd { margin: 0; }
 pre.body { white-space: pre-wrap; word-break: break-word; font: .95rem/1.55 var(--body); background: var(--surface-2); border-radius: 10px; padding: 14px; margin: 0; }
 .items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
+/* Reply drafts */
+.reply-box h2 { margin: 0; }
+.reply form { display: flex; flex-direction: column; gap: 10px; }
+.reply label { display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--muted); font-weight: 600; }
+.reply input, .reply textarea { font: .95rem/1.5 var(--body); color: var(--ink); padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.reply input[readonly] { background: var(--surface-2); }
+.reply .btn { align-self: flex-start; border: 0; cursor: pointer; font: inherit; font-weight: 600; }
+.notice.ok { background: #e2f1e4; }

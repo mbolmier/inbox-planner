@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m06",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:00:53+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2250,
+    "output_tokens": 359
+  },
+  "duration_ms": 3792,
+  "data": {
+    "body": "Dear Professor Lindqvist,\n\nThank you for the information about the ST 421 schedule. I confirm that I have received it and noted the class times, the location, and the planned midterms and final exam. I will watch for the confirmed dates and rooms and will be prepared in time.\n\nBest regards,\nCamille"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m20",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:11+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2305,
+    "output_tokens": 166
+  },
+  "duration_ms": 1676,
+  "data": {
+    "body": "Bonjour,\n\nJe vous remercie pour votre message concernant le contrat d'études modifié. J'accuse bonne réception de votre demande : je m'occupe de le faire signer par le coordinateur d'OSU et de le déposer sur la plateforme mobilité avant le samedi 31 octobre.\n\nBien cordialement,\nCamille"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m26",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:34+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2227,
+    "output_tokens": 132
+  },
+  "duration_ms": 1400,
+  "data": {
+    "body": "Hello,\n\nThank you for the reminder. I confirm my dental cleaning appointment on Wednesday, November 4, 2026 at 9:30 AM. I will arrive 10 minutes early with my insurance card.\n\nBest regards,\nCamille"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m39",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:45+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2165,
+    "output_tokens": 402
+  },
+  "duration_ms": 3767,
+  "data": {
+    "body": "Coucou Maman,\n\nOui, ça me va pour dimanche 1er novembre à 19 h, heure française. Ce n'est pas trop tôt pour moi. Ravie de vous parler, à Papa et à toi !\n\nBisous,\nCamille"
+  }
+}

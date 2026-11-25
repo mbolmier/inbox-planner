@@ -7,16 +7,16 @@ from fakes import FakeLLM, oracle
 from fastapi.testclient import TestClient
 
 from inbox_planner.web.app import create_app
-from inbox_planner.web.state import DemoData
-from inbox_planner.web.store import EnergyStore
+from inbox_planner.web.state import AppData
+from inbox_planner.web.store import LocalStore
 
-DATA = DemoData.load(FakeLLM(oracle))
+DATA = AppData.demo_mailbox(FakeLLM(oracle))
 HTMX = {"HX-Request": "true"}
 
 
 @pytest.fixture
 def client() -> TestClient:
-    return TestClient(create_app(DATA, EnergyStore("sqlite://")))
+    return TestClient(create_app(DATA, LocalStore("sqlite://")))
 
 
 @pytest.mark.parametrize(
@@ -89,7 +89,7 @@ def test_mail_text_is_shown_escaped_never_as_html():
         ),
     )
     data = replace(DATA, processed=DATA.processed | {"m11": trapped})
-    html = TestClient(create_app(data, EnergyStore("sqlite://"))).get("/mails/m11").text
+    html = TestClient(create_app(data, LocalStore("sqlite://"))).get("/mails/m11").text
 
     assert "&lt;script&gt;alert(&#34;pwned&#34;)&lt;/script&gt;" in html
     assert "<script>alert" not in html and "<img src=x" not in html

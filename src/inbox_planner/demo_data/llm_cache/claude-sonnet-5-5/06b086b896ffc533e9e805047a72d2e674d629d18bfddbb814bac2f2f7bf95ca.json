@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m40",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:18+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2218,
+    "output_tokens": 132
+  },
+  "duration_ms": 1553,
+  "data": {
+    "body": "Dear International Student Services,\n\nThank you for your message and the departure checklist. I confirm that I have received it, and I will complete all the steps in time, including submitting the Exchange Departure Form before the December 4 deadline.\n\nKind regards,\nCamille"
+  }
+}

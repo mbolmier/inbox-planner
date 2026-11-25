@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m18",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:27+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2598,
+    "output_tokens": 323
+  },
+  "duration_ms": 3242,
+  "data": {
+    "body": "Bonjour Monsieur Ferrand,\n\nMerci pour votre message. Je confirme ma présence au point de suivi du jeudi 5 novembre à 17 h (heure de Paris), sur Teams. Nous pourrons y faire le bilan de mes cours à Oregon State et de ma recherche d'alternance.\n\nBien cordialement,\nCamille"
+  }
+}

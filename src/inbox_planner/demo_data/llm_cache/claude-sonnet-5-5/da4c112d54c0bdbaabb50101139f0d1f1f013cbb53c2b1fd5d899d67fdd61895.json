@@ -1,0 +1,15 @@
+{
+  "tag": "draft-confirmer/m02",
+  "requested_model": "claude-sonnet-5-5",
+  "model": "claude-sonnet-5-5",
+  "recorded_at": "2026-11-25T11:01:23+00:00",
+  "recorded_with": "claude-code",
+  "usage": {
+    "input_tokens": 2285,
+    "output_tokens": 139
+  },
+  "duration_ms": 1377,
+  "data": {
+    "body": "Hi Dana,\n\nThank you for your message. I confirm that I will join you on Thursday, October 29 at 2:00 PM (Pacific Time) via Zoom. I will have my I-20 and my current address in Corvallis at hand.\n\nBest regards,\nCamille"
+  }
+}

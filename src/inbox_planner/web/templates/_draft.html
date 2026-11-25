@@ -1,0 +1,14 @@
+<div id="reply" class="reply">
+  {% if error %}
+    <p class="notice risk" role="status">{{ error }}</p>
+  {% else %}
+    <form hx-post="/mails/{{ message.id }}/reponse/enregistrer" hx-target="#reply" hx-swap="outerHTML">
+      <p class="eyebrow">Proposition de l'IA : relis, modifie, puis décide</p>
+      <label>À <input name="to" value="{{ draft.to }}" readonly></label>
+      <label>Objet <input name="subject" value="{{ draft.subject }}"></label>
+      <label>Texte <textarea name="body" rows="11">{{ draft.body }}</textarea></label>
+      <button class="btn" type="submit">Enregistrer comme brouillon</button>
+      <p class="muted small">Rien n'est envoyé : le brouillon va dans {{ draft_target }}. À toi de l'envoyer, ou non.</p>
+    </form>
+  {% endif %}
+</div>

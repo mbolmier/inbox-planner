@@ -295,3 +295,42 @@ Chaque décision tient en trois lignes : ce qu'on a choisi, ce qu'on aurait pu f
 - **Décision :** garder la chaîne Haiku → Haiku et documenter le risque, sans réenregistrer une troisième fois.
 - **Alternatives :** (1) évaluer chaque mail avec « maintenant » = son heure de réception, ce qui simule une installation qui trie chaque mail dès qu'il arrive ; (2) toujours envoyer à l'extraction les mails qui décrivent un horaire récurrent, quel que soit le tri.
 - **Pourquoi :** c'est un artefact du traitement par lots : les 40 mails sont triés d'un coup, un mois après les premiers. Dans une vraie installation, un mail est trié à sa réception, et le message d'accueil d'un cours est alors forcément un rendez-vous. L'option (1) est la plus juste et sera faite si le temps le permet. Le constat montre en tout cas qu'un modèle « plus fort » n'est pas meilleur sur tout, et que le contexte temporel compte autant que le modèle.
+
+---
+
+## Étape 6 : vrais connecteurs et agent de rédaction
+
+### D50. Gmail avec les bibliothèques officielles et le flux OAuth « application de bureau »
+- **Décision :** `google-api-python-client` et `google-auth-oauthlib`, en dépendance optionnelle (`uv sync --extra gmail`). La connexion s'ouvre dans le navigateur, avec une redirection vers un port local et PKCE. Le jeton est rangé dans `~/.inbox-planner/tokens/`, avec les droits 600 (dossier en 700). L'application Google reste en mode « Test », réservée à mon compte.
+- **Alternatives :** IMAP avec un mot de passe d'application, des appels HTTP écrits à la main, un compte de service.
+- **Pourquoi :** je ne vois jamais le mot de passe, et le jeton ne quitte pas la machine. Le mode Test évite la vérification Google (obligatoire pour les autorisations « restreintes » comme la lecture des mails), au prix d'un jeton qui expire tous les 7 jours. Les mails sont récupérés au format brut et passent par le même parseur que la démo (D16).
+
+### D51. Deux niveaux de consentement, et aucun envoi possible dans le code
+- **Décision :** la connexion normale ne demande que `gmail.readonly`. La création de brouillons demande `gmail.compose`, dans un jeton séparé, seulement avec `--drafts`. Le code ne contient aucun appel d'envoi, et un test fait échouer la CI s'il en apparaît un (`.send(`, `smtplib`, `sendmail`…).
+- **Alternatives :** demander `gmail.compose` (ou l'accès complet) dès le départ.
+- **Pourquoi :** Gmail n'a pas d'autorisation « brouillons sans envoi » : `gmail.compose` permet techniquement d'envoyer. On ne peut donc pas promettre « jamais d'envoi » par les permissions seules. La garantie vient du code, vérifiée à chaque commit, et la permission la plus large n'est demandée que si on en a besoin.
+
+### D52. Validation humaine en deux temps avant toute écriture
+- **Décision :** (1) « Proposer » : l'agent rédige, le texte s'affiche dans un formulaire modifiable, et rien n'est écrit nulle part. (2) « Enregistrer comme brouillon » : seul un clic explicite écrit, et c'est le texte relu (et éventuellement corrigé) qui part dans les brouillons. En démo, il va dans SQLite ; avec `--drafts`, dans les brouillons Gmail. Il n'y a pas d'envoi.
+- **Alternatives :** enregistrer automatiquement chaque proposition, ou envoyer après validation.
+- **Pourquoi :** un mail engage la personne qui l'envoie. Vérifié dans le navigateur : la proposition pour l'entretien (m21) contenait une faute (« l'opportunité de échanger »), corrigée à la main avant l'enregistrement. C'est exactement le rôle de la relecture.
+
+### D53. La rédaction avec Sonnet, un choix assumé mais non mesuré
+- **Décision :** l'agent de rédaction utilise Sonnet 5.5. Trois intentions : confirmer, décliner, poser une question. Le prompt interdit d'inventer des faits et impose des [crochets] pour ce qui manque. Les expéditeurs automatiques (no-reply, notifications) n'ont pas de bouton « Répondre ».
+- **Alternatives :** Haiku, comme pour le tri et l'extraction.
+- **Pourquoi :** rédiger un mail en français correct est une tâche d'écriture, à la demande et rare, donc le coût compte peu. Contrairement au tri et à l'extraction, aucune métrique ne la mesure ici : c'est un choix de jugement, pas une conclusion tirée des données. La faute relevée en D52 montre que même ce modèle doit être relu.
+
+### D54. IMAP en lecture seule par le protocole lui-même
+- **Décision :** le dossier est ouvert avec `EXAMINE` (`readonly=True`) et les mails sont lus avec `BODY.PEEK[]`, avec la seule bibliothèque standard et un mot de passe d'application.
+- **Alternatives :** `SELECT` et `RFC822`, une bibliothèque tierce.
+- **Pourquoi :** `EXAMINE` interdit au serveur toute modification, et `PEEK` ne marque même pas les mails comme lus : la lecture seule est garantie par le serveur, pas seulement par mon code. Limite : les comptes Microsoft 365 universitaires refusent les mots de passe en IMAP et exigent OAuth 2.0, que ce connecteur ne fait pas.
+
+### D55. Microsoft Graph (Outlook de Lyon 2 et d'OSU) : pas fait, et pourquoi
+- **Décision :** pas de connecteur Graph pour l'instant. Le guide des connecteurs explique la démarche.
+- **Alternatives :** écrire le connecteur sans pouvoir le tester.
+- **Pourquoi :** lire les mails d'un compte universitaire passe par une application déclarée sur Azure. La plupart des universités bloquent le consentement des utilisateurs pour les applications tierces : il faudrait l'accord de la DSI de Lyon 2 ou d'OSU. Un connecteur jamais exécuté sur un vrai compte ne prouverait rien. L'interface `MailConnector` permet de l'ajouter sans rien toucher d'autre.
+
+### D56. Une vraie boîte : transparence et données hors du dépôt
+- **Décision :** `inbox-planner web --source gmail` annonce à l'écran que le contenu des mails est envoyé à Claude via l'abonnement. Les réponses du modèle sont mises en cache dans `~/.inbox-planner/llm-cache`, jamais dans le dépôt. Les réglages (fuseau, ville, signature) passent par des variables d'environnement documentées dans `.env.example`. Le traitement a lieu au démarrage, avec l'heure réelle comme référence.
+- **Alternatives :** un cache commun à la démo et à la vraie boîte, des réglages écrits en dur.
+- **Pourquoi :** la séparation est physique. Rien de réel ne peut finir dans `demo_data/` par erreur, et le garde-fou de confidentialité (D18) scanne de toute façon tout ce qui y entre.

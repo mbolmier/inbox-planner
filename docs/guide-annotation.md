@@ -54,4 +54,4 @@ La priorité est un jugement : elle est rapportée dans l'évaluation, mais ce n
 
 ## 5. Qui a annoté
 
-Martin Bolmier, avec un assistant IA pour la première rédaction. Chaque annotation a été vérifiée mail par mail avec ce guide sous les yeux, sur une page qui affiche chaque mail à côté de son annotation et signale les désaccords avec le modèle. Le mail m39, réécrit ensuite (D63), a suivi le même chemin. Le mail m04, modifié en dernier (cours du mercredi à 9 h, D70), reste à vérifier.
+Martin Bolmier, avec un assistant IA pour la première rédaction. Chaque annotation a été vérifiée mail par mail avec ce guide sous les yeux, sur une page qui affiche chaque mail à côté de son annotation et signale les désaccords avec le modèle. Les mails m39 et m04, modifiés ensuite (D63, D70), ont suivi le même chemin.
